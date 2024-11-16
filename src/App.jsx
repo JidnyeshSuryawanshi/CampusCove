@@ -1,7 +1,15 @@
+import FacilitiesList from "./Landing Page/FacilitiesList";
+import HostelBookingInfo from "./Landing Page/HostelBookingInfo";
+import MessBookingInfo from "./Landing Page/MessBookingInfo";
+import Navbar from "./Landing Page/Navbar";
+
 function App() {
   return (
     <>
-      <h1 className="text-3xl">My App</h1>
+      <Navbar />
+      <FacilitiesList />
+      <HostelBookingInfo />
+      <MessBookingInfo />
     </>
   );
 }
