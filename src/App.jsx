@@ -11,11 +11,11 @@ function App() {
   return (
     <>
       <Navbar />
-      {/* <FacilitiesList />
+      <FacilitiesList />
       <HostelBookingInfo />
       <MovingSlogon />
       <MessBookingInfo />
-      <OtherInfos /> */}
+      <OtherInfos />
       <AboutCampusCove />
 
       {}
