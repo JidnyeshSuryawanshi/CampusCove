@@ -2,7 +2,7 @@ import React from "react";
 
 export default function MessBookingInfo() {
   return (
-    <div className="bg-white text-gray-800 py-12">
+    <div className="bg-gradient-to-r from-green-100 via-blue-50 to-green-100 text-gray-800 py-12">
     
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-green-600">

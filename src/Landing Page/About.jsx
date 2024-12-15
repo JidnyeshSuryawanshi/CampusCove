@@ -2,7 +2,7 @@ import React from "react";
 
 export default function AboutCampusCove() {
   return (
-    <section className="bg-gray-50 py-16 px-6">
+    <section className="bg-blue-50 py-16 px-6">
       <div className="max-w-5xl mx-auto text-center">
         <h2 className="text-5xl font-bold text-blue-600 mb-8">
           About CampusCove
