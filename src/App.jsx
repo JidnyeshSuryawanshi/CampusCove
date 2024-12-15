@@ -20,10 +20,6 @@ function App() {
       <OtherInfos />
       <AboutCampusCove />
 
-      
-      
-      <Contact></Contact>
-      <Login></Login>
 
       <Footer />
     </>

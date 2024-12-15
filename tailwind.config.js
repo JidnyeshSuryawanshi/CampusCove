@@ -11,6 +11,10 @@ export default {
           '0%': { transform: 'translateX(100%)' },
           '100%': { transform: 'translateX(-100%)' },
         },
+        animation: {
+          'fade-in': 'fade-in 0.5s ease-in-out', 
+          'slide-down': 'slide-down 0.5s ease-in-out', 
+        },
       },
     },
   },
