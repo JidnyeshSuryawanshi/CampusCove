@@ -7,6 +7,8 @@ export default function NewComponent() {
     shree swami samarth
     shree swami samarth
     shree swami samarth
+    shree swami samarth
+    shree swami samarths
     </>
   )
 }
