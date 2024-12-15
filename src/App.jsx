@@ -18,7 +18,6 @@ function App() {
       <MessBookingInfo />
       <OtherInfos />
       <AboutCampusCove />
-      <FAQ/>
 
       <Footer />
     </>
