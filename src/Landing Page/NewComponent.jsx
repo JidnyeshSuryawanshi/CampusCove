@@ -4,6 +4,7 @@ export default function NewComponent() {
   return (
     <>
     shree swami samarth
+    shree swami samarth
     </>
   )
 }
