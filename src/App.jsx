@@ -1,5 +1,6 @@
 import AboutCampusCove from "./Landing Page/About";
 import FacilitiesList from "./Landing Page/FacilitiesList";
+import FAQ from "./Landing Page/FAQs";
 import Footer from "./Landing Page/Footer";
 import HostelBookingInfo from "./Landing Page/HostelBookingInfo";
 import MessBookingInfo from "./Landing Page/MessBookingInfo";
@@ -11,14 +12,13 @@ function App() {
   return (
     <>
       <Navbar />
-      {/* <FacilitiesList />
+      <FacilitiesList />
       <HostelBookingInfo />
       <MovingSlogon />
       <MessBookingInfo />
-      <OtherInfos /> */}
+      <OtherInfos />
       <AboutCampusCove />
-
-      {}
+      <FAQ/>
 
       <Footer />
     </>
