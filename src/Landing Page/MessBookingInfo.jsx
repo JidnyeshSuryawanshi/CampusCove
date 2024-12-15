@@ -2,76 +2,84 @@ import React from "react";
 
 export default function MessBookingInfo() {
   return (
-    <div className="bg-white text-gray-800 p-6 sm:p-12">
-      <div className="text-center mb-8">
+    <div className="bg-white text-gray-800 py-12">
+    
+      <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-green-600">
           Easy Mess Bookings
         </h1>
         <p className="mt-4 text-lg">
-          With CampusCove, you can easily book your mess services for the month.
-          No more confusion about meal plans!
+          With CampusCove, booking your mess services is as easy as following a
+          simple process. Enjoy seamless meal management without confusion!
         </p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-green-500 mb-4">
-            Hassle-Free Meal Plans
-          </h2>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Select meal plans that suit your dietary preferences.</li>
-            <li>Modify your plan anytime based on your schedule.</li>
-          </ul>
+      <div className="flex flex-col items-center gap-12">
+
+        <div className="flex items-center">
+          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-xl font-bold">
+            1
+          </div>
+          <div className="ml-6">
+            <h2 className="text-xl font-semibold text-green-600">
+              Browse Meal Plans
+            </h2>
+            <p className="mt-2 text-sm">
+              Explore available mess options and select meal plans that match
+              your dietary needs.
+            </p>
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-green-500 mb-4">
-            Monthly Subscriptions
-          </h2>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Subscribe to mess services on a monthly basis.</li>
-            <li>Enjoy the flexibility to renew or switch plans seamlessly.</li>
-          </ul>
+        <div className="w-1 bg-green-500 h-12"></div>
+
+        <div className="flex items-center">
+          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-xl font-bold">
+            2
+          </div>
+          <div className="ml-6">
+            <h2 className="text-xl font-semibold text-green-600">
+              Customize Your Subscription
+            </h2>
+            <p className="mt-2 text-sm">
+              Choose subscription durations, modify plans, and personalize your
+              schedule.
+            </p>
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-green-500 mb-4">
-            Affordable Pricing
-          </h2>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Compare mess rates to find the best deal for your budget.</li>
-            <li>Avail exclusive discounts for students through CampusCove.</li>
-          </ul>
+        <div className="w-1 bg-green-500 h-12"></div>
+
+        <div className="flex items-center">
+          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-xl font-bold">
+            3
+          </div>
+          <div className="ml-6">
+            <h2 className="text-xl font-semibold text-green-600">
+              Confirm and Pay
+            </h2>
+            <p className="mt-2 text-sm">
+              Use secure payment options to confirm your booking and lock in
+              your meal plan.
+            </p>
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-green-500 mb-4">
-            Reliable Feedback
-          </h2>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Read reviews about mess services from other students.</li>
-            <li>Share your own experiences to help others.</li>
-          </ul>
-        </div>
+        <div className="w-1 bg-green-500 h-12"></div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-green-500 mb-4">
-            Meal Schedule Management
-          </h2>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Plan your meals for the week or month in advance.</li>
-            <li>Track your meal plan and make updates anytime.</li>
-          </ul>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-green-500 mb-4">
-            Flexible Cancellations
-          </h2>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Cancel or pause your subscription without hassle.</li>
-            <li>Get timely refunds for unused meal credits.</li>
-          </ul>
+        <div className="flex items-center">
+          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-xl font-bold">
+            4
+          </div>
+          <div className="ml-6">
+            <h2 className="text-xl font-semibold text-green-600">
+              Track and Enjoy
+            </h2>
+            <p className="mt-2 text-sm">
+              Access your meal schedule, track usage, and enjoy a hassle-free
+              dining experience.
+            </p>
+          </div>
         </div>
       </div>
     </div>

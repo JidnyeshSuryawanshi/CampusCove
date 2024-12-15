@@ -1,9 +1,70 @@
 import React from "react";
+import {
+  FaList,
+  FaMapMarkerAlt,
+  FaWifi,
+  FaStar,
+  FaDollarSign,
+  FaBook,
+} from "react-icons/fa";
 
 export default function HostelBookingInfo() {
   return (
-    <div className="bg-gray-100 w-full relative">
-      <div className="ml-[30%]  text-gray-800 p-6 ">
+    <div className="bg-gray-100 w-full relative flex gap-20">
+      <div className="w-full bg-blue-50 py-6 px-4 flex flex-col items-center">
+        <h2 className="text-2xl font-semibold text-blue-600 mb-6">
+          How It Works
+        </h2>
+        <div className="flex flex-col items-center gap-12">
+          {/* Step 1 */}
+          <div className="flex items-center">
+            <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full font-bold">
+              1
+            </div>
+            <p className="ml-4 text-gray-800 font-medium text-sm">
+              Sign up or log in to CampusCove.
+            </p>
+          </div>
+          {/* Arrow */}
+          <div className="w-1 bg-blue-600 h-10"></div>
+
+          {/* Step 2 */}
+          <div className="flex items-center">
+            <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full font-bold">
+              2
+            </div>
+            <p className="ml-4 text-gray-800 font-medium text-sm">
+              Search for hostels by location and preferences.
+            </p>
+          </div>
+          {/* Arrow */}
+          <div className="w-1 bg-blue-600 h-10"></div>
+
+          {/* Step 3 */}
+          <div className="flex items-center">
+            <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full font-bold">
+              3
+            </div>
+            <p className="ml-4 text-gray-800 font-medium text-sm">
+              Compare amenities, pricing, and reviews.
+            </p>
+          </div>
+          {/* Arrow */}
+          <div className="w-1 bg-blue-600 h-10"></div>
+
+          {/* Step 4 */}
+          <div className="flex items-center">
+            <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full font-bold">
+              4
+            </div>
+            <p className="ml-4 text-gray-800 font-medium text-sm">
+              Book your hostel with instant confirmation.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="  text-gray-800 p-6 ">
         <div className="text-center mb-8 ">
           <h1 className="text-4xl font-bold text-blue-600 ">
             CampusCove Hostel Finder
@@ -16,9 +77,10 @@ export default function HostelBookingInfo() {
           </p>
         </div>
 
-        <div className=" grid gap-8 md:grid-cols-2 lg:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-blue-500 mb-4">
+            <h2 className="text-xl font-semibold text-blue-500 mb-4 flex items-center gap-2">
+              <FaList className="text-blue-600" />
               Comprehensive Listings
             </h2>
             <ul className="list-disc list-inside space-y-2">
@@ -34,7 +96,8 @@ export default function HostelBookingInfo() {
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-blue-500 mb-4">
+            <h2 className="text-xl font-semibold text-blue-500 mb-4 flex items-center gap-2">
+              <FaMapMarkerAlt className="text-blue-600" />
               Search by Location
             </h2>
             <ul className="list-disc list-inside space-y-2">
@@ -50,7 +113,8 @@ export default function HostelBookingInfo() {
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-blue-500 mb-4">
+            <h2 className="text-xl font-semibold text-blue-500 mb-4 flex items-center gap-2">
+              <FaWifi className="text-blue-600" />
               Amenities at a Glance
             </h2>
             <ul className="list-disc list-inside space-y-2">
@@ -66,7 +130,8 @@ export default function HostelBookingInfo() {
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-blue-500 mb-4">
+            <h2 className="text-xl font-semibold text-blue-500 mb-4 flex items-center gap-2">
+              <FaStar className="text-blue-600" />
               Verified Reviews and Ratings
             </h2>
             <ul className="list-disc list-inside space-y-2">
@@ -81,7 +146,8 @@ export default function HostelBookingInfo() {
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-blue-500 mb-4">
+            <h2 className="text-xl font-semibold text-blue-500 mb-4 flex items-center gap-2">
+              <FaDollarSign className="text-blue-600" />
               Affordable Pricing
             </h2>
             <ul className="list-disc list-inside space-y-2">
@@ -94,9 +160,9 @@ export default function HostelBookingInfo() {
             </ul>
           </div>
 
-          {/* Hassle-Free Booking */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-blue-500 mb-4">
+            <h2 className="text-xl font-semibold text-blue-500 mb-4 flex items-center gap-2">
+              <FaBook className="text-blue-600" />
               Hassle-Free Booking
             </h2>
             <ul className="list-disc list-inside space-y-2">
