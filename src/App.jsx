@@ -1,5 +1,6 @@
 import AboutCampusCove from "./Landing Page/About";
 import Contact from "./Landing Page/Contact";
+import FAQ from "./Landing Page/FAQs";
 import FacilitiesList from "./Landing Page/FacilitiesList";
 import Footer from "./Landing Page/Footer";
 import HostelBookingInfo from "./Landing Page/HostelBookingInfo";
@@ -7,6 +8,7 @@ import MessBookingInfo from "./Landing Page/MessBookingInfo";
 import MovingSlogon from "./Landing Page/MovingSlogon";
 import Navbar from "./Landing Page/Navbar";
 import OtherInfos from "./Landing Page/OtherInfos";
+import ProfilePage from "./Landing Page/ProfilePage";
 import Login from "./Landing Page/login";
 
 function App() {
@@ -19,7 +21,11 @@ function App() {
       <MessBookingInfo />
       <OtherInfos />
       <AboutCampusCove />
+      <Contact />
+      <FAQ />
+      <Login />
       <Footer />
+      <ProfilePage />
     </>
   );
 }
