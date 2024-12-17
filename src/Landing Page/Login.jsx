@@ -1,4 +1,5 @@
 import React from "react";
+import { FaUser, FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa'; // Importing necessary icons from react-icons
 
 export default function Login() {
   return (
@@ -7,18 +8,19 @@ export default function Login() {
       <div className="absolute inset-0 bg-gradient-to-r from-green-100 via-blue-50 to-green-100"></div>
 
       {/* Container */}
-    <div className="relative z-10 flex w-full max-w-[90%] h-[90vh] bg-white bg-opacity-10 backdrop-blur-lg shadow-xl rounded-lg overflow-hidden">
+      <div className="relative z-10 flex w-full max-w-[90%] h-[90vh] bg-white bg-opacity-10 backdrop-blur-lg shadow-xl rounded-lg overflow-hidden">
         {/* Form Section */}
+        
         <form className="w-full md:w-3/5 p-8 bg-white">
           <h2 className="text-3xl font-bold text-green-600 text-center mb-8">
             Login-form
           </h2>
 
-
+          {/* Username Input */}
           <div className="relative mb-6">
             <input
-              type="usename"
-              id="usename"
+              type="text"
+              id="username"
               required
               placeholder=" "
               className="peer w-full bg-transparent border-b-2 border-gray-400 focus:border-green-600 focus:outline-none text-gray-800 py-5 placeholder-transparent"
@@ -27,11 +29,10 @@ export default function Login() {
               htmlFor="username"
               className="absolute left-0 top-2 text-gray-400 text-sm transition-all duration-300 peer-placeholder-shown:top-6 peer-placeholder-shown:text-lg peer-focus:top-0 peer-focus:text-sm peer-focus:text-green-600"
             >
+              <FaUser className="mr-2 inline-block text-lg text-gray-400" />
               Enter username
             </label>
           </div>
-
-
 
           {/* Email Input */}
           <div className="relative mb-6">
@@ -46,6 +47,7 @@ export default function Login() {
               htmlFor="email"
               className="absolute left-0 top-2 text-gray-400 text-sm transition-all duration-300 peer-placeholder-shown:top-6 peer-placeholder-shown:text-lg peer-focus:top-0 peer-focus:text-sm peer-focus:text-green-600"
             >
+              <FaEnvelope className="mr-2 inline-block text-lg text-gray-400" />
               Enter email
             </label>
           </div>
@@ -63,6 +65,7 @@ export default function Login() {
               htmlFor="password"
               className="absolute left-0 top-2 text-gray-400 text-sm transition-all duration-300 peer-placeholder-shown:top-6 peer-placeholder-shown:text-lg peer-focus:top-0 peer-focus:text-sm peer-focus:text-green-600"
             >
+              <FaLock className="mr-2 inline-block text-lg text-gray-400" />
               Enter password
             </label>
           </div>
@@ -87,8 +90,9 @@ export default function Login() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold text-lg py-3 rounded-lg transition duration-300"
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold text-lg py-3 rounded-lg transition duration-300 flex items-center justify-center"
           >
+            <FaSignInAlt className="mr-2 text-xl" />
             Log In
           </button>
 
@@ -107,7 +111,7 @@ export default function Login() {
         </form>
 
         {/* Image Section */}
-        <div className="w-2/5  hidden md:block">
+        <div className="w-2/5 hidden md:block">
           <img
             src="https://i.pinimg.com/736x/d1/54/66/d154660a6ae3104de2b0a314667a5ab6.jpg"
             alt="Delivery Illustration"
