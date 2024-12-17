@@ -27,11 +27,9 @@ function App() {
       <MessBookingInfo />
       <OtherInfos />
       <AboutCampusCove />
-<<<<<<< HEAD
       <Contact />
       <FAQ />
       <Login />
-=======
       <Login/>
       <Contact/>
       <FAQ/>
@@ -40,7 +38,6 @@ function App() {
      <UserProfile/>
      <BookingPage/>
      <BusinessDashboard/>
->>>>>>> 0e2f8d3c1560b8bc9af5ecc39fbfaba8bd3908c5
       <Footer />
       <ProfilePage />
     </>
