@@ -10,8 +10,8 @@ import {
 
 export default function HostelBookingInfo() {
   return (
-    <div className="bg-gray-100 w-full relative flex gap-20">
-      <div className="w-full bg-blue-50 py-6 px-4 flex flex-col items-center">
+    <div className="bg-blue-50 w-full relative flex gap-10">
+      <div className="w-full bg-blue-50 py-6 px-2 flex flex-col items-center">
         <h2 className="text-2xl font-semibold text-blue-600 mb-6">
           How It Works
         </h2>

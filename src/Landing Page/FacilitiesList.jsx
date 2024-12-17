@@ -46,10 +46,10 @@ export default function FacilitiesList() {
         </div>
       </div>
       <div className="absolute bottom-10 left-[17%] flex gap-5">
-        <button className="bg-[#4CC9FE] text-white px-4 py-2 rounded hover:bg-blue-400 ">
+        <button className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-600 ">
           Sign Up
         </button>
-        <button className="bg-[#4CC9FE] text-white px-4 py-2 rounded hover:bg-blue-400 ">
+        <button className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-600 ">
           About Us
         </button>
       </div>

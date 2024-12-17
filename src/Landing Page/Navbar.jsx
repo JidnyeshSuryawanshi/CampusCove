@@ -1,29 +1,44 @@
 import React from "react";
-import { FaRegUserCircle } from "react-icons/fa";
+import { FaHome, FaInfoCircle, FaServicestack, FaQuestionCircle, FaPhoneAlt, FaRegUserCircle } from "react-icons/fa";
 
 export default function Navbar() {
   return (
     <div>
-      <nav className="bg-blue-400 w-[100%] h-16 flex items-center gap-3">
-        <div className="w-full h-16 flex  items-center gap-2">
+      <nav className="bg-blue-50 w-full h-16 flex items-center justify-between px-6">
+        <div className="flex items-center gap-3">
           <img
-            className="w-auto h-[70%] align-middle rounded-[50%]"
+            className="w-12 h-12 rounded-full object-cover"
             src="/New_Logo.PNG"
             alt="My_Logo"
           />
-          <h1 className="font-Nutino text-[#FFFECB] font-bold text-3xl">
-            Campus<span className="text-[#F5EFFF]">Cove</span>
+          <h1 className="font-Nutino text-blue-400 font-bold text-3xl">
+            Campus<span className="text-blue-300">Cove</span>
           </h1>
         </div>
-        <div className="flex gap-8 text-slate-50 text-1xl font-Nutino">
-          <h1 className="hover:text-[#FFFECB] cursor-pointer hover:text-lg">Home</h1>
-          <h1 className="hover:text-[#FFFECB] cursor-pointer hover:text-lg">About</h1>
-          <h1 className="hover:text-[#FFFECB] cursor-pointer hover:text-lg">Services</h1>
-          <h1 className="hover:text-[#FFFECB] cursor-pointer hover:text-lg">FAQ</h1>
-          <h1 className="hover:text-[#FFFECB] cursor-pointer hover:text-lg">Contact</h1>
-          <div className="flex gap-1 items-center hover:text-[#FFFECB]">
-            <FaRegUserCircle />
-            <h1>Login/Signup</h1>
+        <div className="flex gap-6 items-center text-slate-50 text-lg font-Nutino">
+          <div className="flex items-center gap-2 text-blue-400 hover:text-blue-500 cursor-pointer hover:text-xl transition-all">
+            <FaHome className="text-2xl" />
+            <h1>Home</h1>
+          </div>
+          <div className="flex items-center gap-2 text-blue-400 hover:text-blue-500 cursor-pointer hover:text-xl transition-all">
+            <FaInfoCircle className="text-2xl" />
+            <h1>About</h1>
+          </div>
+          <div className="flex items-center gap-2 text-blue-400 hover:text-blue-500 cursor-pointer hover:text-xl transition-all">
+            <FaServicestack className="text-2xl" />
+            <h1>Services</h1>
+          </div>
+          <div className="flex items-center gap-2 text-blue-400 hover:text-blue-500 cursor-pointer hover:text-xl transition-all">
+            <FaQuestionCircle className="text-2xl" />
+            <h1>FAQ</h1>
+          </div>
+          <div className="flex items-center gap-2 text-blue-400 hover:text-blue-500 cursor-pointer hover:text-xl transition-all">
+            <FaPhoneAlt className="text-2xl" />
+            <h1>Contact</h1>
+          </div>
+          <div className="flex gap-2 items-center text-blue-400 hover:text-blue-500 cursor-pointer">
+            <FaRegUserCircle className="text-2xl" />
+            <h1 className="hidden sm:block">Login/Signup</h1>
           </div>
         </div>
       </nav>

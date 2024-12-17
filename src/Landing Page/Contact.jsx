@@ -1,4 +1,5 @@
 import React from "react";
+import { FaUser, FaEnvelope, FaBuilding, FaPen, FaPaperPlane } from 'react-icons/fa'; // Importing necessary icons from react-icons
 
 export default function Contact() {
   return (
@@ -28,8 +29,9 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="name"
-                  className="text-gray-700 font-medium mb-2"
+                  className="text-gray-700 font-medium mb-2 flex items-center"
                 >
+                  <FaUser className="mr-2 text-xl" />
                   Enter Name
                 </label>
                 <input
@@ -46,8 +48,9 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="email"
-                  className="text-gray-700 font-medium mb-2"
+                  className="text-gray-700 font-medium mb-2 flex items-center"
                 >
+                  <FaEnvelope className="mr-2 text-xl" />
                   Enter Email
                 </label>
                 <input
@@ -64,8 +67,9 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="company"
-                  className="text-gray-700 font-medium mb-2"
+                  className="text-gray-700 font-medium mb-2 flex items-center"
                 >
+                  <FaBuilding className="mr-2 text-xl" />
                   Enter Company
                 </label>
                 <input
@@ -82,8 +86,9 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="subject"
-                  className="text-gray-700 font-medium mb-2"
+                  className="text-gray-700 font-medium mb-2 flex items-center"
                 >
+                  <FaPen className="mr-2 text-xl" />
                   Enter Purpose / Subject
                 </label>
                 <input
@@ -100,8 +105,9 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="message"
-                  className="text-gray-700 font-medium mb-2"
+                  className="text-gray-700 font-medium mb-2 flex items-center"
                 >
+                  <FaPen className="mr-2 text-xl" />
                   Message
                 </label>
                 <textarea
@@ -118,8 +124,9 @@ export default function Contact() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition duration-300 hover:shadow-lg"
+                  className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition duration-300 hover:shadow-lg flex items-center justify-center"
                 >
+                  <FaPaperPlane className="mr-2 text-xl" />
                   Send Message
                 </button>
               </div>

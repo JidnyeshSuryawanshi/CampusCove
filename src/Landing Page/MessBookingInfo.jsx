@@ -1,4 +1,5 @@
 import React from "react";
+import { FaSearch, FaRegEdit, FaCreditCard, FaCheckCircle } from "react-icons/fa";
 
 export default function MessBookingInfo() {
   return (
@@ -16,9 +17,10 @@ export default function MessBookingInfo() {
 
       <div className="flex flex-col items-center gap-12">
 
+        {/* Step 1 */}
         <div className="flex items-center">
-          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-xl font-bold">
-            1
+          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-2xl font-bold">
+            <FaSearch />
           </div>
           <div className="ml-6">
             <h2 className="text-xl font-semibold text-green-600">
@@ -33,9 +35,10 @@ export default function MessBookingInfo() {
 
         <div className="w-1 bg-green-500 h-12"></div>
 
+        {/* Step 2 */}
         <div className="flex items-center">
-          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-xl font-bold">
-            2
+          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-2xl font-bold">
+            <FaRegEdit />
           </div>
           <div className="ml-6">
             <h2 className="text-xl font-semibold text-green-600">
@@ -50,9 +53,10 @@ export default function MessBookingInfo() {
 
         <div className="w-1 bg-green-500 h-12"></div>
 
+        {/* Step 3 */}
         <div className="flex items-center">
-          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-xl font-bold">
-            3
+          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-2xl font-bold">
+            <FaCreditCard />
           </div>
           <div className="ml-6">
             <h2 className="text-xl font-semibold text-green-600">
@@ -67,9 +71,10 @@ export default function MessBookingInfo() {
 
         <div className="w-1 bg-green-500 h-12"></div>
 
+        {/* Step 4 */}
         <div className="flex items-center">
-          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-xl font-bold">
-            4
+          <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-2xl font-bold">
+            <FaCheckCircle />
           </div>
           <div className="ml-6">
             <h2 className="text-xl font-semibold text-green-600">
