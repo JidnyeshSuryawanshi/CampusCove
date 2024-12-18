@@ -1,5 +1,12 @@
 import React from "react";
-import { FaBullhorn, FaCheckCircle, FaHandshake, FaEye, FaRocket, FaThumbsUp } from "react-icons/fa"; // Importing necessary icons from react-icons
+import {
+  FaBullhorn,
+  FaCheckCircle,
+  FaHandshake,
+  FaEye,
+  FaRocket,
+  FaThumbsUp,
+} from "react-icons/fa";
 
 export default function AboutCampusCove() {
   return (
@@ -21,7 +28,6 @@ export default function AboutCampusCove() {
       </div>
 
       <div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Our Mission */}
         <div className="bg-white shadow-lg rounded-xl p-6 border-t-4 border-yellow-500 hover:scale-105 transform transition duration-300">
           <h3 className="text-2xl font-semibold text-blue-500 mb-4 flex items-center">
             <FaBullhorn className="mr-2 text-3xl text-yellow-500" />
@@ -34,7 +40,6 @@ export default function AboutCampusCove() {
           </p>
         </div>
 
-        {/* Key Features */}
         <div className="bg-white shadow-lg rounded-xl p-6 border-t-4 border-green-500 hover:scale-105 transform transition duration-300">
           <h3 className="text-2xl font-semibold text-blue-500 mb-4 flex items-center">
             <FaCheckCircle className="mr-2 text-3xl text-green-500" />
@@ -47,7 +52,6 @@ export default function AboutCampusCove() {
           </ul>
         </div>
 
-        {/* What We Solve */}
         <div className="bg-white shadow-lg rounded-xl p-6 border-t-4 border-blue-500 hover:scale-105 transform transition duration-300">
           <h3 className="text-2xl font-semibold text-blue-500 mb-4 flex items-center">
             <FaEye className="mr-2 text-3xl text-blue-500" />
@@ -60,7 +64,6 @@ export default function AboutCampusCove() {
           </p>
         </div>
 
-        {/* How It Works */}
         <div className="bg-white shadow-lg rounded-xl p-6 border-t-4 border-yellow-500 hover:scale-105 transform transition duration-300">
           <h3 className="text-2xl font-semibold text-blue-500 mb-4 flex items-center">
             <FaHandshake className="mr-2 text-3xl text-yellow-500" />
@@ -72,7 +75,6 @@ export default function AboutCampusCove() {
           </p>
         </div>
 
-        {/* Our Vision */}
         <div className="bg-white shadow-lg rounded-xl p-6 border-t-4 border-green-500 hover:scale-105 transform transition duration-300">
           <h3 className="text-2xl font-semibold text-blue-500 mb-4 flex items-center">
             <FaRocket className="mr-2 text-3xl text-green-500" />
@@ -84,7 +86,6 @@ export default function AboutCampusCove() {
           </p>
         </div>
 
-        {/* Why Choose Us */}
         <div className="bg-white shadow-lg rounded-xl p-6 border-t-4 border-blue-500 hover:scale-105 transform transition duration-300">
           <h3 className="text-2xl font-semibold text-blue-500 mb-4 flex items-center">
             <FaThumbsUp className="mr-2 text-3xl text-blue-500" />

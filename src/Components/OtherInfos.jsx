@@ -63,7 +63,6 @@ export default function OtherInfos() {
           </div>
         </div>
 
-        {/* Call to Action */}
         <div className="mt-12 text-center">
           <button className="bg-green-600 text-white py-3 px-8 rounded-full text-lg font-medium hover:bg-green-700 transition">
             Explore More

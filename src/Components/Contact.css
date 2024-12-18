@@ -10,7 +10,7 @@
     bottom: 0;
     width: 0%;
     height: 2px;
-    background: #3b82f6; /* Blue bar */
+    background: #3b82f6; 
     transition: width 0.4s ease-in-out;
   }
   

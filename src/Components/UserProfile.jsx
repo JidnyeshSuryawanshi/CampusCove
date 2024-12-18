@@ -28,7 +28,7 @@ const UserProfile = () => {
   return (
     <div className="bg-gray-100 min-h-screen p-4">
       <div className="max-w-[90%] mx-auto bg-white p-6 rounded-lg shadow-xl">
-        {/* User Info */}
+        
         <div className="flex items-center mb-8">
           <img 
             src={userDetails.avatar} 

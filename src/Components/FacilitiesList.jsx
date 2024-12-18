@@ -2,15 +2,15 @@ import React from "react";
 
 export default function FacilitiesList() {
   return (
-    <div className="w-full relative">
+    <div className="w-full relative ">
       <img
         className="h-[90.1vh] w-full object-cover"
-        src="/Landing_Page_bg_1.jfif"
+        src="/pic-5.webp"
         alt="Background"
       />
       <div className="absolute left-0 top-0 text-white text-center w-[50%]">
         <h1 className="uppercase text-start ml-12 mt-16 mb-10 leading-relaxed ">
-          <span className="text-3xl">Welcome to CampusCove</span>
+          <span className="text-3xl ">Welcome to CampusCove</span>
           <br /> Your One-Stop Platform for Mess & Hostel Services
         </h1>
 

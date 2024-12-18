@@ -1,7 +1,12 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
+
+
+
   return (
+    
     <footer className="bg-gray-900 text-gray-300 py-10">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -20,27 +25,24 @@ export default function Footer() {
             <h2 className="text-xl font-semibold text-white">Quick Links</h2>
             <ul className="mt-4 space-y-2 text-sm">
               <li>
-                <a href="#hostel" className="hover:text-green-400 transition">
+                <Link to={"/"} className="hover:text-green-400 transition">
                   Hostel Finder
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#mess" className="hover:text-green-400 transition">
+                <Link to={"/"} className="hover:text-green-400 transition">
                   Mess Booking
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#local-shops"
-                  className="hover:text-green-400 transition"
-                >
+                <Link to={"/"} className="hover:text-green-400 transition">
                   Local Shops
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#contact" className="hover:text-green-400 transition">
+                <Link href="" className="hover:text-green-400 transition">
                   Contact Us
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -50,10 +52,10 @@ export default function Footer() {
             <ul className="mt-4 space-y-2 text-sm">
               <li>
                 <span className="font-medium">Email:</span>{" "}
-                jidnyesh0149@gmail.cim
+                jidnyesh0149@gmail.com
               </li>
               <li>
-                <span className="font-medium">Phone:</span> +1 123 456 7890
+                <span className="font-medium">Phone:</span> +91 9307368397
               </li>
               <li>
                 <span className="font-medium">Address:</span> MIT Academy of
@@ -67,30 +69,30 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between mt-6">
           <div className="flex space-x-4">
-            <a
-              href="#"
+            <Link
+              to={"/"}
               className="text-gray-400 hover:text-green-400 transition text-2xl"
             >
               <i className="fab fa-facebook"></i>
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to={"/"}
               className="text-gray-400 hover:text-green-400 transition text-2xl"
             >
               <i className="fab fa-twitter"></i>
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to={"/"}
               className="text-gray-400 hover:text-green-400 transition text-2xl"
             >
               <i className="fab fa-instagram"></i>
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to={"/"}
               className="text-gray-400 hover:text-green-400 transition text-2xl"
             >
               <i className="fab fa-linkedin"></i>
-            </a>
+            </Link>
           </div>
           <p className="text-sm mt-4 md:mt-0">
             &copy; {new Date().getFullYear()} CampusCove. All Rights Reserved.

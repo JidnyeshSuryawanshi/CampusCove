@@ -27,38 +27,107 @@ export function BookingPage() {
   const [filters, setFilters] = useState({});
   const [location, setLocation] = useState("");
 
-  // A big list of retailers/service providers
   const serviceProviders = [
-    { id: 1, name: "Luxury Hotel", type: "hotel", location: "New York", amenities: ["WiFi", "Pool"], price: "$200/night" },
-    { id: 2, name: "Premium Hostel", type: "hostel", location: "San Francisco", amenities: ["WiFi"], price: "$50/night" },
-    { id: 3, name: "Affordable Gym", type: "gym", location: "Los Angeles", amenities: ["Personal Trainer"], price: "$100/month" },
-    { id: 4, name: "Healthy Mess", type: "mess", location: "Chicago", amenities: ["Vegan Meals"], price: "$10/meal" },
-    { id: 5, name: "Ice Cream Heaven", type: "iceCream", location: "New York", amenities: ["Vegan Options"], price: "$5/scoop" },
-    { id: 6, name: "Breakfast Bliss", type: "breakfast", location: "Seattle", amenities: ["Coffee", "Omelette"], price: "$20/person" },
-    { id: 7, name: "Cozy Hostel", type: "hostel", location: "Chicago", amenities: ["WiFi", "Shared Kitchen"], price: "$70/night" },
-    { id: 8, name: "Fitness First Gym", type: "gym", location: "New York", amenities: ["WiFi", "Group Classes"], price: "$150/month" },
-    { id: 9, name: "Sunny Ice Cream", type: "iceCream", location: "Los Angeles", amenities: ["Organic Ingredients"], price: "$8/scoop" },
-    { id: 10, name: "Morning Glory Breakfast", type: "breakfast", location: "San Francisco", amenities: ["Pancakes", "Espresso"], price: "$25/person" },
+    {
+      id: 1,
+      name: "Luxury Hotel",
+      type: "hotel",
+      location: "New York",
+      amenities: ["WiFi", "Pool"],
+      price: "$200/night",
+    },
+    {
+      id: 2,
+      name: "Premium Hostel",
+      type: "hostel",
+      location: "San Francisco",
+      amenities: ["WiFi"],
+      price: "$50/night",
+    },
+    {
+      id: 3,
+      name: "Affordable Gym",
+      type: "gym",
+      location: "Los Angeles",
+      amenities: ["Personal Trainer"],
+      price: "$100/month",
+    },
+    {
+      id: 4,
+      name: "Healthy Mess",
+      type: "mess",
+      location: "Chicago",
+      amenities: ["Vegan Meals"],
+      price: "$10/meal",
+    },
+    {
+      id: 5,
+      name: "Ice Cream Heaven",
+      type: "iceCream",
+      location: "New York",
+      amenities: ["Vegan Options"],
+      price: "$5/scoop",
+    },
+    {
+      id: 6,
+      name: "Breakfast Bliss",
+      type: "breakfast",
+      location: "Seattle",
+      amenities: ["Coffee", "Omelette"],
+      price: "$20/person",
+    },
+    {
+      id: 7,
+      name: "Cozy Hostel",
+      type: "hostel",
+      location: "Chicago",
+      amenities: ["WiFi", "Shared Kitchen"],
+      price: "$70/night",
+    },
+    {
+      id: 8,
+      name: "Fitness First Gym",
+      type: "gym",
+      location: "New York",
+      amenities: ["WiFi", "Group Classes"],
+      price: "$150/month",
+    },
+    {
+      id: 9,
+      name: "Sunny Ice Cream",
+      type: "iceCream",
+      location: "Los Angeles",
+      amenities: ["Organic Ingredients"],
+      price: "$8/scoop",
+    },
+    {
+      id: 10,
+      name: "Morning Glory Breakfast",
+      type: "breakfast",
+      location: "San Francisco",
+      amenities: ["Pancakes", "Espresso"],
+      price: "$25/person",
+    },
   ];
 
-  // Handle booking type selection
   const handleBookingTypeChange = (e) => {
     const value = e.target.value;
     setBookingType(value);
     setFilters({ ...filters, type: value });
   };
 
-  // Update location filter
   const handleLocationChange = (e) => {
     const value = e.target.value;
     setLocation(value);
     setFilters((prev) => ({ ...prev, location: value }));
   };
 
-  // Filter providers based on user input
   const filteredProviders = serviceProviders.filter((provider) =>
     Object.keys(filters).every((key) =>
-      provider[key]?.toString().toLowerCase().includes(filters[key]?.toString().toLowerCase() || "")
+      provider[key]
+        ?.toString()
+        .toLowerCase()
+        .includes(filters[key]?.toString().toLowerCase() || "")
     )
   );
 
@@ -71,16 +140,19 @@ export function BookingPage() {
         </span>
       </h2>
 
-      {/* Booking Form */}
       <form
         action="#"
         className="space-y-6 bg-white p-8 rounded-lg shadow-2xl hover:shadow-3xl transition-shadow duration-300"
       >
-        {/* Booking Type */}
         <div>
-          <label htmlFor="bookingType" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="bookingType"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaFilter className="text-blue-500 w-6 h-6" />
-            <span className="hover:text-blue-600 transition-all duration-300">Select Booking Type:</span>
+            <span className="hover:text-blue-600 transition-all duration-300">
+              Select Booking Type:
+            </span>
           </label>
           <select
             id="bookingType"
@@ -99,11 +171,15 @@ export function BookingPage() {
           </select>
         </div>
 
-        {/* Location Field */}
         <div>
-          <label htmlFor="location" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="location"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaMapMarkerAlt className="text-blue-500 w-6 h-6" />
-            <span className="hover:text-blue-600 transition-all duration-300">Preferred Location:</span>
+            <span className="hover:text-blue-600 transition-all duration-300">
+              Preferred Location:
+            </span>
           </label>
           <select
             id="location"
@@ -120,11 +196,15 @@ export function BookingPage() {
           </select>
         </div>
 
-        {/* Price Range */}
         <div>
-          <label htmlFor="priceRange" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="priceRange"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaDollarSign className="text-blue-500 w-6 h-6" />
-            <span className="hover:text-blue-600 transition-all duration-300">Select Price Range:</span>
+            <span className="hover:text-blue-600 transition-all duration-300">
+              Select Price Range:
+            </span>
           </label>
           <select
             id="priceRange"
@@ -142,18 +222,21 @@ export function BookingPage() {
           </select>
         </div>
 
-        {/* Amenities */}
         <div>
           <label className="flex items-center gap-2 font-medium text-gray-700">
             <FaCheck className="text-blue-500 w-6 h-6" />
-            <span className="hover:text-blue-600 transition-all duration-300">Select Amenities:</span>
+            <span className="hover:text-blue-600 transition-all duration-300">
+              Select Amenities:
+            </span>
           </label>
           <div className="flex items-center gap-4 mt-2">
             <label className="flex items-center gap-1">
               <input
                 type="checkbox"
                 name="wifi"
-                onChange={(e) => setFilters((prev) => ({ ...prev, amenities: "WiFi" }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, amenities: "WiFi" }))
+                }
                 className="form-checkbox text-blue-500"
               />
               <FaWifi className="text-blue-500" /> WiFi
@@ -162,7 +245,9 @@ export function BookingPage() {
               <input
                 type="checkbox"
                 name="vegan"
-                onChange={(e) => setFilters((prev) => ({ ...prev, amenities: "Vegan" }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, amenities: "Vegan" }))
+                }
                 className="form-checkbox text-blue-500"
               />
               Vegan Meals
@@ -171,15 +256,15 @@ export function BookingPage() {
               <input
                 type="checkbox"
                 name="pool"
-                onChange={(e) => setFilters((prev) => ({ ...prev, amenities: "Pool" }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, amenities: "Pool" }))
+                }
                 className="form-checkbox text-blue-500"
               />
               Pool
             </label>
           </div>
         </div>
-
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300"
@@ -189,7 +274,6 @@ export function BookingPage() {
         </button>
       </form>
 
-      {/* Filtered Providers */}
       <div className="mt-10">
         <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
           <FaFilter className="text-blue-500" /> Filtered Providers
@@ -201,10 +285,14 @@ export function BookingPage() {
                 key={provider.id}
                 className="bg-white p-4 shadow-md rounded-lg hover:shadow-lg transition-all"
               >
-                <h4 className="text-lg font-semibold text-blue-600">{provider.name}</h4>
+                <h4 className="text-lg font-semibold text-blue-600">
+                  {provider.name}
+                </h4>
                 <p className="text-gray-700">Type: {provider.type}</p>
                 <p className="text-gray-700">Location: {provider.location}</p>
-                <p className="text-gray-700">Amenities: {provider.amenities.join(", ")}</p>
+                <p className="text-gray-700">
+                  Amenities: {provider.amenities.join(", ")}
+                </p>
                 <p className="text-gray-700">Price: {provider.price}</p>
               </li>
             ))

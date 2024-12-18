@@ -1,12 +1,16 @@
 import React from "react";
-import { FaUser, FaEnvelope, FaBuilding, FaPen, FaPaperPlane } from 'react-icons/fa'; // Importing necessary icons from react-icons
+import {
+  FaUser,
+  FaEnvelope,
+  FaBuilding,
+  FaPen,
+  FaPaperPlane,
+} from "react-icons/fa";
 
 export default function Contact() {
   return (
     <div className="min-h-screen w-full bg-blue-50 shadow-lg rounded-lg flex items-center justify-center px-4 py-8">
-      {/* Container Section */}
       <div className="bg-white shadow-lg rounded-lg w-[90%] max-w-screen-[90%] flex flex-col">
-        {/* Header Section Inside Container */}
         <div className="text-center mt-8 mb-4 px-4">
           <h2 className="text-4xl font-semibold text-gray-600 mb-2">
             CONTACT <span className="text-blue-500">US</span>
@@ -15,17 +19,13 @@ export default function Contact() {
             Fill out the form below to send us a message.
           </p>
         </div>
-
-        {/* Form and Image Section */}
         <div className="flex flex-col md:flex-row items-stretch">
-          {/* Form Container */}
           <div className="w-full md:w-3/5 p-8">
             <form
               action="https://formspree.io/f/xrbgvvde"
               method="post"
               className="space-y-6"
             >
-              {/* Name Input */}
               <div className="flex flex-col">
                 <label
                   htmlFor="name"
@@ -44,7 +44,6 @@ export default function Contact() {
                 />
               </div>
 
-              {/* Email Input */}
               <div className="flex flex-col">
                 <label
                   htmlFor="email"
@@ -63,7 +62,6 @@ export default function Contact() {
                 />
               </div>
 
-              {/* Company Input */}
               <div className="flex flex-col">
                 <label
                   htmlFor="company"
@@ -82,7 +80,6 @@ export default function Contact() {
                 />
               </div>
 
-              {/* Subject Input */}
               <div className="flex flex-col">
                 <label
                   htmlFor="subject"
@@ -100,8 +97,6 @@ export default function Contact() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
-
-              {/* Message Input */}
               <div className="flex flex-col">
                 <label
                   htmlFor="message"
@@ -120,7 +115,6 @@ export default function Contact() {
                 ></textarea>
               </div>
 
-              {/* Submit Button Centered */}
               <div className="flex justify-center">
                 <button
                   type="submit"
@@ -133,7 +127,6 @@ export default function Contact() {
             </form>
           </div>
 
-          {/* Image Section */}
           <div className="w-full md:w-2/5">
             <img
               src="https://i.pinimg.com/736x/ad/20/7a/ad207a674e67ef63ade2412d8090aa15.jpg"

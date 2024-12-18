@@ -1,22 +1,21 @@
 import React from "react";
-import { FaUser, FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa'; // Importing necessary icons from react-icons
+import { FaUser, FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa'; 
 
 export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-cover bg-center relative">
-      {/* Background Gradient */}
+     
       <div className="absolute inset-0 bg-gradient-to-r from-green-100 via-blue-50 to-green-100"></div>
 
-      {/* Container */}
+
       <div className="relative z-10 flex w-full max-w-[90%] h-[90vh] bg-white bg-opacity-10 backdrop-blur-lg shadow-xl rounded-lg overflow-hidden">
-        {/* Form Section */}
+   
         
         <form className="w-full md:w-3/5 p-8 bg-white">
           <h2 className="text-3xl font-bold text-green-600 text-center mb-8">
             Login-form
           </h2>
 
-          {/* Username Input */}
           <div className="relative mb-6">
             <input
               type="text"
@@ -34,7 +33,6 @@ export default function Login() {
             </label>
           </div>
 
-          {/* Email Input */}
           <div className="relative mb-6">
             <input
               type="email"
@@ -52,7 +50,6 @@ export default function Login() {
             </label>
           </div>
 
-          {/* Password Input */}
           <div className="relative mb-6">
             <input
               type="password"
@@ -70,7 +67,6 @@ export default function Login() {
             </label>
           </div>
 
-          {/* Save Info & Forgot Password */}
           <div className="flex justify-between items-center mb-6 text-gray-500 text-sm">
             <label className="flex items-center gap-2">
               <input
@@ -87,7 +83,6 @@ export default function Login() {
             </a>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold text-lg py-3 rounded-lg transition duration-300 flex items-center justify-center"
@@ -96,7 +91,6 @@ export default function Login() {
             Log In
           </button>
 
-          {/* Create Account Section */}
           <div className="text-center mt-6 text-gray-500">
             <p>
               Don&apos;t have an account?{" "}
@@ -110,7 +104,6 @@ export default function Login() {
           </div>
         </form>
 
-        {/* Image Section */}
         <div className="w-2/5 hidden md:block">
           <img
             src="https://i.pinimg.com/736x/d1/54/66/d154660a6ae3104de2b0a314667a5ab6.jpg"

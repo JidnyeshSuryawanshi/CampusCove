@@ -17,7 +17,6 @@ export default function MessBookingInfo() {
 
       <div className="flex flex-col items-center gap-12">
 
-        {/* Step 1 */}
         <div className="flex items-center">
           <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-2xl font-bold">
             <FaSearch />
@@ -35,7 +34,6 @@ export default function MessBookingInfo() {
 
         <div className="w-1 bg-green-500 h-12"></div>
 
-        {/* Step 2 */}
         <div className="flex items-center">
           <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-2xl font-bold">
             <FaRegEdit />
@@ -53,7 +51,6 @@ export default function MessBookingInfo() {
 
         <div className="w-1 bg-green-500 h-12"></div>
 
-        {/* Step 3 */}
         <div className="flex items-center">
           <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-2xl font-bold">
             <FaCreditCard />
@@ -71,7 +68,6 @@ export default function MessBookingInfo() {
 
         <div className="w-1 bg-green-500 h-12"></div>
 
-        {/* Step 4 */}
         <div className="flex items-center">
           <div className="bg-green-500 text-white w-14 h-14 flex items-center justify-center rounded-full text-2xl font-bold">
             <FaCheckCircle />

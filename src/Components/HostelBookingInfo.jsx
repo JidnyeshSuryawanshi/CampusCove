@@ -16,7 +16,6 @@ export default function HostelBookingInfo() {
           How It Works
         </h2>
         <div className="flex flex-col items-center gap-12">
-          {/* Step 1 */}
           <div className="flex items-center">
             <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full font-bold">
               1
@@ -25,10 +24,9 @@ export default function HostelBookingInfo() {
               Sign up or log in to CampusCove.
             </p>
           </div>
-          {/* Arrow */}
+
           <div className="w-1 bg-blue-600 h-10"></div>
 
-          {/* Step 2 */}
           <div className="flex items-center">
             <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full font-bold">
               2
@@ -37,10 +35,9 @@ export default function HostelBookingInfo() {
               Search for hostels by location and preferences.
             </p>
           </div>
-          {/* Arrow */}
+
           <div className="w-1 bg-blue-600 h-10"></div>
 
-          {/* Step 3 */}
           <div className="flex items-center">
             <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full font-bold">
               3
@@ -49,10 +46,9 @@ export default function HostelBookingInfo() {
               Compare amenities, pricing, and reviews.
             </p>
           </div>
-          {/* Arrow */}
+
           <div className="w-1 bg-blue-600 h-10"></div>
 
-          {/* Step 4 */}
           <div className="flex items-center">
             <div className="bg-blue-600 text-white w-12 h-12 flex items-center justify-center rounded-full font-bold">
               4
