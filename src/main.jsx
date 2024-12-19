@@ -19,6 +19,7 @@ import Register from "./Components/Register";
 import ProfilePage from "./Components/ProfilePage";
 import BusinessDashboard from "./Components/BusinessDashboard";
 import BookingPage from "./Components/BookingPage";
+
 const router = createBrowserRouter(
   [
     {
