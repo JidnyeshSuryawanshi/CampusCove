@@ -1,17 +1,16 @@
-import React from "react";
-import { FaUser, FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa'; 
+import React, { useState } from "react";
+import { FaUser, FaEnvelope, FaLock, FaSignInAlt } from "react-icons/fa";
+import { Form, Link } from "react-router-dom";
 
 export default function Login() {
+  const [signUp, setsignUp] = useState("signUp");
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-cover bg-center relative">
-     
       <div className="absolute inset-0 bg-gradient-to-r from-green-100 via-blue-50 to-green-100"></div>
 
-
       <div className="relative z-10 flex w-full max-w-[90%] h-[90vh] bg-white bg-opacity-10 backdrop-blur-lg shadow-xl rounded-lg overflow-hidden">
-   
-        
-        <form className="w-full md:w-3/5 p-8 bg-white">
+        <Form className="w-full md:w-3/5 p-8 bg-white">
           <h2 className="text-3xl font-bold text-green-600 text-center mb-8">
             Login-form
           </h2>
@@ -94,15 +93,15 @@ export default function Login() {
           <div className="text-center mt-6 text-gray-500">
             <p>
               Don&apos;t have an account?{" "}
-              <a
-                href="#"
+              <Link
+                to={"/register"}
                 className="text-green-600 hover:text-green-500 transition duration-300"
               >
                 Create account
-              </a>
+              </Link>
             </p>
           </div>
-        </form>
+        </Form>
 
         <div className="w-2/5 hidden md:block">
           <img

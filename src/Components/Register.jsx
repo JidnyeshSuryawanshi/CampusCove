@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import { 
-  FaUser, 
-  FaEnvelope, 
-  FaPhone, 
-  FaHome, 
-  FaPaperPlane, 
-  FaCamera, 
-  FaFileUpload, 
-  FaBirthdayCake, 
-  FaTransgender, 
-  FaFlag, 
-  FaLanguage, 
-  FaSchool, 
-  FaInfoCircle
+import {
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaHome,
+  FaPaperPlane,
+  FaCamera,
+  FaFileUpload,
+  FaBirthdayCake,
+  FaTransgender,
+  FaFlag,
+  FaLanguage,
+  FaSchool,
+  FaInfoCircle,
+  FaLock,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export function Register() {
   const [userType, setUserType] = useState("");
@@ -46,9 +48,11 @@ export function Register() {
     <div className="p-8 bg-gradient-to-br from-green-50 to-green-100 min-h-screen font-sans">
       <h2 className="text-4xl font-bold text-gray-800 mb-8 flex items-center gap-5 animate-fade-in">
         <FaUser className="text-green-500 w-10 h-10 animate-bounce" />
-        <span className="transition-all duration-300 hover:text-green-500">Personal Information Form</span>
+        <span className="transition-all duration-300 hover:text-green-500">
+          Personal Information Form
+        </span>
       </h2>
-      
+
       <form
         action="submit_form.php"
         method="POST"
@@ -57,9 +61,14 @@ export function Register() {
       >
         {/* User Type */}
         <div>
-          <label htmlFor="userType" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="userType"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaUser className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Select User Type:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Select User Type:
+            </span>
           </label>
           <select
             id="userType"
@@ -78,9 +87,14 @@ export function Register() {
 
         {/* Full Name */}
         <div>
-          <label htmlFor="fullName" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="fullName"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaUser className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Full Name:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Full Name:
+            </span>
           </label>
           <input
             type="text"
@@ -94,10 +108,16 @@ export function Register() {
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaEnvelope className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Email:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Email:
+            </span>
           </label>
+
           <input
             type="email"
             id="email"
@@ -108,11 +128,36 @@ export function Register() {
           />
         </div>
 
+        <div className="relative mb-6">
+          <label
+            htmlFor="password"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
+            <FaLock className="text-green-500 w-6 h-6" />
+            <span className="hover:text-green-600 transition-all duration-300">
+              Enter password
+            </span>
+          </label>
+
+          <input
+            type="password"
+            id="password"
+            required
+            placeholder=" "
+            className="w-full border border-gray-300 rounded-md p-2 mt-1 focus:ring-2 focus:ring-green-500 focus:outline-none transition-all"
+          />
+        </div>
+
         {/* Phone */}
         <div>
-          <label htmlFor="phone" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="phone"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaPhone className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Phone Number:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Phone Number:
+            </span>
           </label>
           <input
             type="tel"
@@ -126,9 +171,14 @@ export function Register() {
 
         {/* Address */}
         <div>
-          <label htmlFor="address" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="address"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaHome className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Address:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Address:
+            </span>
           </label>
           <textarea
             id="address"
@@ -142,9 +192,14 @@ export function Register() {
 
         {/* Date of Birth */}
         <div>
-          <label htmlFor="dob" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="dob"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaBirthdayCake className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Date of Birth:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Date of Birth:
+            </span>
           </label>
           <input
             type="date"
@@ -157,9 +212,14 @@ export function Register() {
 
         {/* Gender */}
         <div>
-          <label htmlFor="gender" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="gender"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaTransgender className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Gender:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Gender:
+            </span>
           </label>
           <select
             id="gender"
@@ -176,11 +236,16 @@ export function Register() {
             <option value="lgbt">LGBTQ+</option>
           </select>
         </div>
- {/* Photo Upload */}
- <div>
-          <label htmlFor="photo" className="flex items-center gap-2 font-medium text-gray-700">
+        {/* Photo Upload */}
+        <div>
+          <label
+            htmlFor="photo"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaCamera className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Upload Photo:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Upload Photo:
+            </span>
           </label>
           <input
             type="file"
@@ -194,9 +259,14 @@ export function Register() {
 
         {/* Additional Photos */}
         <div>
-          <label htmlFor="photos" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="photos"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaFileUpload className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Upload Additional Photos:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Upload Additional Photos:
+            </span>
           </label>
           <input
             type="file"
@@ -209,12 +279,16 @@ export function Register() {
           />
         </div>
 
-        
         {/* Nationality */}
         <div>
-          <label htmlFor="nationality" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="nationality"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaFlag className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Nationality:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Nationality:
+            </span>
           </label>
           <input
             type="text"
@@ -228,9 +302,14 @@ export function Register() {
 
         {/* Preferred Language */}
         <div>
-          <label htmlFor="language" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="language"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaLanguage className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Preferred Language:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Preferred Language:
+            </span>
           </label>
           <input
             type="text"
@@ -244,9 +323,14 @@ export function Register() {
 
         {/* Educational Qualifications */}
         <div>
-          <label htmlFor="education" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="education"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaSchool className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Educational Qualifications:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Educational Qualifications:
+            </span>
           </label>
           <input
             type="text"
@@ -260,9 +344,14 @@ export function Register() {
 
         {/* Emergency Contact */}
         <div>
-          <label htmlFor="emergencyContact" className="flex items-center gap-2 font-medium text-gray-700">
+          <label
+            htmlFor="emergencyContact"
+            className="flex items-center gap-2 font-medium text-gray-700"
+          >
             <FaPhone className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">Emergency Contact:</span>
+            <span className="hover:text-green-600 transition-all duration-300">
+              Emergency Contact:
+            </span>
           </label>
           <input
             type="tel"
@@ -273,7 +362,7 @@ export function Register() {
             className="w-full border border-gray-300 rounded-md p-2 mt-1 focus:ring-2 focus:ring-green-500 focus:outline-none transition-all"
           />
         </div>
-<br />
+        <br />
         {/* Terms and Conditions */}
         <div className="flex items-center gap-2">
           <input
@@ -284,21 +373,23 @@ export function Register() {
             className="form-checkbox text-green-500"
           />
           <label htmlFor="terms" className="text-gray-700">
-            I agree to the <span className="text-green-500">Terms and Conditions</span>
+            I agree to the{" "}
+            <span className="text-green-500">Terms and Conditions</span>
           </label>
         </div>
 
-       <br />
-       <br />
+        <br />
+        <br />
 
-        
         {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:from-green-600 hover:to-green-700 transform hover:scale-105 transition-all duration-300"
         >
           <FaPaperPlane className="w-6 h-6" />
-          <span className="font-semibold">Submit</span>
+          <Link to={"/login"} className="font-semibold">
+            Create Account
+          </Link>
         </button>
       </form>
     </div>

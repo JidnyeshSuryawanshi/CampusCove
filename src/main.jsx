@@ -50,8 +50,12 @@ const router = createBrowserRouter(
           element: <Contact />,
         },
         {
-          path: "/signup",
+          path: "/Login",
           element: <Login />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
         },
         {
           path: "/hidden",
