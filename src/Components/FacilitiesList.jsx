@@ -1,5 +1,6 @@
 import React from "react";
 import { FaUserPlus, FaInfoCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function FacilitiesList() {
   return (
@@ -61,12 +62,18 @@ export default function FacilitiesList() {
       </div>
 
       <div className="absolute bottom-5 left-[50%] transform -translate-x-1/2 flex gap-5 z-10 ">
-        <button className="flex items-center bg-blue-400 text-white px-5 py-2 rounded-full hover:bg-blue-500 transition hover:shadow-[0px_0px_20px_5px_rgba(255,255,255,0.3)]">
+        <Link
+          to={"/Login"}
+          className="flex items-center bg-blue-400 text-white px-5 py-2 rounded-full hover:bg-blue-500 transition hover:shadow-[0px_0px_20px_5px_rgba(255,255,255,0.3)]"
+        >
           <FaUserPlus className="mr-2" /> Sign Up
-        </button>
-        <button className="flex items-center bg-blue-400 text-white px-5 py-2 rounded-full hover:bg-blue-500 transition hover:shadow-[0px_0px_20px_5px_rgba(255,255,255,0.3)]">
+        </Link>
+        <Link
+          to={"/about"}
+          className="flex items-center bg-blue-400 text-white px-5 py-2 rounded-full hover:bg-blue-500 transition hover:shadow-[0px_0px_20px_5px_rgba(255,255,255,0.3)]"
+        >
           <FaInfoCircle className="mr-2" /> About Us
-        </button>
+        </Link>
       </div>
     </div>
   );
