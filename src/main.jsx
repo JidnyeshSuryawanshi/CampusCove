@@ -18,7 +18,7 @@ import TempHiddenWrapper from "./WrapperContainers/TempHiddenWrapper";
 import Register from "./Components/Register";
 import ProfilePage from "./Components/ProfilePage";
 import BusinessDashboard from "./Components/BusinessDashboard";
-
+import BookingPage from "./Components/BookingPage";
 const router = createBrowserRouter(
   [
     {
@@ -61,9 +61,9 @@ const router = createBrowserRouter(
           path: "/hidden",
           element: (
             <TempHiddenWrapper>
+              <BookingPage />
               <BusinessDashboard />
               <ProfilePage />
-              <Register />
               <UserProfile />
             </TempHiddenWrapper>
           ),

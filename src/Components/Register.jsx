@@ -257,28 +257,6 @@ export function Register() {
           />
         </div>
 
-        {/* Additional Photos */}
-        <div>
-          <label
-            htmlFor="photos"
-            className="flex items-center gap-2 font-medium text-gray-700"
-          >
-            <FaFileUpload className="text-green-500 w-6 h-6" />
-            <span className="hover:text-green-600 transition-all duration-300">
-              Upload Additional Photos:
-            </span>
-          </label>
-          <input
-            type="file"
-            id="photos"
-            name="photos[]"
-            accept="image/*"
-            multiple
-            onChange={previewPhotos}
-            className="block mt-1 hover:cursor-pointer hover:text-green-500"
-          />
-        </div>
-
         {/* Nationality */}
         <div>
           <label
@@ -391,6 +369,18 @@ export function Register() {
             Create Account
           </Link>
         </button>
+
+        <div className="text-center mt-6 text-gray-500">
+          <p>
+            Already Have Account? {" "}
+            <Link
+              to={"/login"}
+              className="text-green-600 hover:text-green-500 transition duration-300"
+            >
+              Login
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   );
