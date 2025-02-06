@@ -14,7 +14,7 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-const PROD_FRONTEND_URL = 'https://your-vercel-frontend-url.vercel.app';
+const PROD_FRONTEND_URL = 'https://campus-cove.vercel.app';
 const DEV_FRONTEND_URL = 'http://localhost:5173';
 
 // Enable CORS
