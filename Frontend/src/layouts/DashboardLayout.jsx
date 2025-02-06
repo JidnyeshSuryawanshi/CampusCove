@@ -1,8 +1,8 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import StudentSidebar from '../components/dashboard/StudentSidebar';
-import OwnerSidebar from '../components/dashboard/OwnerSidebar';
-import DashboardHeader from '../components/dashboard/DashboardHeader';
+import StudentSidebar from '../Components/dashboard/StudentSidebar';
+import OwnerSidebar from '../Components/dashboard/OwnerSidebar';
+import DashboardHeader from '../Components/dashboard/DashboardHeader';
 import { useAuth } from '../context/AuthContext';
 
 export default function DashboardLayout() {
