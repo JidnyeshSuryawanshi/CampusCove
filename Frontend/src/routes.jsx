@@ -25,10 +25,10 @@ import {
   Register,
   ErrorBoundary,
   Profile
-} from "./Components";
+} from "./components";
 
 // Protected Routes
-import ProtectedRoute from "./Components/protected/ProtectedRoute";
+import ProtectedRoute from "./components/protected/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
