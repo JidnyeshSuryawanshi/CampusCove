@@ -12,20 +12,19 @@ import StudentDashboard from "./pages/StudentDashboard";
 import OwnerDashboard from "./pages/OwnerDashboard";
 
 // Components
-import {
-  AboutCampusCove,
-  MessBookingInfo,
-  OtherInfos,
-  FacilitiesList,
-  MovingSlogan,
-  HostelBookingInfo,
-  FAQ,
-  Contact,
-  Login,
-  Register,
-  ErrorBoundary,
-  Profile
-} from "./components";
+import AboutCampusCove from "./components/AboutCampusCove";
+import MessBookingInfo from "./components/MessBookingInfo";
+import OtherInfos from "./components/OtherInfos";
+import FacilitiesList from "./components/FacilitiesList";
+import MovingSlogan from "./components/MovingSlogan";
+import HostelBookingInfo from "./components/HostelBookingInfo";
+import FAQ from "./components/FAQs";
+import Contact from "./components/Contact";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import ErrorBoundary from "./components/ErrorBoundary";
+import Profile from "./components/Profile";
+
 
 // Protected Routes
 import ProtectedRoute from "./components/protected/ProtectedRoute";
