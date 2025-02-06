@@ -16,7 +16,9 @@ app.use(express.json());
 
 // Enable CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // Your frontend URL
+  origin: process.env.NODE_ENV === 'production' 
+    ? 'https://your-vercel-frontend-url.vercel.app'
+    : 'http://localhost:5173',
   credentials: true
 }));
 
