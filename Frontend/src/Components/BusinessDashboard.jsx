@@ -16,6 +16,7 @@ import {
   FaCog,
 } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 export default function BusinessDashboard() {
   const navigate = useNavigate();
@@ -83,13 +84,15 @@ export default function BusinessDashboard() {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:5000/api/auth/logout', {
+      await fetch(`${API_BASE_URL}/api/auth/logout`, {
         method: 'GET',
         credentials: 'include'
       });
       localStorage.removeItem('token');
       localStorage.removeItem('userType');
       navigate('/login');
+
+
     } catch (error) {
       console.error('Logout error:', error);
     }

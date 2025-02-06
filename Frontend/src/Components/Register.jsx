@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaUserTag } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
+import { API_BASE_URL } from '../config';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -23,9 +24,10 @@ export default function Register() {
     e.preventDefault();
     
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {
+
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),

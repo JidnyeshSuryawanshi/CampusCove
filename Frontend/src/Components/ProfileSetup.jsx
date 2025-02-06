@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 export default function ProfileSetup() {
   const navigate = useNavigate();
@@ -13,10 +14,11 @@ export default function ProfileSetup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/complete-profile', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/complete-profile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(formData)
