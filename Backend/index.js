@@ -14,11 +14,14 @@ const app = express();
 // Body parser
 app.use(express.json());
 
+const PROD_FRONTEND_URL = 'https://your-vercel-frontend-url.vercel.app';
+const DEV_FRONTEND_URL = 'http://localhost:5173';
+
 // Enable CORS
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? 'https://your-vercel-frontend-url.vercel.app'
-    : 'http://localhost:5173',
+    ? PROD_FRONTEND_URL
+    : DEV_FRONTEND_URL,
   credentials: true
 }));
 
