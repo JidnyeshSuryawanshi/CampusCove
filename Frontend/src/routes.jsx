@@ -14,7 +14,7 @@ import Register from "./Components/Register";
 import StudentDashboard from "./pages/StudentDashboard";
 import OwnerDashboard from "./pages/OwnerDashboard";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import ProtectedRoute from "./Components/ProtectedRoute";
+import ProtectedRoute from "./Components/protected/ProtectedRoute";
 import Profile from './Components/Profile';
 import DashboardLayout from './layouts/DashboardLayout';
 
