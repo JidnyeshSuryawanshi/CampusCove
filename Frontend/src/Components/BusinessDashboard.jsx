@@ -83,7 +83,7 @@ export default function BusinessDashboard() {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:5000/api/auth/logout', {
+      await fetch('https://campus-cove.onrender.com/api/auth/logout', {
         method: 'GET',
         credentials: 'include'
       });

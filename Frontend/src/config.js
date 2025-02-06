@@ -1,6 +1,4 @@
-const PROD_API_URL = process.env.PROD_API_URL;
-const DEV_API_URL = 'http://localhost:5000/api';
+// Default to production API URL if environment variable is not set
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://campus-cove.onrender.com/api';
 
-export const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? PROD_API_URL
-  : DEV_API_URL; 
+export { API_BASE_URL }; 

@@ -15,7 +15,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/profile', {
+        const response = await fetch('https://campus-cove.onrender.com/api/auth/profile', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
