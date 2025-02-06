@@ -1,22 +1,34 @@
 import { createBrowserRouter } from "react-router-dom";
+
+// Layouts
 import PublicLayout from "./layouts/PublicLayout";
+import DashboardLayout from './layouts/DashboardLayout';
+
+// Wrappers
 import HomePageWrapper from "./WrapperContainers/HomePageWrapper";
-import AboutCampusCove from "./Components/AboutCampusCove";
-import MessBookingInfo from "./Components/MessBookingInfo";
-import OtherInfos from "./Components/OtherInfos";
-import FacilitiesList from "./Components/FacilitiesList";
-import MovingSlogan from "./Components/MovingSlogon";
-import HostelBookingInfo from "./Components/HostelBookingInfo";
-import FAQ from "./Components/FAQs";
-import Contact from "./Components/Contact";
-import Login from "./Components/Login";
-import Register from "./Components/Register";
+
+// Pages
 import StudentDashboard from "./pages/StudentDashboard";
 import OwnerDashboard from "./pages/OwnerDashboard";
-import ErrorBoundary from "./Components/ErrorBoundary";
+
+// Components
+import {
+  AboutCampusCove,
+  MessBookingInfo,
+  OtherInfos,
+  FacilitiesList,
+  MovingSlogan,
+  HostelBookingInfo,
+  FAQ,
+  Contact,
+  Login,
+  Register,
+  ErrorBoundary,
+  Profile
+} from "./Components";
+
+// Protected Routes
 import ProtectedRoute from "./Components/protected/ProtectedRoute";
-import Profile from './Components/Profile';
-import DashboardLayout from './layouts/DashboardLayout';
 
 export const router = createBrowserRouter([
   {
