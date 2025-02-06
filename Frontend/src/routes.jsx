@@ -12,7 +12,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import OwnerDashboard from "./pages/OwnerDashboard";
 
 // Components
-import AboutCampusCove from "./components/AboutCampusCove";
+import AboutCampusCove from "./components/AboutCampusCove.jsx";
 import MessBookingInfo from "./components/MessBookingInfo";
 import OtherInfos from "./components/OtherInfos";
 import FacilitiesList from "./components/FacilitiesList";
