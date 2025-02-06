@@ -12,22 +12,22 @@ import StudentDashboard from "./pages/StudentDashboard";
 import OwnerDashboard from "./pages/OwnerDashboard";
 
 // Components
-import AboutCampusCove from "./components/AboutCampusCove.jsx";
-import MessBookingInfo from "./components/MessBookingInfo";
-import OtherInfos from "./components/OtherInfos";
-import FacilitiesList from "./components/FacilitiesList";
-import MovingSlogan from "./components/MovingSlogan";
-import HostelBookingInfo from "./components/HostelBookingInfo";
-import FAQ from "./components/FAQs";
-import Contact from "./components/Contact";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import ErrorBoundary from "./components/ErrorBoundary";
-import Profile from "./components/Profile";
+import AboutCampusCove from "./Components/AboutCampusCove.jsx";
+import MessBookingInfo from "./Components/MessBookingInfo.jsx";
+import OtherInfos from "./Components/OtherInfos.jsx";
+import FacilitiesList from "./Components/FacilitiesList.jsx";
+import MovingSlogan from "./Components/MovingSlogan.jsx";
+import HostelBookingInfo from "./Components/HostelBookingInfo.jsx";
+import FAQ from "./Components/FAQs.jsx";
+import Contact from "./Components/Contact.jsx";
+import Login from "./Components/Login.jsx";
+import Register from "./Components/Register.jsx";
+import ErrorBoundary from "./Components/ErrorBoundary.jsx";
+import Profile from "./Components/Profile.jsx";
 
 
 // Protected Routes
-import ProtectedRoute from "./components/protected/ProtectedRoute";
+import ProtectedRoute from "./Components/protected/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
