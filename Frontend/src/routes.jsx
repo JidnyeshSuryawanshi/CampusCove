@@ -12,14 +12,14 @@ import StudentDashboard from "./pages/StudentDashboard";
 import OwnerDashboard from "./pages/OwnerDashboard";
 
 // Components
-import AboutCampusCove from "./Components/AboutCampusCove.jsx";
-import MessBookingInfo from "./Components/MessBookingInfo.jsx";
-import OtherInfos from "./Components/OtherInfos.jsx";
-import FacilitiesList from "./Components/FacilitiesList.jsx";
-import MovingSlogan from "./Components/MovingSlogan.jsx";
-import HostelBookingInfo from "./Components/HostelBookingInfo.jsx";
-import FAQ from "./Components/FAQs.jsx";
-import Contact from "./Components/Contact.jsx";
+import AboutCampusCove from "./Components/Landingpage/AboutCampusCove.jsx";
+import MessBookingInfo from "./Components/Landingpage/MessBookingInfo.jsx";
+import OtherInfos from "./Components/Landingpage/OtherInfos.jsx";
+import FacilitiesList from "./Components/Landingpage/FacilitiesList.jsx";
+import MovingSlogan from "./Components/Landingpage/MovingSlogan.jsx";
+import HostelBookingInfo from "./Components/Landingpage/HostelBookingInfo.jsx";
+import FAQ from "./Components/Landingpage/FAQs.jsx";
+import Contact from "./Components/Landingpage/Contact.jsx";
 import Login from "./Components/Login.jsx";
 import Register from "./Components/Register.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";

@@ -24,7 +24,7 @@ export default function Register() {
 
         try {
             const response = await fetch(
-                "https://campus-cove.onrender.com/api/auth/register",
+                "http://localhost:5000/api/auth/register",
                 {
                     method: "POST",
                     headers: {

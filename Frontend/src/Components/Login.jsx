@@ -24,7 +24,7 @@ export default function Login() {
 
         try {
             const response = await fetch(
-                `https://campus-cove.onrender.com/api/auth/login`,
+                `http://localhost:5000/api/auth/login`,
                 {
                     method: "POST",
                     headers: {
