@@ -24,8 +24,7 @@ const PROD_FRONTEND_URLS = (
     process.env.ALLOWED_ORIGINS ||
     "https://campus-cove.vercel.app,https://campus-cove-ten.vercel.app"
 ).split(",")
-const DEV_FRONTEND_URL = "http://localhost:5173"
-
+const DEV_FRONTEND_URLS = ["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173", "http://127.0.0.1:3000"]
 // Enable CORS
 app.use(
     cors({
@@ -38,8 +37,12 @@ app.use(
                     callback(new Error("Not allowed by CORS"))
                 }
             } else {
-                // In development, allow localhost
-                callback(null, DEV_FRONTEND_URL)
+                // In development, allow any localhost origin
+                if (!origin || origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1")) {
+                    callback(null, true)
+                } else {
+                    callback(null, DEV_FRONTEND_URLS[0]) // Default to first dev URL if not localhost
+                }
             }
         },
         credentials: true,
@@ -51,6 +54,9 @@ app.use(cookieParser())
 
 // Mount routers
 app.use("/api/auth", require("./routes/authRoutes"))
+app.use("/api/hostel-rooms", require("./routes/hostelRoomRoutes"))
+app.use("/api/mess", require("./routes/messRoutes"))
+app.use("/api/gym", require("./routes/gymRoutes"))
 
 // Error handler
 app.use(errorHandler)

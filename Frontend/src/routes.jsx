@@ -9,7 +9,7 @@ import HomePageWrapper from "./WrapperContainers/HomePageWrapper";
 
 // Pages
 import StudentDashboard from "./pages/StudentDashboard";
-import OwnerDashboard from "./pages/OwnerDashboard";
+import OwnerDashboard from "./Components/ServiceProviders/OwnerDashboard.jsx";
 
 // Components
 import AboutCampusCove from "./Components/Landingpage/AboutCampusCove.jsx";
@@ -25,6 +25,11 @@ import Register from "./Components/Register.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";
 import Profile from "./Components/Profile.jsx";
 
+// Components
+import AllCustomers from "./Components/ServiceProviders/AllCustomers.jsx";
+import Bookings from "./Components/ServiceProviders/Bookings.jsx";
+import Revenew from "./Components/ServiceProviders/Revenew.jsx";
+import ServiceManagement from "./Components/ServiceProviders/ServiceManagement.jsx";
 
 // Protected Routes
 import ProtectedRoute from "./Components/protected/ProtectedRoute";
@@ -103,7 +108,23 @@ export const router = createBrowserRouter([
         path: "profile",
         element: <Profile />
       },
+      {
+        path: "all-customers",
+        element: <AllCustomers />
+      },
+      {
+        path: "bookings",
+        element: <Bookings />
+      },
+      {
+        path: "revenew",
+        element: <Revenew />
+      },
+      {
+        path: "services",
+        element: <ServiceManagement />
+      }
       // Add other owner routes
     ]
   },
-]); 
+]);

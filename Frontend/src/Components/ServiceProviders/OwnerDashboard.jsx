@@ -1,8 +1,11 @@
 import React from 'react';
-import Stats from '../Components/dashboard/Stats';
-import ActivityList from '../Components/dashboard/ActivityList';
+import Stats from '../dashboard/Stats';
+import ActivityList from '../dashboard/ActivityList';
+import { useNavigate } from 'react-router-dom';
 
 export default function OwnerDashboard() {
+  const navigate = useNavigate();
+  
   const statsData = [
     {
       title: "Total Revenue",
@@ -45,18 +48,25 @@ export default function OwnerDashboard() {
 
   const quickActions = [
     {
-      title: "Add New Listing",
-      colorClass: "bg-blue-600 hover:bg-blue-700"
+      title: "Manage Revenue",
+      colorClass: "bg-blue-600 hover:bg-blue-700",
+      path: "/owner-dashboard/revenew"
     },
     {
-      title: "View Reports",
-      colorClass: "bg-green-600 hover:bg-green-700"
+      title: "View Bookings",
+      colorClass: "bg-green-600 hover:bg-green-700",
+      path: "/owner-dashboard/bookings"
     },
     {
-      title: "Manage Settings",
-      colorClass: "bg-purple-600 hover:bg-purple-700"
+      title: "Manage Services",
+      colorClass: "bg-purple-600 hover:bg-purple-700",
+      path: "/owner-dashboard/services"
     }
   ];
+
+  const handleQuickAction = (path) => {
+    navigate(path);
+  };
 
   return (
     <div>
@@ -75,6 +85,7 @@ export default function OwnerDashboard() {
               <button
                 key={index}
                 className={`w-full text-white px-4 py-2 rounded ${action.colorClass}`}
+                onClick={() => handleQuickAction(action.path)}
               >
                 {action.title}
               </button>
@@ -84,4 +95,4 @@ export default function OwnerDashboard() {
       </div>
     </div>
   );
-} 
+}
