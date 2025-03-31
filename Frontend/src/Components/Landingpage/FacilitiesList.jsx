@@ -8,7 +8,7 @@ export default function FacilitiesList() {
       className="relative w-[98%] min-h-screen bg-blue-500 bg-cover bg-center m-4 rounded-xl"
       style={{
         backgroundImage:
-          'url("https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
+          'url("https://images.unsplash.com/photo-1741851373559-6879db14fd8a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
       }}
     >
       <div className="absolute inset-0 bg-gray-900 bg-opacity-40 z-0"></div>
