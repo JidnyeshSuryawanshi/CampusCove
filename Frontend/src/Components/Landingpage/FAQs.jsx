@@ -19,8 +19,8 @@ const FAQ = () => {
   };
 
   return (
-    <div className="bg-blue-50 min-h-screen flex justify-center items-center py-6 md:py-12 px-4">
-      <div className="bg-white p-4 md:p-8 rounded-lg shadow-2xl w-full max-w-6xl flex flex-col lg:flex-row">
+    <div className="bg-blue-50 min-h-screen flex justify-center items-center py-6 md:py-12 px-4 dark:bg-gray-900 dark:text-white">
+      <div className="bg-white p-4 md:p-8 rounded-lg shadow-2xl w-full max-w-6xl flex flex-col lg:flex-row dark:bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600">
         <div className="w-full lg:w-2/5 mb-6 lg:mb-0 p-4 md:p-6">
           <img
             src="https://i.pinimg.com/736x/24/be/2e/24be2e6666be4d75f8b1a67a672e9890.jpg"

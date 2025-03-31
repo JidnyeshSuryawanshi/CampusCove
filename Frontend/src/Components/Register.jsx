@@ -52,12 +52,12 @@ export default function Register() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-cover bg-center relative p-6">
             <Toaster position="top-center" reverseOrder={false} />
-            <div className="absolute inset-0 bg-gradient-to-r from-green-100 via-blue-50 to-green-100"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-green-100 via-blue-50 to-green-100 dark:bg-gradient-to-r dark:from-gray-900 dark:via-blue-400 dark:to-gray-900 dark:text-black"></div>
 
-            <div className="relative z-10 flex w-full max-w-[90%] h-auto bg-white bg-opacity-10 backdrop-blur-lg shadow-xl rounded-lg overflow-hidden p-8 md:p-12">
+            <div className="relative z-10 flex w-full max-w-[90%] h-auto bg-white bg-opacity-10 backdrop-blur-lg shadow-xl rounded-lg overflow-hidden p-8 md:p-12 dark:bg-blue-950 dark:text-white">
                 <form
                     onSubmit={handleSubmit}
-                    className="w-full md:w-3/5 p-10 bg-white rounded-lg shadow-lg"
+                    className="w-full md:w-3/5 p-10 bg-white rounded-lg shadow-lg dark:bg-gray-800 dark:shadow-[0px_0px_20px_5px_rgba(255,255,255,0.3)] "
                 >
                     <h2 className="text-3xl font-bold text-green-600 text-center mb-10">
                         Create Account
@@ -71,7 +71,7 @@ export default function Register() {
                             value={formData.username}
                             onChange={handleChange}
                             placeholder=" "
-                            className="peer w-full bg-transparent border-b-2 border-gray-400 focus:border-green-600 focus:outline-none text-gray-800 py-6 placeholder-transparent px-3"
+                            className="peer w-full bg-transparent border-b-2 border-gray-400 focus:border-green-600 focus:outline-none text-gray-800 py-6 placeholder-transparent px-3 dark:text-white"
                         />
                         <label className="absolute left-3 top-1 text-gray-400 text-sm transition-all duration-300 peer-placeholder-shown:top-10 peer-placeholder-shown:text-lg peer-focus:top-1 peer-focus:text-sm peer-focus:text-green-600">
                             <FaUser className="mr-2 inline-block text-lg text-gray-400" />
@@ -87,7 +87,7 @@ export default function Register() {
                             value={formData.email}
                             onChange={handleChange}
                             placeholder=" "
-                            className="peer w-full bg-transparent border-b-2 border-gray-400 focus:border-green-600 focus:outline-none text-gray-800 py-6 placeholder-transparent px-3"
+                            className="peer w-full bg-transparent border-b-2 border-gray-400 focus:border-green-600 focus:outline-none text-gray-800 py-6 placeholder-transparent px-3 dark:text-white"
                         />
                         <label className="absolute left-3 top-1 text-gray-400 text-sm transition-all duration-300 peer-placeholder-shown:top-10 peer-placeholder-shown:text-lg peer-focus:top-1 peer-focus:text-sm peer-focus:text-green-600">
                             <FaEnvelope className="mr-2 inline-block text-lg text-gray-400" />
@@ -103,7 +103,7 @@ export default function Register() {
                             value={formData.password}
                             onChange={handleChange}
                             placeholder=" "
-                            className="peer w-full bg-transparent border-b-2 border-gray-400 focus:border-green-600 focus:outline-none text-gray-800 py-6 placeholder-transparent px-3"
+                            className="peer w-full bg-transparent border-b-2 border-gray-400 focus:border-green-600 focus:outline-none text-gray-800 py-6 placeholder-transparent px-3 dark:text-white"
                         />
                         <label className="absolute left-3 top-1 text-gray-400 text-sm transition-all duration-300 peer-placeholder-shown:top-10 peer-placeholder-shown:text-lg peer-focus:top-1 peer-focus:text-sm peer-focus:text-green-600">
                             <FaLock className="mr-2 inline-block text-lg text-gray-400" />
@@ -121,7 +121,7 @@ export default function Register() {
                             required
                             value={formData.userType}
                             onChange={handleChange}
-                            className="w-full bg-transparent border-2 border-gray-400 focus:border-green-600 focus:outline-none text-gray-800 py-4 px-3 rounded-lg"
+                            className="w-full bg-transparent border-2 border-gray-400 focus:border-green-600 focus:outline-none text-gray-800 py-4 px-3 rounded-lg dark:text-white dark:bg-gray-600"
                         >
                             <option value="">Select User Type</option>
                             <option value="student">Student</option>

@@ -65,7 +65,7 @@ export default function Login() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:text-black">
             <div className="flex w-full max-w-5xl mx-4">
                 {/* Left Side - Image */}
                 <div className="hidden lg:block lg:w-1/2">
@@ -75,7 +75,7 @@ export default function Login() {
                             alt="Campus"
                             className="w-full h-[600px] object-cover rounded-l-2xl"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-green-600/90 to-green-800/90 rounded-l-2xl">
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-green-800/90 rounded-l-2xl">
                             <div className="flex flex-col justify-center h-full px-12 text-white">
                                 <h2 className="text-4xl font-bold mb-6">
                                     Welcome Back!

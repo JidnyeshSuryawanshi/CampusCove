@@ -2,14 +2,14 @@ import React from "react";
 
 export default function OtherInfos() {
   return (
-    <div className="bg-gradient-to-r from-green-100 via-blue-50 to-green-100 py-12">
+    <div className="bg-gradient-to-r from-green-100 via-blue-50 to-green-100 py-12 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 dark:text-white">
       <div className="max-w-7xl mx-auto px-6">
         
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-green-700">
             Explore Local Shops & Services
           </h1>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg text-gray-400">
             CampusCove connects you with essential services around your college
             like breakfast shops, gyms, and temples, making your life easier and
             more connected.

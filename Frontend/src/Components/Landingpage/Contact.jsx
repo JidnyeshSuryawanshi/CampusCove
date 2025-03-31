@@ -1,4 +1,6 @@
 import React from "react";
+import DarkModeToggle from '../DarkModeToggle'; // Correct import
+
 import {
   FaUser,
   FaEnvelope,
@@ -6,17 +8,17 @@ import {
   FaPen,
   FaPaperPlane,
 } from "react-icons/fa";
-
+{/* dark:____... choose ur style */}
 export default function Contact() {
   return (
-    <div className="min-h-screen w-full bg-blue-50 shadow-lg rounded-lg flex items-center justify-center px-4 py-4 md:py-8">
-      <div className="bg-white shadow-lg rounded-lg w-full max-w-6xl flex flex-col">
+    <div className="min-h-screen w-full bg-blue-50 shadow-lg rounded-lg flex items-center justify-center px-4 py-4 md:py-8 dark:bg-gradient-to-r dark:from-gray-900 dark:via-blue-400 dark:to-gray-900 dark:text-black">
+      <div className="bg-white shadow-lg rounded-lg w-full max-w-6xl flex flex-col dark:bg-blue-950 dark:text-white">
         <div className="text-center mt-6 md:mt-8 mb-4 px-4">
-          <h2 className="text-3xl md:text-4xl font-semibold text-gray-600 mb-2">
+          <h2 className="text-3xl md:text-4xl font-semibold text-gray-400 mb-2">
             CONTACT <span className="text-blue-500">US</span>
           </h2>
-          <p className="text-gray-500 text-base md:text-lg">
-            Fill out the form below to send us a message.
+          <p className="text-gray-500 text-base md:text-lg dark:text-white">
+            Fill out the form below for feedback!
           </p>
         </div>
         <div className="flex flex-col lg:flex-row items-stretch">
@@ -29,7 +31,7 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="name"
-                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base"
+                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base dark:text-white"
                 >
                   <FaUser className="mr-2 text-lg md:text-xl" />
                   Enter Name
@@ -47,7 +49,7 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="email"
-                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base"
+                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base dark:text-white"
                 >
                   <FaEnvelope className="mr-2 text-lg md:text-xl" />
                   Enter Email
@@ -65,7 +67,7 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="company"
-                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base"
+                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base dark:text-white"
                 >
                   <FaBuilding className="mr-2 text-lg md:text-xl" />
                   Enter Company
@@ -83,7 +85,7 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="subject"
-                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base"
+                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base dark:text-white"
                 >
                   <FaPen className="mr-2 text-lg md:text-xl" />
                   Enter Purpose / Subject
@@ -100,7 +102,7 @@ export default function Contact() {
               <div className="flex flex-col">
                 <label
                   htmlFor="message"
-                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base"
+                  className="text-gray-700 font-medium mb-1 md:mb-2 flex items-center text-sm md:text-base dark:text-white"
                 >
                   <FaPen className="mr-2 text-lg md:text-xl" />
                   Message

@@ -10,17 +10,17 @@ import {
 
 export default function HostelBookingInfo() {
   return (
-    <div className="bg-blue-50 w-full relative flex flex-col lg:flex-row gap-6 lg:gap-10">
-      <div className="w-full bg-blue-50 py-6 px-4 lg:px-6 flex flex-col items-center">
+    <div className="bg-blue-50 w-full relative flex flex-col lg:flex-row gap-6 lg:gap-10 dark:bg-gray-900 dark:text-white">
+      <div className="w-full bg-blue-50 py-6 px-4 lg:px-6 flex flex-col items-center dark:bg-gray-900 dark:text-white">
         <h2 className="text-xl md:text-2xl font-semibold text-blue-600 mb-6">
           How It Works
         </h2>
         <div className="flex flex-col items-center gap-8 md:gap-12">
           <div className="flex items-center w-full max-w-md">
-            <div className="bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full font-bold text-sm md:text-base">
+            <div className="bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full font-bold text-sm md:text-base dark:bg-white dark:text-gray-900">
               1
             </div>
-            <p className="ml-4 text-gray-800 font-medium text-sm md:text-base">
+            <p className="ml-4 text-gray-800 font-medium text-sm md:text-base dark:bg-gray-900 dark:text-blue-600">
               Sign up or log in to CampusCove.
             </p>
           </div>
@@ -28,10 +28,10 @@ export default function HostelBookingInfo() {
           <div className="w-1 bg-blue-600 h-8 md:h-10"></div>
 
           <div className="flex items-center w-full max-w-md">
-            <div className="bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full font-bold text-sm md:text-base">
+            <div className="bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full font-bold text-sm md:text-base dark:bg-white dark:text-gray-900">
               2
             </div>
-            <p className="ml-4 text-gray-800 font-medium text-sm md:text-base">
+            <p className="ml-4 text-gray-800 font-medium text-sm md:text-base dark:bg-gray-900 dark:text-blue-600">
               Search for hostels by location and preferences.
             </p>
           </div>
@@ -39,10 +39,10 @@ export default function HostelBookingInfo() {
           <div className="w-1 bg-blue-600 h-8 md:h-10"></div>
 
           <div className="flex items-center w-full max-w-md">
-            <div className="bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full font-bold text-sm md:text-base">
+            <div className="bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full font-bold text-sm md:text-base dark:bg-white dark:text-gray-900">
               3
             </div>
-            <p className="ml-4 text-gray-800 font-medium text-sm md:text-base">
+            <p className="ml-4 text-gray-800 font-medium text-sm md:text-base dark:bg-gray-900 dark:text-blue-600">
               Compare amenities, pricing, and reviews.
             </p>
           </div>
@@ -50,10 +50,10 @@ export default function HostelBookingInfo() {
           <div className="w-1 bg-blue-600 h-8 md:h-10"></div>
 
           <div className="flex items-center w-full max-w-md">
-            <div className="bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full font-bold text-sm md:text-base">
+            <div className="bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full font-bold text-sm md:text-base dark:bg-white dark:text-gray-900">
               4
             </div>
-            <p className="ml-4 text-gray-800 font-medium text-sm md:text-base">
+            <p className="ml-4 text-gray-800 font-medium text-sm md:text-base dark:bg-gray-900 dark:text-blue-600">
               Book your hostel with instant confirmation.
             </p>
           </div>
@@ -65,7 +65,7 @@ export default function HostelBookingInfo() {
           <h1 className="text-3xl md:text-4xl font-bold text-blue-600">
             CampusCove Hostel Finder
           </h1>
-          <p className="mt-4 text-base md:text-lg max-w-3xl mx-auto">
+          <p className="mt-4 text-base md:text-lg max-w-3xl mx-auto dark:text-white">
             Finding the perfect hostel has never been easier. Whether you're a
             student moving to a new city or looking to upgrade your
             accommodation, CampusCove provides a hassle-free way to explore and

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import DarkModeToggle from '../DarkModeToggle'; ///pls workk
 import {
   FaHome,
   FaInfoCircle,
@@ -34,8 +35,8 @@ export default function Navbar() {
     <div className="sticky top-0 z-50">
       <nav
         className={`${col} w-full h-16 md:h-20 flex items-center justify-between px-4 md:px-8 transition-all duration-300 ${
-          isScrolled ? "shadow-md" : ""
-        }`}
+          isScrolled ? "shadow-md dark:bg-gray-900 dark:text-white" : ""
+        }dark:bg-gray-900 dark:text-white`}
       >
         <div className="flex items-center gap-3">
           <Link to={"/"}>
@@ -71,6 +72,8 @@ export default function Navbar() {
             <FaRegUserCircle className="text-xl md:text-2xl" />
             <Link to={"/login"}>Login/Signup</Link>
           </div>
+          <DarkModeToggle />
+
         </div>
 
         <div className="flex md:hidden items-center text-blue-400">
@@ -92,7 +95,7 @@ export default function Navbar() {
           isDropdownOpen
             ? "translate-y-0 opacity-100"
             : "-translate-y-full opacity-0"
-        }`}
+        }dark:bg-gray-800 dark:text-white`}
         style={{ top: "64px", left: 0, right: 0 }}
       >
         <div className="bg-blue-100 w-full text-base font-Nutino">
@@ -136,6 +139,8 @@ export default function Navbar() {
             <FaRegUserCircle className="text-xl" />
             Login/Signup
           </Link>
+
+          <DarkModeToggle />
         </div>
       </div>
     </div>

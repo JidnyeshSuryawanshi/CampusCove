@@ -3,7 +3,7 @@ import { FaSearch, FaRegEdit, FaCreditCard, FaCheckCircle } from "react-icons/fa
 
 export default function MessBookingInfo() {
   return (
-    <div className="bg-gradient-to-r from-green-100 via-blue-50 to-green-100 text-gray-800 py-12">
+    <div className="bg-gradient-to-r from-green-100 via-blue-50 to-green-100 text-gray-800 py-12 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 dark:text-white">
     
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-green-600">

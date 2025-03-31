@@ -10,12 +10,12 @@ import {
 
 export default function AboutCampusCove() {
   return (
-    <section className="bg-blue-50 py-16 px-6">
+    <section className="bg-blue-50 py-16 px-6 dark:bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:text-white">
       <div className="max-w-5xl mx-auto text-center">
         <h2 className="text-5xl font-bold text-blue-600 mb-8">
           About CampusCove
         </h2>
-        <p className="text-xl text-gray-700 leading-relaxed">
+        <p className="text-xl text-gray-700 leading-relaxed dark:text-slate-400">
           Welcome to{" "}
           <span className="font-semibold text-green-600">CampusCove</span>—a
           platform created to make your college life easier! Whether you're
