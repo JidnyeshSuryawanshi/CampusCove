@@ -381,3 +381,82 @@ exports.deleteHostelRoomImage = async (req, res) => {
     });
   }
 };
+
+// @desc    Get all hostel rooms for student dashboard
+// @route   GET /api/hostel-rooms/student-dashboard
+// @access  Private (student)
+exports.getHostelRoomsForStudents = async (req, res) => {
+  try {
+    // Build query for available rooms only
+    const query = { availability: true };
+    
+    // Apply additional filters if provided
+    if (req.query.gender && ['male', 'female', 'any'].includes(req.query.gender)) {
+      query.gender = req.query.gender;
+    }
+    
+    if (req.query.roomType) {
+      query.roomType = req.query.roomType;
+    }
+    
+    if (req.query.location) {
+      query.location = { $regex: req.query.location, $options: 'i' };
+    }
+    
+    // Price range filter
+    if (req.query.minPrice || req.query.maxPrice) {
+      query.price = {};
+      
+      if (req.query.minPrice) {
+        query.price.$gte = Number(req.query.minPrice);
+      }
+      
+      if (req.query.maxPrice) {
+        query.price.$lte = Number(req.query.maxPrice);
+      }
+    }
+    
+    // Execute query with full details
+    const hostelRooms = await HostelRoom.find(query)
+      .populate({
+        path: 'owner',
+        select: 'username email userType phone'
+      })
+      .sort({ createdAt: -1 });
+    
+    // Format response for student dashboard
+    const formattedHostelRooms = hostelRooms.map(room => {
+      return {
+        id: room._id,
+        title: room.title,
+        description: room.description,
+        roomType: room.roomType,
+        price: room.price,
+        location: room.location,
+        gender: room.gender,
+        amenities: room.amenities || {},
+        images: room.images || [],
+        availability: room.availability,
+        maxOccupancy: room.maxOccupancy,
+        currentOccupancy: room.currentOccupancy,
+        owner: room.owner,
+        rating: room.averageRating || 0,
+        reviewCount: room.reviewCount || 0,
+        createdAt: room.createdAt
+      };
+    });
+    
+    res.status(200).json({
+      success: true,
+      count: formattedHostelRooms.length,
+      data: formattedHostelRooms
+    });
+    
+  } catch (error) {
+    console.error('Get hostel rooms for students error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error. Could not fetch hostel rooms.'
+    });
+  }
+};

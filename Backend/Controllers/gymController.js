@@ -405,3 +405,95 @@ exports.deleteGymImage = async (req, res) => {
     });
   }
 };
+
+// @desc    Get all gym services for student dashboard
+// @route   GET /api/gym/student-dashboard
+// @access  Private (student)
+exports.getGymServicesForStudents = async (req, res) => {
+  try {
+    // Build query for available gym services only
+    const query = { availability: true };
+    
+    // Apply additional filters if provided
+    if (req.query.gender && ['male', 'female', 'coed'].includes(req.query.gender)) {
+      query.gender = req.query.gender;
+    }
+    
+    if (req.query.location) {
+      query.location = { $regex: req.query.location, $options: 'i' };
+    }
+    
+    // Price range filter for different subscriptions
+    if (req.query.minPrice || req.query.maxPrice) {
+      query.$or = [];
+      
+      const priceFilter = {};
+      if (req.query.minPrice) {
+        priceFilter.$gte = Number(req.query.minPrice);
+      }
+      if (req.query.maxPrice) {
+        priceFilter.$lte = Number(req.query.maxPrice);
+      }
+      
+      // Apply to all subscription types
+      if (Object.keys(priceFilter).length > 0) {
+        query.$or.push({ 'monthly': priceFilter });
+        query.$or.push({ 'quarterly': priceFilter });
+        query.$or.push({ 'halfYearly': priceFilter });
+        query.$or.push({ 'yearly': priceFilter });
+      }
+    }
+    
+    // Execute query with full details
+    const gymServices = await Gym.find(query)
+      .populate({
+        path: 'owner',
+        select: 'username email userType phone'
+      })
+      .sort({ createdAt: -1 });
+    
+    // Format response for student dashboard
+    const formattedGymServices = gymServices.map(gym => {
+      return {
+        id: gym._id,
+        name: gym.name,
+        description: gym.description,
+        gender: gym.gender,
+        location: gym.location,
+        equipment: gym.equipment || {},
+        facilities: gym.facilities || {},
+        subscriptions: {
+          monthly: gym.monthly,
+          quarterly: gym.quarterly,
+          halfYearly: gym.halfYearly,
+          yearly: gym.yearly
+        },
+        workingHours: {
+          opening: gym.openingTime,
+          closing: gym.closingTime
+        },
+        images: gym.images || [],
+        availability: gym.availability,
+        capacity: gym.capacity,
+        currentMembers: gym.currentMembers,
+        owner: gym.owner,
+        rating: gym.averageRating || 0,
+        reviewCount: gym.reviewCount || 0,
+        createdAt: gym.createdAt
+      };
+    });
+    
+    res.status(200).json({
+      success: true,
+      count: formattedGymServices.length,
+      data: formattedGymServices
+    });
+    
+  } catch (error) {
+    console.error('Get gym services for students error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error. Could not fetch gym services.'
+    });
+  }
+};

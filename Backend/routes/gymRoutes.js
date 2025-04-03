@@ -7,7 +7,8 @@ const {
   updateGym, 
   deleteGym, 
   getOwnerGyms,
-  deleteGymImage
+  deleteGymImage,
+  getGymServicesForStudents
 } = require('../Controllers/gymController');
 const { protect, authorize } = require('../middleware/auth');
 const upload = require('../middleware/upload');
@@ -19,6 +20,10 @@ const uploadsDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
+
+// Student dashboard route
+router.route('/student-dashboard')
+  .get(protect, authorize('student'), getGymServicesForStudents);
 
 // Routes
 router.route('/')

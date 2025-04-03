@@ -407,3 +407,77 @@ exports.deleteMessImage = async (req, res) => {
     });
   }
 };
+
+// @desc    Get all mess services for student dashboard
+// @route   GET /api/mess/student-dashboard
+// @access  Private (student)
+exports.getMessServicesForStudents = async (req, res) => {
+  try {
+    // Build query for available mess services only
+    const query = { availability: true };
+    
+    // Apply additional filters if provided
+    if (req.query.mealType && ['veg', 'non-veg', 'both'].includes(req.query.mealType)) {
+      query.mealType = req.query.mealType;
+    }
+    
+    if (req.query.location) {
+      query.location = { $regex: req.query.location, $options: 'i' };
+    }
+    
+    // Price range filter
+    if (req.query.minPrice || req.query.maxPrice) {
+      query.monthlySubscription = {};
+      
+      if (req.query.minPrice) {
+        query.monthlySubscription.$gte = Number(req.query.minPrice);
+      }
+      
+      if (req.query.maxPrice) {
+        query.monthlySubscription.$lte = Number(req.query.maxPrice);
+      }
+    }
+    
+    // Execute query with full details
+    const messServices = await Mess.find(query)
+      .populate({
+        path: 'owner',
+        select: 'username email userType phone'
+      })
+      .sort({ createdAt: -1 });
+    
+    // Format response for student dashboard
+    const formattedMessServices = messServices.map(mess => {
+      return {
+        id: mess._id,
+        name: mess.name,
+        description: mess.description,
+        mealType: mess.mealType,
+        monthlySubscription: mess.monthlySubscription,
+        location: mess.location,
+        weeklyMenu: mess.weeklyMenu || {},
+        images: mess.images || [],
+        availability: mess.availability,
+        capacity: mess.capacity,
+        currentSubscribers: mess.currentSubscribers,
+        owner: mess.owner,
+        rating: mess.averageRating || 0,
+        reviewCount: mess.reviewCount || 0,
+        createdAt: mess.createdAt
+      };
+    });
+    
+    res.status(200).json({
+      success: true,
+      count: formattedMessServices.length,
+      data: formattedMessServices
+    });
+    
+  } catch (error) {
+    console.error('Get mess services for students error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error. Could not fetch mess services.'
+    });
+  }
+};
