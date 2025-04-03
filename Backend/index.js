@@ -4,25 +4,9 @@ const cors = require("cors")
 const connectDB = require("./config/database")
 const { errorHandler } = require("./utils/errorHandler")
 const cookieParser = require("cookie-parser")
-const cloudinary = require("cloudinary").v2
-const path = require("path")
-const fs = require("fs")
 
 // Load env vars
 dotenv.config()
-
-// Configure Cloudinary
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-})
-
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads')
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true })
-}
 
 // Connect to database
 const app = express()
@@ -70,11 +54,9 @@ app.use(cookieParser())
 
 // Mount routers
 app.use("/api/auth", require("./routes/authRoutes"))
-app.use("/api/users", require("./routes/userRoutes"))
 app.use("/api/hostel-rooms", require("./routes/hostelRoomRoutes"))
 app.use("/api/mess", require("./routes/messRoutes"))
 app.use("/api/gym", require("./routes/gymRoutes"))
-app.use("/api/student", require("./routes/studentRoutes"))
 
 // Error handler
 app.use(errorHandler)
@@ -86,7 +68,6 @@ connectDB()
     .then(() => {
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`)
-            console.log(`Cloudinary configured with cloud name: ${process.env.CLOUDINARY_CLOUD_NAME}`)
         })
     })
     .catch((error) => {
