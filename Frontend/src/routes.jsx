@@ -2,13 +2,13 @@ import { createBrowserRouter } from "react-router-dom";
 
 // Layouts
 import PublicLayout from "./layouts/PublicLayout";
-import DashboardLayout from './layouts/DashboardLayout';
+import DashboardLayout from './Components/ServiceConsumers/DashboardLayout.jsx';
 
 // Wrappers
 import HomePageWrapper from "./WrapperContainers/HomePageWrapper";
 
 // Pages
-import StudentDashboard from "./pages/StudentDashboard";
+import StudentDashboard from "./Components/ServiceConsumers/StudentDashboard.jsx";
 import OwnerDashboard from "./Components/ServiceProviders/OwnerDashboard.jsx";
 
 // Components
@@ -33,6 +33,11 @@ import ServiceManagement from "./Components/ServiceProviders/ServiceManagement.j
 
 // Protected Routes
 import ProtectedRoute from "./Components/protected/ProtectedRoute";
+
+// ServiceConsumer Components
+import Hostels from "./Components/ServiceConsumers/Hostels.jsx";
+import MessServices from "./Components/ServiceConsumers/MessServices.jsx";
+import Gym from "./Components/ServiceConsumers/gym.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -74,7 +79,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/student-dashboard",
+    path: "/dashboard",
     element: (
       <ProtectedRoute allowedRoles={['student']}>
         <DashboardLayout />
@@ -86,9 +91,21 @@ export const router = createBrowserRouter([
         element: <StudentDashboard />
       },
       {
+        path: "hostels",
+        element: <Hostels />
+      },
+      {
+        path: "mess",
+        element: <MessServices />
+      },
+      {
+        path: "gym",
+        element: <Gym />
+      },
+      {
         path: "profile",
         element: <Profile />
-      },
+      }
       // Add other student routes
     ]
   },

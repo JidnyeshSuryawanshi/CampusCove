@@ -1,17 +1,22 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FaHome, FaBook, FaUtensils, FaDumbbell, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 
 export default function StudentSidebar() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout(() => navigate('/login'));
+  };
 
   const navLinks = [
-    { to: "/student-dashboard", icon: FaHome, label: "Dashboard" },
-    { to: "/student-dashboard/hostels", icon: FaBook, label: "Hostels" },
-    { to: "/student-dashboard/mess", icon: FaUtensils, label: "Mess Services" },
-    { to: "/student-dashboard/gym", icon: FaDumbbell, label: "Gym" },
-    { to: "/student-dashboard/profile", icon: FaUser, label: "Profile" },
+    { to: "/dashboard", icon: FaHome, label: "Dashboard" },
+    { to: "/dashboard/hostels", icon: FaBook, label: "Hostels" },
+    { to: "/dashboard/mess", icon: FaUtensils, label: "Mess Services" },
+    { to: "/dashboard/gym", icon: FaDumbbell, label: "Gym" },
+    { to: "/dashboard/profile", icon: FaUser, label: "Profile" },
   ];
 
   return (
@@ -35,7 +40,7 @@ export default function StudentSidebar() {
           </NavLink>
         ))}
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="flex items-center px-6 py-3 text-red-600 hover:bg-red-50 w-full mt-auto"
         >
           <FaSignOutAlt className="mr-3" /> Logout

@@ -1,8 +1,8 @@
 import React from 'react';
-import Stats from '../Components/dashboard/Stats';
-import ActivityList from '../Components/dashboard/ActivityList';
+import Stats from '../dashboard/Stats';
+import ActivityList from '../dashboard/ActivityList';
 
-export default function StudentDashboard() {
+export default function DashboardStats() {
   const statsData = [
     {
       title: "Active Bookings",

@@ -21,11 +21,18 @@ export function AuthProvider({ children }) {
     localStorage.setItem('token', userData.token);
   };
 
-  const logout = () => {
+  const logout = (callback) => {
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    window.location.href = '/login';
+    
+    // If a callback is provided (like navigate function), call it
+    if (callback && typeof callback === 'function') {
+      callback();
+    } else {
+      // Fallback to window.location if no callback is provided
+      window.location.href = '/login';
+    }
   };
 
   return (

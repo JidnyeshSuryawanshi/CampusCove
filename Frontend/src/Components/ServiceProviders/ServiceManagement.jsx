@@ -478,49 +478,175 @@ export default function ServiceManagement() {
     
     // Set form data with room values
     if (accountType === 'hostel') {
+      // Initialize default amenities structure
+      const defaultAmenities = {
+        wifi: false,
+        ac: false,
+        tv: false,
+        fridge: false,
+        washingMachine: false,
+        hotWater: false,
+        parking: false,
+        security: false,
+        meals: false,
+        cleaning: false
+      };
+      
+      // Ensure room.amenities exists and is an object
+      const existingAmenities = room.amenities && typeof room.amenities === 'object' ? room.amenities : {};
+      
+      // Merge existing amenities with default structure, ensuring boolean values
+      const mergedAmenities = Object.keys(defaultAmenities).reduce((acc, key) => {
+        acc[key] = typeof existingAmenities[key] === 'boolean' ? existingAmenities[key] : defaultAmenities[key];
+        return acc;
+      }, {});
+      
       setFormData({
-        roomName: room.roomName,
-        roomType: room.roomType,
-        price: room.price,
-        capacity: room.capacity,
-        gender: room.gender,
-        amenities: room.amenities,
+        roomName: room.roomName || '',
+        roomType: room.roomType || 'single',
+        price: room.price || '',
+        capacity: room.capacity || '1',
+        gender: room.gender || 'any',
+        amenities: mergedAmenities,
         description: room.description || '',
         address: room.address || '',
         rules: room.rules || '',
-        availability: room.availability,
-        existingImages: room.images
+        availability: typeof room.availability === 'boolean' ? room.availability : true,
+        existingImages: room.images || []
       });
     } else if (accountType === 'mess') {
+      // Initialize default amenities structure
+      const defaultAmenities = {
+        acSeating: false,
+        wifi: false,
+        parking: false,
+        homeDelivery: false,
+        specialDiet: false
+      };
+      
+      // Initialize default weeklyMenu structure
+      const defaultMenuItem = { breakfast: '', lunch: '', dinner: '', snacks: '' };
+      const defaultWeeklyMenu = {
+        monday: { ...defaultMenuItem },
+        tuesday: { ...defaultMenuItem },
+        wednesday: { ...defaultMenuItem },
+        thursday: { ...defaultMenuItem },
+        friday: { ...defaultMenuItem },
+        saturday: { ...defaultMenuItem },
+        sunday: { ...defaultMenuItem }
+      };
+      
+      // Ensure room.amenities exists and is an object
+      const existingAmenities = room.amenities && typeof room.amenities === 'object' ? room.amenities : {};
+      
+      // Ensure room.weeklyMenu exists and is an object
+      const existingWeeklyMenu = room.weeklyMenu && typeof room.weeklyMenu === 'object' ? room.weeklyMenu : {};
+      
+      // Merge existing amenities with default structure, ensuring boolean values
+      const mergedAmenities = Object.keys(defaultAmenities).reduce((acc, key) => {
+        acc[key] = typeof existingAmenities[key] === 'boolean' ? existingAmenities[key] : defaultAmenities[key];
+        return acc;
+      }, {});
+      
+      // Merge existing weeklyMenu with default structure
+      const mergedWeeklyMenu = { ...defaultWeeklyMenu };
+      Object.keys(mergedWeeklyMenu).forEach(day => {
+        if (existingWeeklyMenu[day]) {
+          mergedWeeklyMenu[day] = {
+            ...mergedWeeklyMenu[day],
+            ...existingWeeklyMenu[day]
+          };
+        }
+      });
+      
       setMessFormData({
-        messName: room.messName,
-        messType: room.messType,
-        monthlyPrice: room.monthlyPrice,
-        dailyPrice: room.dailyPrice,
-        capacity: room.capacity,
-        openingHours: room.openingHours,
-        amenities: room.amenities,
-        weeklyMenu: room.weeklyMenu,
+        messName: room.messName || '',
+        messType: room.messType || 'veg',
+        monthlyPrice: room.monthlyPrice || '',
+        dailyPrice: room.dailyPrice || '',
+        capacity: room.capacity || '10',
+        openingHours: room.openingHours || '',
+        amenities: mergedAmenities,
+        weeklyMenu: mergedWeeklyMenu,
         description: room.description || '',
         address: room.address || '',
         rules: room.rules || '',
-        availability: room.availability,
-        existingImages: room.images
+        availability: typeof room.availability === 'boolean' ? room.availability : true,
+        existingImages: room.images || []
       });
     } else if (accountType === 'gym') {
+      // Initialize default equipment structure
+      const defaultEquipment = {
+        treadmill: false,
+        crossTrainer: false,
+        exerciseBike: false,
+        rowingMachine: false,
+        weights: false,
+        benchPress: false,
+        powerRack: false,
+        smithMachine: false,
+        cableMachine: false,
+        legPress: false
+      };
+      
+      // Initialize default facilities structure
+      const defaultFacilities = {
+        airConditioned: false,
+        parking: false,
+        wifi: false,
+        changingRoom: false,
+        shower: false,
+        locker: false,
+        personalTrainer: false,
+        nutritionCounseling: false,
+        supplements: false
+      };
+      
+      // Initialize default membershipPlans structure
+      const defaultMembershipPlans = [
+        {
+          name: 'Basic',
+          duration: 'monthly',
+          price: '',
+          description: ''
+        }
+      ];
+      
+      // Ensure room.equipment exists and is an object
+      const existingEquipment = room.equipment && typeof room.equipment === 'object' ? room.equipment : {};
+      
+      // Ensure room.facilities exists and is an object
+      const existingFacilities = room.facilities && typeof room.facilities === 'object' ? room.facilities : {};
+      
+      // Merge existing equipment and facilities with default structure, ensuring boolean values
+      const mergedEquipment = Object.keys(defaultEquipment).reduce((acc, key) => {
+        acc[key] = typeof existingEquipment[key] === 'boolean' ? existingEquipment[key] : defaultEquipment[key];
+        return acc;
+      }, {});
+      
+      const mergedFacilities = Object.keys(defaultFacilities).reduce((acc, key) => {
+        acc[key] = typeof existingFacilities[key] === 'boolean' ? existingFacilities[key] : defaultFacilities[key];
+        return acc;
+      }, {});
+      
+      // Use existing membershipPlans if available and valid, otherwise use default
+      const membershipPlans = (room.membershipPlans && Array.isArray(room.membershipPlans) && room.membershipPlans.length > 0) 
+        ? room.membershipPlans 
+        : defaultMembershipPlans;
+      
       setGymFormData({
-        gymName: room.gymName,
-        gymType: room.gymType,
-        capacity: room.capacity,
-        openingHours: room.openingHours,
-        equipment: room.equipment,
-        facilities: room.facilities,
-        membershipPlans: room.membershipPlans,
+        gymName: room.gymName || '',
+        gymType: room.gymType || 'fitness',
+        capacity: room.capacity || '10',
+        openingHours: room.openingHours || '',
+        equipment: mergedEquipment,
+        facilities: mergedFacilities,
+        membershipPlans: membershipPlans,
         description: room.description || '',
         address: room.address || '',
         rules: room.rules || '',
-        availability: room.availability,
-        existingImages: room.images
+        availability: typeof room.availability === 'boolean' ? room.availability : true,
+        existingImages: room.images || []
       });
     }
     
@@ -1697,7 +1823,7 @@ export default function ServiceManagement() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
-                          onClick={() => handleEditListing(room)}
+                          onClick={() => handleEditRoom(room)}
                           className="text-blue-600 hover:text-blue-900 mr-4"
                         >
                           <FaEdit className="inline mr-1" /> Edit

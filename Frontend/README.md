@@ -23,6 +23,7 @@ Frontend/
 │   │   │   ├── OwnerSidebar.jsx        # Sidebar navigation for providers
 │   │   │   ├── Revenew.jsx             # Revenue management
 │   │   │   └── ServiceManagement.jsx   # Service management (hostels, mess, gym)
+│   │   ├── dashboard/      # Dashboard components
 │   │   └── protected/      # Protected route components
 │   ├── context/            # React context providers
 │   │   └── AuthContext.jsx # Authentication context
@@ -32,6 +33,7 @@ Frontend/
 │   ├── pages/              # Page components
 │   ├── WrapperContainers/  # Container components
 │   ├── App.jsx             # Main App component
+│   ├── config.js           # Configuration settings
 │   ├── main.jsx            # Entry point
 │   └── routes.jsx          # Application routes
 └── package.json            # Project dependencies and scripts
@@ -71,10 +73,18 @@ The Service Management section allows service providers to manage their listings
 - Manage room details, amenities, and availability
 
 ### Mess Owners
-- Coming soon: Manage mess service listings
+- Add, edit, and delete mess service listings
+- Set mess type (veg, nonVeg, both)
+- Configure pricing (monthly and daily)
+- Define weekly meal schedules
+- Upload images of facilities and food
 
 ### Gym Owners
-- Coming soon: Manage gym service listings
+- Add, edit, and delete gym listings
+- Configure different membership plans
+- Specify available equipment and facilities
+- Set operating hours and capacity
+- Upload facility images
 
 ## API Integration
 

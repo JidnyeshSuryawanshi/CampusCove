@@ -18,8 +18,7 @@ export default function OwnerSidebar() {
   ];
 
   const handleLogout = () => {
-    logout();
-    navigate('/login');
+    logout(() => navigate('/login'));
   };
 
   const LogoutConfirmationModal = () => {

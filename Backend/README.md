@@ -10,16 +10,22 @@ Backend/
 │   └── database.js         # Database connection
 ├── Controllers/            # API controllers
 │   ├── authController.js   # Authentication controller
-│   └── hostelRoomController.js # Hostel room management
+│   ├── hostelRoomController.js # Hostel room management
+│   ├── messController.js   # Mess service management
+│   └── gymController.js    # Gym service management
 ├── middleware/             # Middleware functions
 │   ├── auth.js             # Authentication middleware
 │   └── upload.js           # File upload middleware (Multer)
 ├── Models/                 # Database models
 │   ├── user.js             # User model
-│   └── hostelRoom.js       # Hostel room model
+│   ├── hostelRoom.js       # Hostel room model
+│   ├── mess.js             # Mess service model
+│   └── gym.js              # Gym service model
 ├── routes/                 # API routes
 │   ├── authRoutes.js       # Authentication routes
-│   └── hostelRoomRoutes.js # Hostel room routes
+│   ├── hostelRoomRoutes.js # Hostel room routes
+│   ├── messRoutes.js       # Mess service routes
+│   └── gymRoutes.js        # Gym service routes
 ├── uploads/                # Temporary storage for uploads
 ├── utils/                  # Utility functions
 │   ├── cloudinary.js       # Cloudinary integration
@@ -47,6 +53,24 @@ Backend/
 - `DELETE /api/hostel-rooms/:id` - Delete a hostel room (protected, hostelOwner only)
 - `DELETE /api/hostel-rooms/:id/images/:imageId` - Delete a specific image from a hostel room (protected, hostelOwner only)
 
+### Mess Routes
+- `GET /api/mess` - Get all mess listings (public)
+- `POST /api/mess` - Create a new mess listing (protected, messOwner only)
+- `GET /api/mess/owner` - Get all mess listings for the current owner (protected, messOwner only)
+- `GET /api/mess/:id` - Get a specific mess listing (public)
+- `PUT /api/mess/:id` - Update a mess listing (protected, messOwner only)
+- `DELETE /api/mess/:id` - Delete a mess listing (protected, messOwner only)
+- `DELETE /api/mess/:id/images/:imageId` - Delete a specific image from a mess listing (protected, messOwner only)
+
+### Gym Routes
+- `GET /api/gym` - Get all gym listings (public)
+- `POST /api/gym` - Create a new gym listing (protected, gymOwner only)
+- `GET /api/gym/owner` - Get all gym listings for the current owner (protected, gymOwner only)
+- `GET /api/gym/:id` - Get a specific gym listing (public)
+- `PUT /api/gym/:id` - Update a gym listing (protected, gymOwner only)
+- `DELETE /api/gym/:id` - Delete a gym listing (protected, gymOwner only)
+- `DELETE /api/gym/:id/images/:imageId` - Delete a specific image from a gym listing (protected, gymOwner only)
+
 ## Models
 
 ### User Model
@@ -69,6 +93,39 @@ Backend/
 - `address` - Room address
 - `rules` - Room rules and policies
 - `availability` - Room availability status
+- `createdAt` - Listing creation date
+
+### Mess Model
+- `owner` - Reference to User model (messOwner)
+- `messName` - Name of the mess
+- `messType` - Type of mess (veg, nonVeg, both)
+- `monthlyPrice` - Monthly subscription price
+- `dailyPrice` - Daily meal price
+- `capacity` - Mess capacity
+- `openingHours` - Operating hours
+- `amenities` - Object containing available amenities
+- `weeklyMenu` - Object containing daily menu items
+- `images` - Array of image objects (public_id and url from Cloudinary)
+- `description` - Mess description
+- `address` - Mess address
+- `rules` - Mess rules and policies
+- `availability` - Mess availability status
+- `createdAt` - Listing creation date
+
+### Gym Model
+- `owner` - Reference to User model (gymOwner)
+- `gymName` - Name of the gym
+- `gymType` - Type of gym (fitness, crossfit, yoga, cardio, weightlifting, mixed)
+- `capacity` - Gym capacity
+- `openingHours` - Operating hours
+- `equipment` - Object containing available equipment
+- `facilities` - Object containing available facilities
+- `membershipPlans` - Array of membership plan objects
+- `images` - Array of image objects (public_id and url from Cloudinary)
+- `description` - Gym description
+- `address` - Gym address
+- `rules` - Gym rules and policies
+- `availability` - Gym availability status
 - `createdAt` - Listing creation date
 
 ## File Uploads
