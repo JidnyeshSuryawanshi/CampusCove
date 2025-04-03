@@ -716,6 +716,37 @@ exports.uploadDocuments = asyncHandler(async (req, res, next) => {
   }
 });
 
+// @desc    Get all user details including profile and account information
+// @route   GET /api/student/details
+// @access  Private (Student)
+exports.getUserDetails = asyncHandler(async (req, res, next) => {
+  try {
+    // Find user account details (excluding password)
+    const user = await User.findById(req.user.id).select('-password');
+    
+    if (!user) {
+      return next(new ErrorResponse('User not found', 404));
+    }
+    
+    // Find student profile
+    const profile = await StudentProfile.findOne({ user: req.user.id });
+    
+    // Combine user account and profile data
+    const userDetails = {
+      account: user,
+      profile: profile || null
+    };
+    
+    res.status(200).json({
+      success: true,
+      data: userDetails
+    });
+  } catch (error) {
+    console.error('Error in getUserDetails:', error);
+    return next(new ErrorResponse(error.message || 'Error fetching user details', 500));
+  }
+});
+
 // @desc    Delete document
 // @route   DELETE /api/student/profile/documents/:id
 // @access  Private (Student)

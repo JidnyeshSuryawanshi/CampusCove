@@ -127,6 +127,16 @@ export const getProfileCompletionSteps = async () => {
 };
 
 // Student Profile API methods
+export const getUserDetails = async () => {
+  try {
+    const response = await api.get('/student/details');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    throw error;
+  }
+};
+
 export const getStudentProfile = async () => {
   try {
     const response = await api.get('/student/profile');

@@ -11,7 +11,8 @@ const {
   updatePaymentInfo,
   updatePreferences,
   uploadDocuments,
-  deleteDocument
+  deleteDocument,
+  getUserDetails
 } = require('../Controllers/studentProfileController');
 
 const router = express.Router();
@@ -61,6 +62,9 @@ const upload = multer({
 // All routes are protected and require student role
 router.use(protect);
 router.use(authorize('student'));
+
+// Get all user details (account + profile)
+router.get('/details', getUserDetails);
 
 // Profile routes
 router.route('/profile')

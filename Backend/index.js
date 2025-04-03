@@ -57,6 +57,7 @@ app.use("/api/auth", require("./routes/authRoutes"))
 app.use("/api/hostel-rooms", require("./routes/hostelRoomRoutes"))
 app.use("/api/mess", require("./routes/messRoutes"))
 app.use("/api/gym", require("./routes/gymRoutes"))
+app.use("/api/student", require("./routes/studentRoutes"))
 
 // Error handler
 app.use(errorHandler)

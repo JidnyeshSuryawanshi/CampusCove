@@ -7,7 +7,7 @@ import PaymentInfoForm from './PaymentInfoForm';
 import PreferencesForm from './PreferencesForm';
 import DocumentsForm from './DocumentsForm';
 import { toast } from 'react-toastify';
-import api from '../../utils/api';
+import api, { getUserDetails } from '../../utils/api';
 
 export default function StudentProfile() {
   const [profileData, setProfileData] = useState(null);
@@ -29,51 +29,63 @@ export default function StudentProfile() {
   const fetchProfileData = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/student/profile');
+      const response = await getUserDetails();
 
-      if (response.data.success && response.data.data) {
-        const profile = response.data.data;
-        setProfileData(profile);
-        console.log('Profile data successfully loaded:', profile);
+      if (response.success && response.data) {
+        // The new API returns both user account and profile data
+        const { account, profile } = response.data;
         
-        // Update completed sections based on correct data structure
-        const updatedCompletedSections = {
-          personal: Boolean(
-            profile.personalInfo && 
-            profile.personalInfo.fullName && 
-            profile.personalInfo.phoneNumber
-          ),
-          academic: Boolean(
-            profile.academicInfo && 
-            profile.academicInfo.institution && 
-            profile.academicInfo.studentId && 
-            profile.academicInfo.course
-          ),
-          payment: Boolean(
-            profile.paymentInfo && 
-            profile.paymentInfo.preferredPaymentMethods && 
-            profile.paymentInfo.preferredPaymentMethods.length > 0
-          ),
-          preferences: Boolean(
-            profile.preferences && 
-            (profile.preferences.bookingReminders !== undefined || 
-             profile.preferences.emailNotifications !== undefined)
-          ),
-          documents: Boolean(
-            profile.documents && 
-            profile.documents.length > 0
-          )
-        };
+        // Set profile data if it exists, otherwise set an empty object
+        setProfileData(profile || {});
+        console.log('User details successfully loaded:', response.data);
         
-        console.log('Profile completion status:', updatedCompletedSections);
-        setCompletedSections(updatedCompletedSections);
+        // Only update completed sections if profile exists
+        if (profile) {
+          // Update completed sections based on correct data structure
+          const updatedCompletedSections = {
+            personal: Boolean(
+              profile.personalInfo && 
+              profile.personalInfo.fullName && 
+              profile.personalInfo.phoneNumber
+            ),
+            academic: Boolean(
+              profile.academicInfo && 
+              profile.academicInfo.institution && 
+              profile.academicInfo.studentId && 
+              profile.academicInfo.course
+            ),
+            payment: Boolean(
+              profile.paymentInfo && 
+              profile.paymentInfo.preferredPaymentMethods && 
+              profile.paymentInfo.preferredPaymentMethods.length > 0
+            ),
+            preferences: Boolean(
+              profile.preferences && 
+              (profile.preferences.bookingReminders !== undefined || 
+               profile.preferences.emailNotifications !== undefined)
+            ),
+            documents: Boolean(
+              profile.documents && 
+              profile.documents.length > 0
+            )
+          };
+          
+          console.log('Profile completion status:', updatedCompletedSections);
+          setCompletedSections(updatedCompletedSections);
+          
+          // Calculate and log overall completion percentage
+          const completedCount = Object.values(updatedCompletedSections).filter(Boolean).length;
+          const totalSections = Object.keys(updatedCompletedSections).length;
+          const completionPercentage = Math.round((completedCount / totalSections) * 100);
+          console.log(`Overall profile completion: ${completionPercentage}%`);
+        }
       } else {
-        console.error('Invalid profile data format:', response.data);
-        toast.error('Invalid profile data received from server');
+        console.error('Invalid user data format:', response);
+        toast.error('Invalid user data received from server');
       }
     } catch (error) {
-      console.error('Error fetching profile data:', error);
-      toast.error(error.response?.data?.message || 'Failed to load profile data');
+      console.error('Error fetching user details:', error);
+      toast.error(error.response?.data?.message || 'Failed to load user details');
     } finally {
       setLoading(false);
     }
@@ -215,22 +227,59 @@ export default function StudentProfile() {
   // Refresh profile data after document upload/deletion
   const refreshProfileData = async () => {
     try {
-      const response = await api.get('/student/profile');
+      const response = await getUserDetails();
       
-      if (response.data.success && response.data.data) {
-        const profile = response.data.data;
-        setProfileData(profile);
-        console.log('Profile data refreshed successfully');
+      if (response.success && response.data) {
+        const { profile } = response.data;
         
-        // Update documents completed status
-        setCompletedSections(prev => ({
-          ...prev,
-          documents: Boolean(profile.documents && profile.documents.length > 0)
-        }));
-        
-        return profile;
+        if (profile) {
+          setProfileData(profile);
+          console.log('Profile data refreshed successfully');
+          
+          // Update all completion statuses
+          const updatedCompletedSections = {
+            personal: Boolean(
+              profile.personalInfo && 
+              profile.personalInfo.fullName && 
+              profile.personalInfo.phoneNumber
+            ),
+            academic: Boolean(
+              profile.academicInfo && 
+              profile.academicInfo.institution && 
+              profile.academicInfo.studentId && 
+              profile.academicInfo.course
+            ),
+            payment: Boolean(
+              profile.paymentInfo && 
+              profile.paymentInfo.preferredPaymentMethods && 
+              profile.paymentInfo.preferredPaymentMethods.length > 0
+            ),
+            preferences: Boolean(
+              profile.preferences && 
+              (profile.preferences.bookingReminders !== undefined || 
+               profile.preferences.emailNotifications !== undefined)
+            ),
+            documents: Boolean(
+              profile.documents && 
+              profile.documents.length > 0
+            )
+          };
+          
+          setCompletedSections(updatedCompletedSections);
+          
+          // Calculate and log overall completion percentage
+          const completedCount = Object.values(updatedCompletedSections).filter(Boolean).length;
+          const totalSections = Object.keys(updatedCompletedSections).length;
+          const completionPercentage = Math.round((completedCount / totalSections) * 100);
+          console.log(`Overall profile completion: ${completionPercentage}%`);
+          
+          return profile;
+        } else {
+          console.log('No profile data found during refresh');
+          setProfileData({});
+        }
       } else {
-        console.error('Invalid profile data format during refresh:', response.data);
+        console.error('Invalid user data format during refresh:', response);
       }
     } catch (error) {
       console.error('Error refreshing profile data:', error);
