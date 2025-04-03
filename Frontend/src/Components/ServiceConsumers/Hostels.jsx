@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaRupeeSign, FaBed, FaWifi, FaSnowflake, FaTv, FaParking, FaShieldAlt, FaUtensils, FaBroom, FaTint, FaBoxOpen, FaTshirt } from 'react-icons/fa';
 import HostelDetail from './HostelDetail';
+import { fetchHostels } from '../../utils/api';
 
 export default function Hostels() {
   const [hostels, setHostels] = useState([]);
@@ -9,30 +10,21 @@ export default function Hostels() {
   const [selectedHostel, setSelectedHostel] = useState(null);
 
   useEffect(() => {
-    const fetchHostels = async () => {
+    const getHostels = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/hostel-rooms', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch hostels');
-        }
-
-        const data = await response.json();
-        setHostels(data.data);
-        setLoading(false);
+        setLoading(true);
+        const data = await fetchHostels();
+        setHostels(data);
+        setError(null);
       } catch (err) {
         console.error('Error fetching hostels:', err);
         setError('Failed to load hostels. Please try again later.');
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchHostels();
+    getHostels();
   }, []);
 
   // Function to display amenities icons

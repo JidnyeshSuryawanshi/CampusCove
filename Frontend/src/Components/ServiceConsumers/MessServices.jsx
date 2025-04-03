@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaRupeeSign, FaUtensils, FaLeaf, FaDrumstickBite, FaClock } from 'react-icons/fa';
 import MessDetail from './MessDetail';
+import { fetchMessServices } from '../../utils/api';
 
 export default function MessServices() {
   const [messServices, setMessServices] = useState([]);
@@ -10,31 +11,21 @@ export default function MessServices() {
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   useEffect(() => {
-    const fetchMessServices = async () => {
+    const getMessServices = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/mess', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch mess services');
-        }
-
-        const data = await response.json();
-        console.log('Mess data received:', data);
-        setMessServices(data.data);
-        setLoading(false);
+        setLoading(true);
+        const data = await fetchMessServices();
+        setMessServices(data);
+        setError(null);
       } catch (err) {
         console.error('Error fetching mess services:', err);
         setError('Failed to load mess services. Please try again later.');
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchMessServices();
+    getMessServices();
   }, []);
 
   // Function to get meal type icon

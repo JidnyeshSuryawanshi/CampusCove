@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { FaUser, FaEnvelope, FaClock, FaUserTag } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import { fetchUserProfile } from '../utils/api';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -13,21 +14,11 @@ export default function Profile() {
   const themeColor = isOwner ? 'blue' : 'green';
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const getProfile = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/profile', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          setProfile(data.data);
-        } else {
-          toast.error(data.error || 'Error fetching profile');
-        }
+        setLoading(true);
+        const profileData = await fetchUserProfile();
+        setProfile(profileData);
       } catch (error) {
         console.error('Profile fetch error:', error);
         toast.error('Failed to load profile');
@@ -36,7 +27,7 @@ export default function Profile() {
       }
     };
 
-    fetchProfile();
+    getProfile();
   }, []);
 
   if (loading) {

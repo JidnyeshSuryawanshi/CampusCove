@@ -24,6 +24,7 @@ import Login from "./Components/Login.jsx";
 import Register from "./Components/Register.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";
 import Profile from "./Components/Profile.jsx";
+import StudentProfile from "./Components/StudentProfile";
 
 // Components
 import AllCustomers from "./Components/ServiceProviders/AllCustomers.jsx";
@@ -105,6 +106,10 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />
+      },
+      {
+        path: "enhanced-profile",
+        element: <StudentProfile />
       }
       // Add other student routes
     ]

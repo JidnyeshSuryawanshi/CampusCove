@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaRupeeSign, FaDumbbell, FaClock, FaMale, FaFemale, FaUsers } from 'react-icons/fa';
 import GymDetail from './GymDetail';
+import { fetchGyms } from '../../utils/api';
 
 export default function Gym() {
   const [gyms, setGyms] = useState([]);
@@ -10,31 +11,21 @@ export default function Gym() {
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   useEffect(() => {
-    const fetchGyms = async () => {
+    const loadGyms = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/gym', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch gyms');
-        }
-
-        const data = await response.json();
-        console.log('Gym data received:', data);
-        setGyms(data.data);
-        setLoading(false);
+        setLoading(true);
+        const data = await fetchGyms();
+        setGyms(data);
+        setError(null);
       } catch (err) {
         console.error('Error fetching gyms:', err);
         setError('Failed to load gyms. Please try again later.');
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchGyms();
+    loadGyms();
   }, []);
 
   // Function to get gym type icon/badge
