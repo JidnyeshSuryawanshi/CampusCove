@@ -76,6 +76,7 @@ export const fetchGyms = async () => {
     const response = await api.get('/gym');
     return response.data.data;
   } catch (error) {
+    console.error('Error fetching gyms:', error);
     throw error;
   }
 };

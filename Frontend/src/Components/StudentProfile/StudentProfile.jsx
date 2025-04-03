@@ -34,6 +34,7 @@ export default function StudentProfile() {
       if (response.data.success && response.data.data) {
         const profile = response.data.data;
         setProfileData(profile);
+        console.log('Profile data successfully loaded:', profile);
         
         // Update completed sections based on correct data structure
         const updatedCompletedSections = {
@@ -64,14 +65,15 @@ export default function StudentProfile() {
           )
         };
         
-        console.log('Profile data:', profile);
-        console.log('Completion status:', updatedCompletedSections);
-        
+        console.log('Profile completion status:', updatedCompletedSections);
         setCompletedSections(updatedCompletedSections);
+      } else {
+        console.error('Invalid profile data format:', response.data);
+        toast.error('Invalid profile data received from server');
       }
     } catch (error) {
       console.error('Error fetching profile data:', error);
-      toast.error('Failed to load profile data');
+      toast.error(error.response?.data?.message || 'Failed to load profile data');
     } finally {
       setLoading(false);
     }
@@ -218,6 +220,7 @@ export default function StudentProfile() {
       if (response.data.success && response.data.data) {
         const profile = response.data.data;
         setProfileData(profile);
+        console.log('Profile data refreshed successfully');
         
         // Update documents completed status
         setCompletedSections(prev => ({
@@ -226,6 +229,8 @@ export default function StudentProfile() {
         }));
         
         return profile;
+      } else {
+        console.error('Invalid profile data format during refresh:', response.data);
       }
     } catch (error) {
       console.error('Error refreshing profile data:', error);

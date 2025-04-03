@@ -15,11 +15,19 @@ export default function Gym() {
       try {
         setLoading(true);
         const data = await fetchGyms();
-        setGyms(data);
-        setError(null);
+        if (data && Array.isArray(data)) {
+          setGyms(data);
+          setError(null);
+          console.log('Gyms loaded successfully:', data.length);
+        } else {
+          console.error('Invalid gym data format:', data);
+          setError('Invalid data format received from server');
+          setGyms([]);
+        }
       } catch (err) {
         console.error('Error fetching gyms:', err);
         setError('Failed to load gyms. Please try again later.');
+        setGyms([]);
       } finally {
         setLoading(false);
       }
