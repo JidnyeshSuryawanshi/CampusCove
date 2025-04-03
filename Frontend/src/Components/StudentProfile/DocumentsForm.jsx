@@ -1,7 +1,75 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaFileAlt, FaUpload, FaTrash, FaCheckCircle, FaTimesCircle, FaFileImage, FaFilePdf, FaEye, FaExternalLinkAlt, FaTimes, FaSpinner } from 'react-icons/fa';
+import { FaFileAlt, FaUpload, FaTrash, FaCheckCircle, FaTimesCircle, FaFileImage, FaFilePdf, FaEye, FaExternalLinkAlt, FaTimes, FaSpinner, FaExclamationTriangle } from 'react-icons/fa';
 import api from '../../utils/api';
 import { toast } from 'react-toastify';
+
+const DeleteConfirmationModal = ({ document, onClose, onConfirm, isDeleting }) => {
+  if (!document) return null;
+  
+  const isPDF = document.url?.toLowerCase().endsWith('.pdf');
+  const isImage = document.url ? /\.(jpg|jpeg|png|gif|webp)$/i.test(document.url) : false;
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg max-w-md w-full overflow-hidden shadow-xl transform transition-all">
+        <div className="bg-red-50 p-4 sm:p-6 text-center">
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+            <FaExclamationTriangle className="h-6 w-6 text-red-600" />
+          </div>
+          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">Delete Document</h3>
+          <div className="mt-3 mb-4">
+            <p className="text-sm text-gray-500">
+              Are you sure you want to delete this document? This action cannot be undone.
+            </p>
+          </div>
+          
+          {/* Document preview */}
+          <div className="border rounded-lg p-3 bg-white mb-4 flex items-center">
+            <div className="mr-3 text-xl">
+              {isPDF ? (
+                <FaFilePdf className="text-red-500" />
+              ) : isImage ? (
+                <FaFileImage className="text-green-500" />
+              ) : (
+                <FaFileAlt className="text-blue-500" />
+              )}
+            </div>
+            <div className="text-left overflow-hidden">
+              <h4 className="font-medium text-gray-800 truncate">{document.name}</h4>
+              <p className="text-xs text-gray-500 capitalize">{document.type?.replace('_', ' ')}</p>
+            </div>
+          </div>
+          
+          <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
+              onClick={onClose}
+              disabled={isDeleting}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+              onClick={onConfirm}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <FaSpinner className="animate-spin mr-2" />
+                  Deleting...
+                </>
+              ) : (
+                'Delete'
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const DocumentPreviewModal = ({ document, onClose }) => {
   if (!document) return null;
@@ -103,11 +171,32 @@ export default function DocumentsForm({ initialData, onRefresh }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [previewDocument, setPreviewDocument] = useState(null);
+  const [documentToDelete, setDocumentToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Fetch documents from the backend
+  const fetchDocuments = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('/student/profile/documents');
+      if (response.data.success && response.data.data) {
+        setDocuments(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      toast.error('Failed to fetch documents');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (initialData && initialData.documents) {
       setDocuments(initialData.documents);
+    } else {
+      // If no initial data is provided, fetch documents from the backend
+      fetchDocuments();
     }
   }, [initialData]);
 
@@ -193,33 +282,20 @@ export default function DocumentsForm({ initialData, onRefresh }) {
       });
       
       if (response.data.success) {
+        // Show success toast notification
         toast.success('Document uploaded successfully');
+        
+        // Reset form state
         setDocumentName('');
         resetFileInput();
         
         // If there's a refresh callback, call it to update the parent component
         if (onRefresh) {
           onRefresh();
-        } 
-        // Otherwise update local documents state
-        else if (response.data.data) {
-          // Check if the data is a single document or an array of documents
-          const newDocument = response.data.data;
-          setDocuments(prev => {
-            // Make sure we're not adding duplicate documents
-            const existingIds = new Set(prev.map(doc => doc._id));
-            
-            if (Array.isArray(newDocument)) {
-              // Filter out any duplicates and add new documents
-              const uniqueNewDocs = newDocument.filter(doc => !existingIds.has(doc._id));
-              return [...prev, ...uniqueNewDocs];
-            } else if (newDocument && newDocument._id && !existingIds.has(newDocument._id)) {
-              // Add single document if it's not already in the list
-              return [...prev, newDocument];
-            }
-            
-            return prev;
-          });
+        } else {
+          // Fetch the updated list of documents directly from the server
+          // This ensures we have the most up-to-date list without requiring a manual refresh
+          await fetchDocuments();
         }
       }
     } catch (error) {
@@ -246,7 +322,9 @@ export default function DocumentsForm({ initialData, onRefresh }) {
         if (onRefresh) {
           onRefresh();
         } else {
-          setDocuments(prev => prev.filter(doc => doc._id !== id));
+          // Either update local state or fetch fresh data from server
+          // For consistency with upload behavior, we'll fetch from server
+          await fetchDocuments();
         }
       }
     } catch (error) {
@@ -281,12 +359,57 @@ export default function DocumentsForm({ initialData, onRefresh }) {
     setPreviewDocument(document);
   };
 
+  const initiateDeleteDocument = (document) => {
+    setDocumentToDelete(document);
+  };
+
+  const confirmDeleteDocument = async () => {
+    if (!documentToDelete) return;
+    
+    try {
+      setIsDeleting(true);
+      const response = await api.delete(`/student/profile/documents/${documentToDelete._id}`);
+      
+      if (response.data.success) {
+        toast.success('Document deleted successfully');
+        
+        // Update local state or call refresh function
+        if (onRefresh) {
+          onRefresh();
+        } else {
+          // Either update local state or fetch fresh data from server
+          // For consistency with upload behavior, we'll fetch from server
+          await fetchDocuments();
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete document');
+    } finally {
+      setIsDeleting(false);
+      setDocumentToDelete(null);
+    }
+  };
+  
+  const cancelDeleteDocument = () => {
+    setDocumentToDelete(null);
+  };
+
   return (
     <div className="bg-white rounded-lg p-6 shadow-md mb-6">
       {previewDocument && (
         <DocumentPreviewModal 
           document={previewDocument} 
           onClose={() => setPreviewDocument(null)} 
+        />
+      )}
+      
+      {documentToDelete && (
+        <DeleteConfirmationModal
+          document={documentToDelete}
+          onClose={cancelDeleteDocument}
+          onConfirm={confirmDeleteDocument}
+          isDeleting={isDeleting}
         />
       )}
       
@@ -482,7 +605,7 @@ export default function DocumentsForm({ initialData, onRefresh }) {
                     </button>
                     
                     <button
-                      onClick={() => deleteDocument(doc._id)}
+                      onClick={() => initiateDeleteDocument(doc)}
                       disabled={loading}
                       className="p-2 text-red-600 hover:bg-red-50 rounded"
                       title="Delete document"
