@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaRupeeSign, FaBed, FaWifi, FaSnowflake, FaTv, FaParking, FaShieldAlt, FaUtensils, FaBroom, FaTint, FaBoxOpen, FaTshirt } from 'react-icons/fa';
+import HostelDetail from './HostelDetail';
 
 export default function Hostels() {
   const [hostels, setHostels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedHostel, setSelectedHostel] = useState(null);
 
   useEffect(() => {
     const fetchHostels = async () => {
@@ -65,6 +67,20 @@ export default function Hostels() {
       flat: 'Flat/Apartment'
     };
     return types[type] || type;
+  };
+
+  // Handle opening the details modal
+  const handleViewDetails = (hostel) => {
+    setSelectedHostel(hostel);
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Handle closing the details modal
+  const handleCloseDetails = () => {
+    setSelectedHostel(null);
+    // Re-enable body scrolling
+    document.body.style.overflow = 'auto';
   };
 
   if (loading) {
@@ -190,10 +206,12 @@ export default function Hostels() {
                 )}
                 
                 <div className="flex justify-between">
-                  <button className="bg-white text-green-600 border border-green-600 px-3 py-1 rounded hover:bg-green-50">
+                  <button 
+                    onClick={() => handleViewDetails(hostel)}
+                    className="bg-white text-green-600 border border-green-600 px-3 py-1 rounded hover:bg-green-50 transition">
                     View Details
                   </button>
-                  <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
+                  <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition">
                     Book Now
                   </button>
                 </div>
@@ -201,6 +219,14 @@ export default function Hostels() {
             </div>
           ))}
         </div>
+      )}
+      
+      {/* Render the hostel detail modal when a hostel is selected */}
+      {selectedHostel && (
+        <HostelDetail 
+          hostel={selectedHostel} 
+          onClose={handleCloseDetails} 
+        />
       )}
     </div>
   );

@@ -155,3 +155,47 @@ exports.getProfile = async (req, res) => {
     });
   }
 };
+
+// @desc    Get user by ID
+// @route   GET /api/users/:userId
+// @access  Public (can be made protected if needed)
+exports.getUserById = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate if userId is a valid MongoDB ObjectId
+    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid user ID format'
+      });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    // Return user data without sensitive information
+    res.status(200).json({
+      success: true,
+      data: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        userType: user.userType,
+        createdAt: user.createdAt
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching user by ID:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server error fetching user data'
+    });
+  }
+};

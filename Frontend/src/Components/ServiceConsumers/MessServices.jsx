@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaRupeeSign, FaUtensils, FaLeaf, FaDrumstickBite, FaClock } from 'react-icons/fa';
+import MessDetail from './MessDetail';
 
 export default function MessServices() {
   const [messServices, setMessServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedMess, setSelectedMess] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   useEffect(() => {
     const fetchMessServices = async () => {
@@ -21,6 +24,7 @@ export default function MessServices() {
         }
 
         const data = await response.json();
+        console.log('Mess data received:', data);
         setMessServices(data.data);
         setLoading(false);
       } catch (err) {
@@ -38,7 +42,7 @@ export default function MessServices() {
     switch(mealType) {
       case 'veg':
         return <FaLeaf className="text-green-500 mr-1" title="Vegetarian" />;
-      case 'non-veg':
+      case 'nonVeg':
         return <FaDrumstickBite className="text-red-500 mr-1" title="Non-Vegetarian" />;
       case 'both':
         return (
@@ -50,6 +54,17 @@ export default function MessServices() {
       default:
         return null;
     }
+  };
+
+  // Handle opening the detail modal
+  const handleViewDetails = (mess) => {
+    setSelectedMess(mess);
+    setShowDetailModal(true);
+  };
+
+  // Handle closing the detail modal
+  const handleCloseDetail = () => {
+    setShowDetailModal(false);
   };
 
   if (loading) {
@@ -82,7 +97,7 @@ export default function MessServices() {
           <select className="border rounded-md px-3 py-1 text-sm" defaultValue="">
             <option value="" disabled>Meal Type</option>
             <option value="veg">Vegetarian</option>
-            <option value="non-veg">Non-Vegetarian</option>
+            <option value="nonVeg">Non-Vegetarian</option>
             <option value="both">Both</option>
           </select>
         </div>
@@ -100,24 +115,24 @@ export default function MessServices() {
                 {mess.images && mess.images.length > 0 ? (
                   <img 
                     src={mess.images[0].url} 
-                    alt={mess.name} 
+                    alt={mess.messName} 
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-full bg-gray-200">
-                    <span className="text-gray-400">No image available</span>
+                  <div className="flex items-center justify-center h-full bg-gray-200 text-gray-400">
+                    <FaUtensils className="text-5xl" />
                   </div>
                 )}
                 <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 text-xs rounded flex items-center">
-                  {getMealTypeIcon(mess.mealType)}
-                  <span className="ml-1">{mess.mealType === 'veg' ? 'Veg' : mess.mealType === 'non-veg' ? 'Non-Veg' : 'Mixed'}</span>
+                  {getMealTypeIcon(mess.messType)}
+                  <span className="ml-1">{mess.messType === 'nonVeg' ? 'Non-Veg' : mess.messType}</span>
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">{mess.name}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">{mess.messName}</h3>
                 <div className="flex items-center text-sm text-gray-500 mb-2">
                   <FaMapMarkerAlt className="mr-1 text-green-500" />
-                  <span>{mess.location || 'Location not specified'}</span>
+                  <span>{mess.address || 'Location not specified'}</span>
                 </div>
                 <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                   {mess.description || 'No description available'}
@@ -125,36 +140,63 @@ export default function MessServices() {
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center text-green-600 font-semibold">
                     <FaRupeeSign className="mr-1" />
-                    <span>{mess.monthlySubscription}</span>
+                    <span>{mess.monthlyPrice}</span>
                     <span className="text-gray-500 font-normal text-xs ml-1">/month</span>
                   </div>
-                  {mess.timings && (
+                  {mess.openingHours && (
                     <div className="flex items-center text-sm text-gray-500">
                       <FaClock className="mr-1" />
-                      <span>{mess.timings}</span>
+                      <span>{mess.openingHours}</span>
                     </div>
                   )}
                 </div>
                 <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-1">Meal Schedule</h4>
+                  <h4 className="text-sm font-medium text-gray-700 mb-1">Services</h4>
                   <div className="flex flex-wrap gap-1 text-xs">
-                    <span className="bg-green-50 text-green-700 px-2 py-1 rounded">Breakfast</span>
-                    <span className="bg-green-50 text-green-700 px-2 py-1 rounded">Lunch</span>
-                    <span className="bg-green-50 text-green-700 px-2 py-1 rounded">Dinner</span>
+                    {mess.weeklyMenu && mess.weeklyMenu.monday && mess.weeklyMenu.monday.breakfast && (
+                      <span className="bg-green-50 text-green-700 px-2 py-1 rounded">Breakfast</span>
+                    )}
+                    {mess.weeklyMenu && mess.weeklyMenu.monday && mess.weeklyMenu.monday.lunch && (
+                      <span className="bg-green-50 text-green-700 px-2 py-1 rounded">Lunch</span>
+                    )}
+                    {mess.weeklyMenu && mess.weeklyMenu.monday && mess.weeklyMenu.monday.dinner && (
+                      <span className="bg-green-50 text-green-700 px-2 py-1 rounded">Dinner</span>
+                    )}
+                    {mess.weeklyMenu && mess.weeklyMenu.monday && mess.weeklyMenu.monday.snacks && (
+                      <span className="bg-green-50 text-green-700 px-2 py-1 rounded">Snacks</span>
+                    )}
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <button className="bg-white text-green-600 border border-green-600 px-3 py-1 rounded hover:bg-green-50">
-                    View Menu
+                  <button 
+                    className="bg-white text-green-600 border border-green-600 px-3 py-1 rounded hover:bg-green-50"
+                    onClick={() => handleViewDetails(mess)}
+                  >
+                    View Details
                   </button>
-                  <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
-                    Subscribe
+                  <button 
+                    className={`px-3 py-1 rounded ${
+                      mess.availability 
+                        ? 'bg-green-600 text-white hover:bg-green-700' 
+                        : 'bg-gray-400 text-white cursor-not-allowed'
+                    }`}
+                    disabled={!mess.availability}
+                  >
+                    {mess.availability ? 'Subscribe' : 'Not Available'}
                   </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
+      )}
+      
+      {/* Detail Modal */}
+      {showDetailModal && selectedMess && (
+        <MessDetail 
+          mess={selectedMess} 
+          onClose={handleCloseDetail} 
+        />
       )}
     </div>
   );

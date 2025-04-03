@@ -45,7 +45,7 @@ export default function Login() {
 
                 switch (data.user.userType) {
                     case "student":
-                        navigate("/student-dashboard")
+                        navigate("/dashboard")
                         break
                     case "hostelOwner":
                     case "messOwner":

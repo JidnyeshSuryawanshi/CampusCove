@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaRupeeSign, FaDumbbell, FaClock, FaMale, FaFemale, FaUsers } from 'react-icons/fa';
+import GymDetail from './GymDetail';
 
 export default function Gym() {
   const [gyms, setGyms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedGym, setSelectedGym] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   useEffect(() => {
     const fetchGyms = async () => {
@@ -21,6 +24,7 @@ export default function Gym() {
         }
 
         const data = await response.json();
+        console.log('Gym data received:', data);
         setGyms(data.data);
         setLoading(false);
       } catch (err) {
@@ -63,6 +67,17 @@ export default function Gym() {
     }, membershipPlans[0]);
     
     return lowestPricePlan.price;
+  };
+
+  // Handle opening the detail modal
+  const handleViewDetails = (gym) => {
+    setSelectedGym(gym);
+    setShowDetailModal(true);
+  };
+
+  // Handle closing the detail modal
+  const handleCloseDetail = () => {
+    setShowDetailModal(false);
   };
 
   if (loading) {
@@ -170,27 +185,50 @@ export default function Gym() {
                   <div className="mb-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-1">Membership Plans</h4>
                     <div className="flex flex-wrap gap-1 text-xs">
-                      {gym.membershipPlans.map((plan, index) => (
+                      {gym.membershipPlans.slice(0, 2).map((plan, index) => (
                         <span key={index} className="bg-purple-50 text-purple-700 px-2 py-1 rounded">
-                          {plan.name}: ₹{plan.price} ({plan.duration})
+                          {plan.name}: ₹{plan.price}
                         </span>
                       ))}
+                      {gym.membershipPlans.length > 2 && (
+                        <span className="bg-purple-50 text-purple-700 px-2 py-1 rounded">
+                          +{gym.membershipPlans.length - 2} more
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
                 
                 <div className="flex justify-between">
-                  <button className="bg-white text-green-600 border border-green-600 px-3 py-1 rounded hover:bg-green-50">
+                  <button 
+                    className="bg-white text-green-600 border border-green-600 px-3 py-1 rounded hover:bg-green-50"
+                    onClick={() => handleViewDetails(gym)}
+                  >
                     View Details
                   </button>
-                  <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
-                    Get Membership
+                  <button 
+                    className={`px-3 py-1 rounded ${
+                      gym.availability 
+                        ? 'bg-green-600 text-white hover:bg-green-700' 
+                        : 'bg-gray-400 text-white cursor-not-allowed'
+                    }`}
+                    disabled={!gym.availability}
+                  >
+                    {gym.availability ? 'Get Membership' : 'Not Available'}
                   </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
+      )}
+      
+      {/* Detail Modal */}
+      {showDetailModal && selectedGym && (
+        <GymDetail 
+          gym={selectedGym} 
+          onClose={handleCloseDetail} 
+        />
       )}
     </div>
   );

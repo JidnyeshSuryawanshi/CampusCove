@@ -54,6 +54,7 @@ app.use(cookieParser())
 
 // Mount routers
 app.use("/api/auth", require("./routes/authRoutes"))
+app.use("/api/users", require("./routes/userRoutes"))
 app.use("/api/hostel-rooms", require("./routes/hostelRoomRoutes"))
 app.use("/api/mess", require("./routes/messRoutes"))
 app.use("/api/gym", require("./routes/gymRoutes"))
