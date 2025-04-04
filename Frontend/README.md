@@ -23,18 +23,12 @@ Frontend/
 │   │   │   │   ├── PreferencesForm.jsx
 │   │   │   │   └── DocumentsForm.jsx
 │   │   │   └── StudentSidebar.jsx
-│   │   ├── ServiceProviders/   # Components for service providers
+│   │   ├── ServiceProviders/       # Service provider components
 │   │   │   ├── AllCustomers.jsx        # Customers management
 │   │   │   ├── Bookings.jsx            # Bookings management
 │   │   │   ├── DashboardHeader.jsx     # Header for provider dashboard
 │   │   │   ├── OwnerDashboard.jsx      # Main dashboard for providers
 │   │   │   ├── OwnerSidebar.jsx        # Sidebar navigation for providers
-│   │   │   ├── OwnerProfile/           # Owner profile components
-│   │   │   │   ├── PersonalInfoForm.jsx
-│   │   │   │   ├── BusinessInfoForm.jsx
-│   │   │   │   ├── PaymentSettingsForm.jsx
-│   │   │   │   ├── PreferencesForm.jsx
-│   │   │   │   └── DocumentsForm.jsx
 │   │   │   ├── Revenew.jsx             # Revenue management
 │   │   │   └── ServiceManagement.jsx   # Service management (hostels, mess, gym)
 │   │   ├── dashboard/      # Dashboard components
@@ -76,12 +70,6 @@ The application has the following main routes:
 
 ### Service Provider Routes (Protected)
 - `/owner-dashboard` - Service provider dashboard
-- `/owner-dashboard/profile` - Provider profile management with sections for:
-  - Personal information
-  - Business information
-  - Payment settings
-  - Preferences
-  - Documents
 - `/owner-dashboard/all-customers` - Customers management
 - `/owner-dashboard/bookings` - Bookings management
 - `/owner-dashboard/revenew` - Revenue management
@@ -96,15 +84,6 @@ Students can manage their profiles with the following features:
 - Payment information (preferred payment methods)
 - Preferences (accommodation preferences, dietary preferences)
 - Document management (upload ID proof, college ID, etc.)
-- Profile picture upload
-
-### Owner Profile Management
-Service providers can manage their profiles with the following features:
-- Personal information (name, contact details)
-- Business information (business name, registration details, GST number)
-- Payment settings (bank account details, UPI, payment preferences)
-- Preferences (booking preferences, notification settings)
-- Document management (upload business license, ID proof, etc.)
 - Profile picture upload
 
 ## Service Management

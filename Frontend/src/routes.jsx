@@ -25,7 +25,6 @@ import Register from "./Components/Register.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";
 import Profile from "./Components/Profile.jsx";
 import StudentProfile from "./Components/StudentProfile";
-import OwnerProfile from "./Components/ServiceProviders/OwnerProfile.jsx";
 
 // Components
 import AllCustomers from "./Components/ServiceProviders/AllCustomers.jsx";
@@ -146,10 +145,6 @@ export const router = createBrowserRouter([
       {
         path: "services",
         element: <ServiceManagement />
-      },
-      {
-        path: "enhanced-profile",
-        element: <OwnerProfile />
       }
       // Add other owner routes
     ]

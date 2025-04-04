@@ -5,42 +5,39 @@ CampusCove is a comprehensive platform designed to connect students with essenti
 ## Project Structure
 
 ```
-Backend/
-├── config/                 # Configuration files
-│   └── database.js         # Database connection
-├── Controllers/            # API controllers
-│   ├── authController.js   # Authentication controller
-│   ├── hostelRoomController.js # Hostel room management
-│   ├── messController.js   # Mess service management
-│   ├── gymController.js    # Gym service management
-│   ├── ownerProfileController.js # Owner profile management
+CampusCove-Backend/
+├── config/
+│   └── database.js        # Database connection configuration
+├── Controllers/
+│   ├── authController.js  # Authentication logic
+│   ├── gymController.js   # Gym service management
+│   ├── hostelController.js # Hostel service management
+│   ├── messController.js  # Mess service management
 │   └── studentProfileController.js # Student profile management
-├── middleware/             # Middleware functions
-│   ├── auth.js             # Authentication middleware
-│   └── upload.js           # File upload middleware (Multer)
-├── Models/                 # Database models
-│   ├── user.js             # User model
-│   ├── hostelRoom.js       # Hostel room model
-│   ├── mess.js             # Mess service model
-│   ├── gym.js              # Gym service model
-│   ├── ownerProfile.js     # Owner profile model
-│   └── studentProfile.js   # Student profile model
-├── routes/                 # API routes
-│   ├── authRoutes.js       # Authentication routes
-│   ├── hostelRoomRoutes.js # Hostel room routes
-│   ├── messRoutes.js       # Mess service routes
-│   ├── gymRoutes.js        # Gym service routes
-│   ├── ownerRoutes.js      # Owner profile routes
-│   ├── studentRoutes.js    # Student profile routes
-│   └── userRoutes.js       # User routes
-├── uploads/                # Temporary storage for uploads
-├── utils/                  # Utility functions
-│   ├── cloudinary.js       # Cloudinary integration
-│   └── errorHandler.js     # Error handling
-├── .env                    # Environment variables (not in repo)
-├── .env.example            # Example environment variables
-├── index.js                # Main application entry point
-└── package.json            # Project dependencies and scripts
+├── middleware/
+│   ├── auth.js            # Authentication middleware
+│   ├── error.js           # Error handling middleware
+│   └── upload.js          # File upload middleware
+├── Models/
+│   ├── Gym.js             # Gym service model
+│   ├── Hostel.js          # Hostel service model
+│   ├── Mess.js            # Mess service model
+│   ├── studentProfile.js  # Student profile model
+│   └── User.js            # User model
+├── routes/
+│   ├── authRoutes.js      # Authentication routes
+│   ├── gymRoutes.js       # Gym service routes
+│   ├── hostelRoomRoutes.js # Hostel service routes
+│   ├── messRoutes.js      # Mess service routes
+│   └── studentRoutes.js   # Student routes
+├── utils/
+│   ├── errorHandler.js    # Error handling utilities
+│   └── validators.js      # Validation utilities
+├── .env                   # Environment variables
+├── .gitignore             # Git ignore file
+├── index.js               # Main application entry point
+├── package.json           # Project dependencies
+└── README.md              # Project documentation
 ```
 
 ## API Routes
@@ -77,23 +74,6 @@ Backend/
 - `PUT /api/gym/:id` - Update a gym listing (protected, gymOwner only)
 - `DELETE /api/gym/:id` - Delete a gym listing (protected, gymOwner only)
 - `DELETE /api/gym/:id/images/:imageId` - Delete a specific image from a gym listing (protected, gymOwner only)
-
-### Owner Profile Routes
-- `GET /api/owner/profile` - Get owner profile (protected, owners only)
-- `POST /api/owner/profile` - Create owner profile (protected, owners only)
-- `PUT /api/owner/profile` - Update owner profile (protected, owners only)
-- `GET /api/owner/profile/status` - Get profile completion status (protected, owners only)
-- `GET /api/owner/profile/completion-steps` - Get profile completion steps (protected, owners only)
-- `PUT /api/owner/profile/personal` - Update personal information (protected, owners only)
-- `PUT /api/owner/profile/business` - Update business information (protected, owners only)
-- `PUT /api/owner/profile/payment` - Update payment information (protected, owners only)
-- `PUT /api/owner/profile/preferences` - Update preferences (protected, owners only)
-- `PUT /api/owner/profile/services` - Update services (protected, owners only)
-- `PUT /api/owner/profile/property` - Update property details (protected, owners only)
-- `PUT /api/owner/profile/picture` - Upload profile picture (protected, owners only)
-- `GET /api/owner/profile/documents` - Get documents (protected, owners only)
-- `POST /api/owner/profile/documents` - Upload documents (protected, owners only)
-- `DELETE /api/owner/profile/documents/:id` - Delete document (protected, owners only)
 
 ### Student Profile Routes
 - `GET /api/student/details` - Get all user details (account + profile) (protected, students only)
@@ -166,19 +146,6 @@ Backend/
 - `rules` - Gym rules and policies
 - `availability` - Gym availability status
 - `createdAt` - Listing creation date
-
-### Owner Profile Model
-- `owner` - Reference to User model
-- `personalInfo` - Object containing personal information (name, phone, etc.)
-- `businessInfo` - Object containing business information (business name, type, etc.)
-- `paymentSettings` - Object containing payment information (bank details, UPI, etc.)
-- `propertyDetails` - Object containing property details (location, size, etc.)
-- `services` - Object containing service information
-- `preferences` - Object containing owner preferences
-- `profilePicture` - Profile picture URL
-- `documents` - Array of document objects (ID proof, business license, etc.)
-- `profileStatus` - Profile completion status
-- `createdAt` - Profile creation date
 
 ### Student Profile Model
 - `student` - Reference to User model
