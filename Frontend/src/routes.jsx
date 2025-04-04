@@ -25,6 +25,7 @@ import Register from "./Components/Register.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";
 import Profile from "./Components/Profile.jsx";
 import StudentProfile from "./Components/StudentProfile";
+import OwnerProfile from "./Components/OwnerProfile";
 
 // Components
 import AllCustomers from "./Components/ServiceProviders/AllCustomers.jsx";
@@ -129,6 +130,10 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />
+      },
+      {
+        path: "complete-profile",
+        element: <OwnerProfile />
       },
       {
         path: "all-customers",

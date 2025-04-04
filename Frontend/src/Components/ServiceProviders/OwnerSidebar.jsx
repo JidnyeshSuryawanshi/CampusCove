@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaHome, FaUsers, FaMoneyBillWave, FaClipboardList, FaCog, FaUser, FaSignOutAlt, FaTimes } from 'react-icons/fa';
+import { FaHome, FaUsers, FaMoneyBillWave, FaClipboardList, FaCog, FaUser, FaSignOutAlt, FaTimes, FaIdCard } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 
 export default function OwnerSidebar() {
@@ -15,6 +15,7 @@ export default function OwnerSidebar() {
     { to: "/owner-dashboard/bookings", icon: FaClipboardList, label: "Bookings" },
     { to: "/owner-dashboard/services", icon: FaCog, label: "Services" },
     { to: "/owner-dashboard/profile", icon: FaUser, label: "Basic Profile" },
+    { to: "/owner-dashboard/complete-profile", icon: FaIdCard, label: "Complete Profile" },
   ];
 
   const handleLogout = () => {
