@@ -25,6 +25,7 @@ import Register from "./Components/Register.jsx";
 import ErrorBoundary from "./Components/ErrorBoundary.jsx";
 import Profile from "./Components/Profile.jsx";
 import StudentProfile from "./Components/StudentProfile";
+import OwnerProfile from "./Components/ServiceProviders/OwnerProfile.jsx";
 
 // Components
 import AllCustomers from "./Components/ServiceProviders/AllCustomers.jsx";
@@ -38,7 +39,7 @@ import ProtectedRoute from "./Components/protected/ProtectedRoute";
 // ServiceConsumer Components
 import Hostels from "./Components/ServiceConsumers/Hostels.jsx";
 import MessServices from "./Components/ServiceConsumers/MessServices.jsx";
-import Gym from "./Components/ServiceConsumers/gym.jsx";
+import Gym from "./Components/ServiceConsumers/Gym.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -145,6 +146,10 @@ export const router = createBrowserRouter([
       {
         path: "services",
         element: <ServiceManagement />
+      },
+      {
+        path: "enhanced-profile",
+        element: <OwnerProfile />
       }
       // Add other owner routes
     ]

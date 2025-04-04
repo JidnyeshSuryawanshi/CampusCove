@@ -14,7 +14,8 @@ export default function OwnerSidebar() {
     { to: "/owner-dashboard/revenew", icon: FaMoneyBillWave, label: "Revenue" },
     { to: "/owner-dashboard/bookings", icon: FaClipboardList, label: "Bookings" },
     { to: "/owner-dashboard/services", icon: FaCog, label: "Services" },
-    { to: "/owner-dashboard/profile", icon: FaUser, label: "Profile" },
+    { to: "/owner-dashboard/profile", icon: FaUser, label: "Basic Profile" },
+    { to: "/owner-dashboard/enhanced-profile", icon: FaUser, label: "Enhanced Profile" },
   ];
 
   const handleLogout = () => {

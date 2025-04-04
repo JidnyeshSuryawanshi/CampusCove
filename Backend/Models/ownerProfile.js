@@ -50,45 +50,43 @@ const ownerProfileSchema = new mongoose.Schema({
     },
     description: {
       type: String
-    }
-  },
-  contactInfo: {
-    businessAddress: {
-      street: String,
-      city: {
-        type: String,
-        required: [true, 'Please provide your city']
+    },
+    contactInfo: {
+      businessAddress: {
+        street: String,
+        city: {
+          type: String,
+          required: [true, 'Please provide your city']
+        },
+        state: {
+          type: String,
+          required: [true, 'Please provide your state']
+        },
+        pincode: {
+          type: String,
+          required: [true, 'Please provide your pincode'],
+          match: [/^\d{6}$/, 'Please provide a valid 6-digit pincode']
+        },
+        country: {
+          type: String,
+          default: 'India'
+        }
       },
-      state: {
+      businessEmail: {
         type: String,
-        required: [true, 'Please provide your state']
+        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address']
       },
-      pincode: {
+      businessPhone: {
         type: String,
-        required: [true, 'Please provide your pincode'],
-        match: [/^\d{6}$/, 'Please provide a valid 6-digit pincode']
+        match: [/^(\+\d{1,3}[- ]?)?\d{10}$/, 'Please provide a valid phone number']
+      },
+      website: String,
+      socialMedia: {
+        facebook: String,
+        instagram: String,
+        twitter: String,
+        linkedin: String
       }
-    },
-    alternateAddress: {
-      street: String,
-      city: String,
-      state: String,
-      pincode: String
-    },
-    businessEmail: {
-      type: String,
-      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address']
-    },
-    businessPhone: {
-      type: String,
-      match: [/^(\+\d{1,3}[- ]?)?\d{10}$/, 'Please provide a valid phone number']
-    },
-    website: String,
-    socialMedia: {
-      facebook: String,
-      instagram: String,
-      twitter: String,
-      linkedin: String
     }
   },
   paymentInfo: {
@@ -100,41 +98,86 @@ const ownerProfileSchema = new mongoose.Schema({
       branchName: String
     },
     upiId: String,
-    paymentGateway: {
-      merchantId: String,
-      apiKey: String,
-      secretKey: String,
-      isConfigured: {
+    preferredPaymentMethod: {
+      type: String,
+      enum: ['bank', 'upi', 'cash', 'card'],
+      default: 'bank'
+    },
+    acceptedPaymentMethods: {
+      bankTransfer: {
+        type: Boolean,
+        default: true
+      },
+      upi: {
+        type: Boolean,
+        default: false
+      },
+      cash: {
+        type: Boolean,
+        default: false
+      },
+      cheque: {
+        type: Boolean,
+        default: false
+      },
+      creditCard: {
+        type: Boolean,
+        default: false
+      }
+    }
+  },
+  propertyDetails: {
+    propertyTypes: [{
+      type: String,
+      enum: ['hostel', 'mess', 'gym']
+    }],
+    totalProperties: {
+      type: Number,
+      default: 0
+    },
+    amenities: {
+      wifi: {
+        type: Boolean,
+        default: false
+      },
+      parking: {
+        type: Boolean,
+        default: false
+      },
+      hotWater: {
+        type: Boolean,
+        default: false
+      },
+      ac: {
+        type: Boolean,
+        default: false
+      },
+      tv: {
+        type: Boolean,
+        default: false
+      },
+      refrigerator: {
+        type: Boolean,
+        default: false
+      },
+      laundry: {
+        type: Boolean,
+        default: false
+      },
+      kitchen: {
+        type: Boolean,
+        default: false
+      },
+      securityCamera: {
         type: Boolean,
         default: false
       }
     },
-    taxInformation: {
-      panNumber: String,
-      gstNumber: String,
-      taxDeductionAccount: String
-    }
-  },
-  preferences: {
-    bookingNotifications: {
-      type: Boolean,
-      default: true
-    },
-    emailNotifications: {
-      type: Boolean,
-      default: true
-    },
-    smsNotifications: {
-      type: Boolean,
-      default: true
-    },
-    autoAcceptBookings: {
-      type: Boolean,
-      default: false
-    },
-    maintenanceMode: {
-      type: Boolean,
-      default: false
+    nearbyFacilities: [String],
+    distanceFromCampus: String,
+    totalCapacity: {
+      type: Number,
+      default: 0
     }
   },
   documents: [{
@@ -144,10 +187,10 @@ const ownerProfileSchema = new mongoose.Schema({
     },
     type: {
       type: String,
-      enum: ['business_registration', 'identity_proof', 'address_proof', 'tax_document', 'license', 'other'],
-      default: 'other'
+      enum: ['identity', 'business_license', 'property_document', 'tax_document', 'other'],
+      required: true
     },
-    cloudinaryId: {
+    public_id: {
       type: String,
       required: true
     },
@@ -155,72 +198,12 @@ const ownerProfileSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    uploadedAt: {
+    uploadDate: {
       type: Date,
       default: Date.now
-    },
-    verified: {
-      type: Boolean,
-      default: false
-    },
-    expiryDate: {
-      type: Date
     }
   }],
-  services: {
-    hostel: {
-      isActive: {
-        type: Boolean,
-        default: false
-      },
-      totalRooms: {
-        type: Number,
-        default: 0
-      },
-      amenities: [String]
-    },
-    mess: {
-      isActive: {
-        type: Boolean,
-        default: false
-      },
-      cuisineTypes: [String],
-      specialDiets: [String]
-    },
-    gym: {
-      isActive: {
-        type: Boolean,
-        default: false
-      },
-      equipmentTypes: [String],
-      specialFacilities: [String]
-    }
-  },
-  statistics: {
-    totalBookings: {
-      type: Number,
-      default: 0
-    },
-    totalRevenue: {
-      type: Number,
-      default: 0
-    },
-    averageRating: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5
-    },
-    totalReviews: {
-      type: Number,
-      default: 0
-    }
-  },
   isProfileComplete: {
-    type: Boolean,
-    default: false
-  },
-  isVerified: {
     type: Boolean,
     default: false
   },

@@ -7,7 +7,9 @@ CampusCove is a comprehensive platform designed to simplify campus living for st
 - **User Authentication** - Secure login and registration system with role-based access
 - **Dashboard Systems** - Separate dashboards for students and facility owners (hostel, mess, gym)
 - **Booking Management** - Reserve hostel rooms and subscribe to mess services
-- **Profile Management** - User profile customization and management
+- **Profile Management** - Comprehensive profile management for both students and facility owners
+- **Service Management** - Complete management systems for hostels, mess facilities, and gyms
+- **Document Management** - Upload and manage important documents for verification
 - **Responsive Design** - Mobile-friendly interface built with React and Tailwind CSS
 
 ## Tech Stack
@@ -18,6 +20,7 @@ CampusCove is a comprehensive platform designed to simplify campus living for st
 - Tailwind CSS for styling
 - React Hot Toast for notifications
 - FontAwesome and React Icons for UI elements
+- Cloudinary for image storage and management
 
 ### Backend
 - Node.js with Express
@@ -25,6 +28,8 @@ CampusCove is a comprehensive platform designed to simplify campus living for st
 - JWT for authentication
 - bcrypt for password hashing
 - Cookie-based authentication
+- Multer for file uploads
+- Cloudinary for image storage
 
 ## Project Structure
 
@@ -35,6 +40,18 @@ Frontend/
 ├── scripts/             # Build scripts
 ├── src/
 │   ├── Components/      # Reusable UI components
+│   │   ├── Landingpage/ # Landing page components
+│   │   ├── ServiceConsumers/  # Components for students
+│   │   ├── ServiceProviders/  # Components for service providers
+│   │   │   ├── AllCustomers.jsx        # Customers management
+│   │   │   ├── Bookings.jsx            # Bookings management
+│   │   │   ├── DashboardHeader.jsx     # Header for provider dashboard
+│   │   │   ├── OwnerDashboard.jsx      # Main dashboard for providers
+│   │   │   ├── OwnerSidebar.jsx        # Sidebar navigation for providers
+│   │   │   ├── Revenew.jsx             # Revenue management
+│   │   │   └── ServiceManagement.jsx   # Service management (hostels, mess, gym)
+│   │   ├── dashboard/   # Dashboard components
+│   │   └── protected/   # Protected route components
 │   ├── context/         # React context for state management
 │   ├── layouts/         # Layout components (PublicLayout, DashboardLayout)
 │   ├── pages/           # Main page components
@@ -53,15 +70,35 @@ Frontend/
 ```
 Backend/
 ├── config/              # Configuration files
+│   └── database.js      # Database connection
 ├── Controllers/         # Request handlers
-│   └── authController.js # Authentication controller
+│   ├── authController.js        # Authentication controller
+│   ├── hostelRoomController.js  # Hostel room management
+│   ├── messController.js        # Mess service management
+│   ├── gymController.js         # Gym service management
+│   ├── ownerProfileController.js # Owner profile management
+│   └── studentProfileController.js # Student profile management
 ├── middleware/          # Express middleware
-│   └── auth.js          # Authentication middleware
+│   ├── auth.js          # Authentication middleware
+│   └── upload.js        # File upload middleware (Multer)
 ├── Models/              # Database models
-│   └── user.js          # User model
+│   ├── user.js          # User model
+│   ├── hostelRoom.js    # Hostel room model
+│   ├── mess.js          # Mess service model
+│   ├── gym.js           # Gym service model
+│   ├── ownerProfile.js  # Owner profile model
+│   └── studentProfile.js # Student profile model
 ├── routes/              # API routes
-│   └── authRoutes.js    # Authentication routes
+│   ├── authRoutes.js    # Authentication routes
+│   ├── hostelRoomRoutes.js # Hostel room routes
+│   ├── messRoutes.js    # Mess service routes
+│   ├── gymRoutes.js     # Gym service routes
+│   ├── ownerRoutes.js   # Owner profile routes
+│   └── studentRoutes.js # Student profile routes
+├── uploads/             # Temporary storage for uploads
 ├── utils/               # Utility functions
+│   ├── cloudinary.js    # Cloudinary integration
+│   └── errorHandler.js  # Error handling
 ├── index.js             # Server entry point
 └── package.json         # Backend dependencies
 ```
@@ -110,149 +147,84 @@ Each frontend route renders specific React components:
   - Rendered component: OwnerDashboard
   - Purpose: Facility management dashboard for owners
   - Subpath: `/owner-dashboard/profile` - Owner profile management
+  - Subpath: `/owner-dashboard/services` - Service management (hostel rooms, mess, gym)
+  - Subpath: `/owner-dashboard/bookings` - Booking management
+  - Subpath: `/owner-dashboard/all-customers` - Customer management
+  - Subpath: `/owner-dashboard/revenew` - Revenue management
 
 ### Backend API Routes
 
-The backend API serves JSON responses with the following request/response formats:
+The backend API serves JSON responses with the following endpoints:
 
-- **POST `/api/auth/register`** - User registration
-  - Request:
-    ```json
-    {
-      "username": "string (minimum 3 characters)",
-      "email": "string (valid email format)",
-      "password": "string (minimum 6 characters)",
-      "userType": "string (enum: student, hostelOwner, messOwner, gymOwner)"
-    }
-    ```
-  - Response (success - 201):
-    ```json
-    {
-      "success": true,
-      "token": "JWT token",
-      "user": {
-        "id": "user ID",
-        "username": "user's username",
-        "email": "user's email",
-        "userType": "user's role"
-      }
-    }
-    ```
-  - Response (error - 400/500):
-    ```json
-    {
-      "success": false,
-      "error": "Error message"
-    }
-    ```
-
-- **POST `/api/auth/login`** - User login
-  - Request:
-    ```json
-    {
-      "email": "string (registered email)",
-      "password": "string"
-    }
-    ```
-  - Response (success - 200):
-    ```json
-    {
-      "success": true,
-      "token": "JWT token",
-      "user": {
-        "id": "user ID",
-        "username": "user's username",
-        "email": "user's email",
-        "userType": "user's role"
-      }
-    }
-    ```
-  - Response (error - 400/401):
-    ```json
-    {
-      "success": false,
-      "error": "Invalid credentials"
-    }
-    ```
-  - Note: Sets HTTP-only cookie with JWT token for authentication
-
+#### Authentication Routes
+- **POST `/api/auth/register`** - Register a new user
+- **POST `/api/auth/login`** - Login user
 - **GET `/api/auth/profile`** - Get user profile (protected)
-  - Headers: Authorization: Bearer {token}
-  - Response (success - 200):
-    ```json
-    {
-      "success": true,
-      "data": {
-        "id": "user ID",
-        "username": "user's username",
-        "email": "user's email",
-        "userType": "user's role",
-        "createdAt": "account creation date"
-      }
-    }
-    ```
-  - Response (error - 401/404):
-    ```json
-    {
-      "success": false,
-      "error": "Not authorized to access this route"
-    }
-    ```
-
 - **GET `/api/auth/me`** - Get current user (protected)
-  - Headers: Authorization: Bearer {token}
-  - Response (success - 200):
-    ```json
-    {
-      "success": true,
-      "data": {
-        "id": "user ID",
-        "username": "user's username",
-        "email": "user's email",
-        "userType": "user's role"
-      }
-    }
-    ```
-  - Response (error - 401):
-    ```json
-    {
-      "success": false,
-      "error": "Not authorized to access this route"
-    }
-    ```
 
-## Getting Started
+#### Hostel Room Routes
+- **GET `/api/hostel-rooms`** - Get all hostel rooms (public)
+- **POST `/api/hostel-rooms`** - Create a new hostel room (protected, hostelOwner only)
+- **GET `/api/hostel-rooms/owner`** - Get all rooms for the current owner (protected, hostelOwner only)
+- **GET `/api/hostel-rooms/:id`** - Get a specific hostel room (public)
+- **PUT `/api/hostel-rooms/:id`** - Update a hostel room (protected, hostelOwner only)
+- **DELETE `/api/hostel-rooms/:id`** - Delete a hostel room (protected, hostelOwner only)
+- **DELETE `/api/hostel-rooms/:id/images/:imageId`** - Delete a specific image from a hostel room (protected, hostelOwner only)
 
-### Prerequisites
-- Node.js (v14+)
-- npm or yarn
-- MongoDB instance
+#### Mess Routes
+- **GET `/api/mess`** - Get all mess listings (public)
+- **POST `/api/mess`** - Create a new mess listing (protected, messOwner only)
+- **GET `/api/mess/owner`** - Get all mess listings for the current owner (protected, messOwner only)
+- **GET `/api/mess/:id`** - Get a specific mess listing (public)
+- **PUT `/api/mess/:id`** - Update a mess listing (protected, messOwner only)
+- **DELETE `/api/mess/:id`** - Delete a mess listing (protected, messOwner only)
+- **DELETE `/api/mess/:id/images/:imageId`** - Delete a specific image from a mess listing (protected, messOwner only)
 
-### Frontend Setup
-```bash
-cd Frontend
-npm install
-npm run dev
-```
+#### Gym Routes
+- **GET `/api/gym`** - Get all gym listings (public)
+- **POST `/api/gym`** - Create a new gym listing (protected, gymOwner only)
+- **GET `/api/gym/owner`** - Get all gym listings for the current owner (protected, gymOwner only)
+- **GET `/api/gym/:id`** - Get a specific gym listing (public)
+- **PUT `/api/gym/:id`** - Update a gym listing (protected, gymOwner only)
+- **DELETE `/api/gym/:id`** - Delete a gym listing (protected, gymOwner only)
+- **DELETE `/api/gym/:id/images/:imageId`** - Delete a specific image from a gym listing (protected, gymOwner only)
 
-### Backend Setup
-```bash
-cd Backend
-npm install
-# Create a .env file with required environment variables
-npm run dev
-```
+#### Owner Profile Routes
+- **GET `/api/owner/profile`** - Get owner profile (protected, owners only)
+- **POST `/api/owner/profile`** - Create owner profile (protected, owners only)
+- **PUT `/api/owner/profile`** - Update owner profile (protected, owners only)
+- **GET `/api/owner/profile/status`** - Get profile completion status (protected, owners only)
+- **GET `/api/owner/profile/completion-steps`** - Get profile completion steps (protected, owners only)
+- **PUT `/api/owner/profile/personal`** - Update personal information (protected, owners only)
+- **PUT `/api/owner/profile/business`** - Update business information (protected, owners only)
+- **PUT `/api/owner/profile/payment`** - Update payment information (protected, owners only)
+- **PUT `/api/owner/profile/preferences`** - Update preferences (protected, owners only)
+- **PUT `/api/owner/profile/services`** - Update services (protected, owners only)
+- **PUT `/api/owner/profile/property`** - Update property details (protected, owners only)
+- **PUT `/api/owner/profile/picture`** - Upload profile picture (protected, owners only)
+- **GET `/api/owner/profile/documents`** - Get documents (protected, owners only)
+- **POST `/api/owner/profile/documents`** - Upload documents (protected, owners only)
+- **DELETE `/api/owner/profile/documents/:id`** - Delete document (protected, owners only)
 
-Required environment variables for backend:
-- `PORT` - Server port (default: 5000)
-- `MONGO_URI` - MongoDB connection string
-- `JWT_SECRET` - Secret key for JWT
-- `NODE_ENV` - Environment (development/production)
-- `ALLOWED_ORIGINS` - Comma-separated list of allowed frontend URLs (for CORS)
+#### Student Profile Routes
+- **GET `/api/student/details`** - Get all user details (account + profile) (protected, students only)
+- **GET `/api/student/profile`** - Get student profile (protected, students only)
+- **POST `/api/student/profile`** - Create student profile (protected, students only)
+- **PUT `/api/student/profile`** - Update student profile (protected, students only)
+- **GET `/api/student/profile/status`** - Get profile completion status (protected, students only)
+- **GET `/api/student/profile/completion-steps`** - Get profile completion steps (protected, students only)
+- **PUT `/api/student/profile/picture`** - Upload profile picture (protected, students only)
+- **PUT `/api/student/profile/personal`** - Update personal information (protected, students only)
+- **PUT `/api/student/profile/academic`** - Update academic information (protected, students only)
+- **PUT `/api/student/profile/payment`** - Update payment information (protected, students only)
+- **PUT `/api/student/profile/preferences`** - Update preferences (protected, students only)
+- **POST `/api/student/profile/documents`** - Upload documents (protected, students only)
+- **DELETE `/api/student/profile/documents/:id`** - Delete document (protected, students only)
 
 ## Deployment
-- Frontend is configured for Vercel deployment
-- Backend is configured for Render deployment
+
+- **Backend:** Deployed on Render.com at `https://campus-cove.onrender.com`
+- **Frontend:** Deployed on Vercel
 
 ## License
 ISC - as specified in the backend package.json

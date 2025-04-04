@@ -12,7 +12,9 @@ Backend/
 │   ├── authController.js   # Authentication controller
 │   ├── hostelRoomController.js # Hostel room management
 │   ├── messController.js   # Mess service management
-│   └── gymController.js    # Gym service management
+│   ├── gymController.js    # Gym service management
+│   ├── ownerProfileController.js # Owner profile management
+│   └── studentProfileController.js # Student profile management
 ├── middleware/             # Middleware functions
 │   ├── auth.js             # Authentication middleware
 │   └── upload.js           # File upload middleware (Multer)
@@ -20,12 +22,17 @@ Backend/
 │   ├── user.js             # User model
 │   ├── hostelRoom.js       # Hostel room model
 │   ├── mess.js             # Mess service model
-│   └── gym.js              # Gym service model
+│   ├── gym.js              # Gym service model
+│   ├── ownerProfile.js     # Owner profile model
+│   └── studentProfile.js   # Student profile model
 ├── routes/                 # API routes
 │   ├── authRoutes.js       # Authentication routes
 │   ├── hostelRoomRoutes.js # Hostel room routes
 │   ├── messRoutes.js       # Mess service routes
-│   └── gymRoutes.js        # Gym service routes
+│   ├── gymRoutes.js        # Gym service routes
+│   ├── ownerRoutes.js      # Owner profile routes
+│   ├── studentRoutes.js    # Student profile routes
+│   └── userRoutes.js       # User routes
 ├── uploads/                # Temporary storage for uploads
 ├── utils/                  # Utility functions
 │   ├── cloudinary.js       # Cloudinary integration
@@ -70,6 +77,38 @@ Backend/
 - `PUT /api/gym/:id` - Update a gym listing (protected, gymOwner only)
 - `DELETE /api/gym/:id` - Delete a gym listing (protected, gymOwner only)
 - `DELETE /api/gym/:id/images/:imageId` - Delete a specific image from a gym listing (protected, gymOwner only)
+
+### Owner Profile Routes
+- `GET /api/owner/profile` - Get owner profile (protected, owners only)
+- `POST /api/owner/profile` - Create owner profile (protected, owners only)
+- `PUT /api/owner/profile` - Update owner profile (protected, owners only)
+- `GET /api/owner/profile/status` - Get profile completion status (protected, owners only)
+- `GET /api/owner/profile/completion-steps` - Get profile completion steps (protected, owners only)
+- `PUT /api/owner/profile/personal` - Update personal information (protected, owners only)
+- `PUT /api/owner/profile/business` - Update business information (protected, owners only)
+- `PUT /api/owner/profile/payment` - Update payment information (protected, owners only)
+- `PUT /api/owner/profile/preferences` - Update preferences (protected, owners only)
+- `PUT /api/owner/profile/services` - Update services (protected, owners only)
+- `PUT /api/owner/profile/property` - Update property details (protected, owners only)
+- `PUT /api/owner/profile/picture` - Upload profile picture (protected, owners only)
+- `GET /api/owner/profile/documents` - Get documents (protected, owners only)
+- `POST /api/owner/profile/documents` - Upload documents (protected, owners only)
+- `DELETE /api/owner/profile/documents/:id` - Delete document (protected, owners only)
+
+### Student Profile Routes
+- `GET /api/student/details` - Get all user details (account + profile) (protected, students only)
+- `GET /api/student/profile` - Get student profile (protected, students only)
+- `POST /api/student/profile` - Create student profile (protected, students only)
+- `PUT /api/student/profile` - Update student profile (protected, students only)
+- `GET /api/student/profile/status` - Get profile completion status (protected, students only)
+- `GET /api/student/profile/completion-steps` - Get profile completion steps (protected, students only)
+- `PUT /api/student/profile/picture` - Upload profile picture (protected, students only)
+- `PUT /api/student/profile/personal` - Update personal information (protected, students only)
+- `PUT /api/student/profile/academic` - Update academic information (protected, students only)
+- `PUT /api/student/profile/payment` - Update payment information (protected, students only)
+- `PUT /api/student/profile/preferences` - Update preferences (protected, students only)
+- `POST /api/student/profile/documents` - Upload documents (protected, students only)
+- `DELETE /api/student/profile/documents/:id` - Delete document (protected, students only)
 
 ## Models
 
@@ -127,6 +166,30 @@ Backend/
 - `rules` - Gym rules and policies
 - `availability` - Gym availability status
 - `createdAt` - Listing creation date
+
+### Owner Profile Model
+- `owner` - Reference to User model
+- `personalInfo` - Object containing personal information (name, phone, etc.)
+- `businessInfo` - Object containing business information (business name, type, etc.)
+- `paymentSettings` - Object containing payment information (bank details, UPI, etc.)
+- `propertyDetails` - Object containing property details (location, size, etc.)
+- `services` - Object containing service information
+- `preferences` - Object containing owner preferences
+- `profilePicture` - Profile picture URL
+- `documents` - Array of document objects (ID proof, business license, etc.)
+- `profileStatus` - Profile completion status
+- `createdAt` - Profile creation date
+
+### Student Profile Model
+- `student` - Reference to User model
+- `personalInfo` - Object containing personal information (name, phone, etc.)
+- `academicInfo` - Object containing academic information (college, course, etc.)
+- `paymentInfo` - Object containing payment information
+- `preferences` - Object containing student preferences
+- `profilePicture` - Profile picture URL
+- `documents` - Array of document objects (ID proof, college ID, etc.)
+- `profileStatus` - Profile completion status
+- `createdAt` - Profile creation date
 
 ## File Uploads
 

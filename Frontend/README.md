@@ -14,13 +14,27 @@ Frontend/
 │   │   ├── Profile.jsx     # User profile component
 │   │   ├── Register.jsx    # Registration component
 │   │   ├── ServiceConsumers/   # Components for students (service consumers)
-│   │   │   └── DashboardHeader.jsx
+│   │   │   ├── DashboardHeader.jsx
+│   │   │   ├── StudentDashboard.jsx
+│   │   │   ├── StudentProfile/
+│   │   │   │   ├── PersonalInfoForm.jsx
+│   │   │   │   ├── AcademicInfoForm.jsx
+│   │   │   │   ├── PaymentInfoForm.jsx
+│   │   │   │   ├── PreferencesForm.jsx
+│   │   │   │   └── DocumentsForm.jsx
+│   │   │   └── StudentSidebar.jsx
 │   │   ├── ServiceProviders/   # Components for service providers
 │   │   │   ├── AllCustomers.jsx        # Customers management
 │   │   │   ├── Bookings.jsx            # Bookings management
 │   │   │   ├── DashboardHeader.jsx     # Header for provider dashboard
 │   │   │   ├── OwnerDashboard.jsx      # Main dashboard for providers
 │   │   │   ├── OwnerSidebar.jsx        # Sidebar navigation for providers
+│   │   │   ├── OwnerProfile/           # Owner profile components
+│   │   │   │   ├── PersonalInfoForm.jsx
+│   │   │   │   ├── BusinessInfoForm.jsx
+│   │   │   │   ├── PaymentSettingsForm.jsx
+│   │   │   │   ├── PreferencesForm.jsx
+│   │   │   │   └── DocumentsForm.jsx
 │   │   │   ├── Revenew.jsx             # Revenue management
 │   │   │   └── ServiceManagement.jsx   # Service management (hostels, mess, gym)
 │   │   ├── dashboard/      # Dashboard components
@@ -53,15 +67,45 @@ The application has the following main routes:
 
 ### Student Routes (Protected)
 - `/student-dashboard` - Student dashboard
-- `/student-dashboard/profile` - Student profile
+- `/student-dashboard/profile` - Student profile management with sections for:
+  - Personal information
+  - Academic information
+  - Payment information
+  - Preferences
+  - Documents
 
 ### Service Provider Routes (Protected)
 - `/owner-dashboard` - Service provider dashboard
-- `/owner-dashboard/profile` - Provider profile
+- `/owner-dashboard/profile` - Provider profile management with sections for:
+  - Personal information
+  - Business information
+  - Payment settings
+  - Preferences
+  - Documents
 - `/owner-dashboard/all-customers` - Customers management
 - `/owner-dashboard/bookings` - Bookings management
 - `/owner-dashboard/revenew` - Revenue management
 - `/owner-dashboard/services` - Service management
+
+## Profile Management
+
+### Student Profile Management
+Students can manage their profiles with the following features:
+- Personal information (name, contact details, address)
+- Academic information (college, course, year of study)
+- Payment information (preferred payment methods)
+- Preferences (accommodation preferences, dietary preferences)
+- Document management (upload ID proof, college ID, etc.)
+- Profile picture upload
+
+### Owner Profile Management
+Service providers can manage their profiles with the following features:
+- Personal information (name, contact details)
+- Business information (business name, registration details, GST number)
+- Payment settings (bank account details, UPI, payment preferences)
+- Preferences (booking preferences, notification settings)
+- Document management (upload business license, ID proof, etc.)
+- Profile picture upload
 
 ## Service Management
 
@@ -71,13 +115,17 @@ The Service Management section allows service providers to manage their listings
 - Add, edit, and delete hostel room listings
 - Upload room photos (stored on Cloudinary)
 - Manage room details, amenities, and availability
+- Set pricing and capacity
+- Define rules and policies
 
 ### Mess Owners
 - Add, edit, and delete mess service listings
 - Set mess type (veg, nonVeg, both)
 - Configure pricing (monthly and daily)
-- Define weekly meal schedules
+- Define weekly meal schedules with breakfast, lunch, dinner, and snacks for each day
+- Manage amenities and facilities
 - Upload images of facilities and food
+- Set operating hours and capacity
 
 ### Gym Owners
 - Add, edit, and delete gym listings
@@ -85,6 +133,7 @@ The Service Management section allows service providers to manage their listings
 - Specify available equipment and facilities
 - Set operating hours and capacity
 - Upload facility images
+- Define rules and policies
 
 ## API Integration
 
