@@ -12,27 +12,27 @@ const profileReducer = (state, action) => {
     case 'PROFILE_REQUEST':
       return { ...state, loading: true };
     case 'PROFILE_SUCCESS':
-      return { 
-        ...state, 
-        profile: action.payload, 
-        loading: false, 
+      return {
+        ...state,
+        profile: action.payload,
+        loading: false,
         error: null,
         isProfileComplete: action.payload !== null
       };
     case 'PROFILE_ERROR':
       return { ...state, error: action.payload, loading: false };
     case 'COMPLETION_STEPS_SUCCESS':
-      return { 
-        ...state, 
+      return {
+        ...state,
         completionSteps: action.payload.completionSteps,
         completionPercentage: action.payload.completionPercentage,
         loading: false
       };
     case 'CLEAR_PROFILE':
-      return { 
-        profile: null, 
-        loading: false, 
-        error: null, 
+      return {
+        profile: null,
+        loading: false,
+        error: null,
         isProfileComplete: false,
         completionSteps: null,
         completionPercentage: 0
@@ -66,13 +66,20 @@ export const OwnerProfileProvider = ({ children }) => {
     }
   }, [isAuthenticated, user]);
 
+  // This effect updates the completion steps whenever the profile changes
+  useEffect(() => {
+    if (state.profile) {
+      getCompletionSteps();
+    }
+  }, [state.profile]);
+
   // Get owner profile
   const getProfile = async () => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
-      
+
       const response = await api.get('/owner/profile');
-      
+
       if (response.data.success && response.data.profile) {
         dispatch({
           type: 'PROFILE_SUCCESS',
@@ -97,10 +104,11 @@ export const OwnerProfileProvider = ({ children }) => {
   // Get profile completion steps
   const getCompletionSteps = async () => {
     try {
-      dispatch({ type: 'PROFILE_REQUEST' });
-      
+      // Don't set loading state to avoid UI flicker when just updating completion steps
+      // dispatch({ type: 'PROFILE_REQUEST' });
+
       const response = await api.get('/owner/profile/completion-steps');
-      
+
       if (response.data.success) {
         dispatch({
           type: 'COMPLETION_STEPS_SUCCESS',
@@ -109,13 +117,21 @@ export const OwnerProfileProvider = ({ children }) => {
             completionPercentage: response.data.completionPercentage
           }
         });
+
+        // Return the completion data for immediate use if needed
+        return {
+          completionSteps: response.data.completionSteps,
+          completionPercentage: response.data.completionPercentage
+        };
       }
     } catch (error) {
       console.error('Error fetching completion steps:', error);
-      dispatch({
-        type: 'PROFILE_ERROR',
-        payload: error.response?.data?.message || 'Failed to fetch completion steps'
-      });
+      // Don't dispatch error to avoid UI disruption
+      // dispatch({
+      //   type: 'PROFILE_ERROR',
+      //   payload: error.response?.data?.message || 'Failed to fetch completion steps'
+      // });
+      return null;
     }
   };
 
@@ -123,9 +139,9 @@ export const OwnerProfileProvider = ({ children }) => {
   const updatePersonalInfo = async (data) => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
-      
+
       const response = await api.put('/owner/profile/personal', data);
-      
+
       if (response.data.success) {
         // Update the profile data with the new values
         const updatedProfile = {
@@ -135,15 +151,15 @@ export const OwnerProfileProvider = ({ children }) => {
             ...data
           }
         };
-        
+
         dispatch({
           type: 'PROFILE_SUCCESS',
           payload: updatedProfile
         });
-        
+
         // Refresh completion steps
         getCompletionSteps();
-        
+
         return updatedProfile;
       }
     } catch (error) {
@@ -160,9 +176,9 @@ export const OwnerProfileProvider = ({ children }) => {
   const updateBusinessInfo = async (data) => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
-      
+
       const response = await api.put('/owner/profile/business', data);
-      
+
       if (response.data.success) {
         // Update the profile data with the new values
         const updatedProfile = {
@@ -172,15 +188,15 @@ export const OwnerProfileProvider = ({ children }) => {
             ...data
           }
         };
-        
+
         dispatch({
           type: 'PROFILE_SUCCESS',
           payload: updatedProfile
         });
-        
+
         // Refresh completion steps
         getCompletionSteps();
-        
+
         return updatedProfile;
       }
     } catch (error) {
@@ -197,9 +213,9 @@ export const OwnerProfileProvider = ({ children }) => {
   const updatePaymentSettings = async (data) => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
-      
+
       const response = await api.put('/owner/profile/payment', data);
-      
+
       if (response.data.success) {
         // Update the profile data with the new values
         const updatedProfile = {
@@ -209,15 +225,15 @@ export const OwnerProfileProvider = ({ children }) => {
             ...data
           }
         };
-        
+
         dispatch({
           type: 'PROFILE_SUCCESS',
           payload: updatedProfile
         });
-        
+
         // Refresh completion steps
         getCompletionSteps();
-        
+
         return updatedProfile;
       }
     } catch (error) {
@@ -234,9 +250,9 @@ export const OwnerProfileProvider = ({ children }) => {
   const updatePreferences = async (data) => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
-      
+
       const response = await api.put('/owner/profile/preferences', data);
-      
+
       if (response.data.success) {
         // Update the profile data with the new values
         const updatedProfile = {
@@ -246,15 +262,15 @@ export const OwnerProfileProvider = ({ children }) => {
             ...data
           }
         };
-        
+
         dispatch({
           type: 'PROFILE_SUCCESS',
           payload: updatedProfile
         });
-        
+
         // Refresh completion steps
         getCompletionSteps();
-        
+
         return updatedProfile;
       }
     } catch (error) {
@@ -271,13 +287,13 @@ export const OwnerProfileProvider = ({ children }) => {
   const uploadDocument = async (formData) => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
-      
+
       const response = await api.post('/owner/profile/documents', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      
+
       if (response.data.success) {
         // Update the profile with the new data from the response
         if (response.data.profile) {
@@ -289,7 +305,7 @@ export const OwnerProfileProvider = ({ children }) => {
           // If no profile in response, refresh the profile
           getProfile();
         }
-        
+
         // Update completion steps if available in response
         if (response.data.completionStatus) {
           dispatch({
@@ -303,7 +319,7 @@ export const OwnerProfileProvider = ({ children }) => {
           // Otherwise refresh completion steps
           getCompletionSteps();
         }
-        
+
         return response.data;
       }
     } catch (error) {
@@ -320,9 +336,9 @@ export const OwnerProfileProvider = ({ children }) => {
   const deleteDocument = async (documentId) => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
-      
+
       const response = await api.delete(`/owner/profile/documents/${documentId}`);
-      
+
       if (response.data.success) {
         // Update the profile with the new data from the response
         if (response.data.profile) {
@@ -334,7 +350,7 @@ export const OwnerProfileProvider = ({ children }) => {
           // If no profile in response, refresh the profile
           getProfile();
         }
-        
+
         // Update completion steps if available in response
         if (response.data.completionStatus) {
           dispatch({
@@ -348,7 +364,7 @@ export const OwnerProfileProvider = ({ children }) => {
           // Otherwise refresh completion steps
           getCompletionSteps();
         }
-        
+
         return response.data;
       }
     } catch (error) {
@@ -365,25 +381,25 @@ export const OwnerProfileProvider = ({ children }) => {
   const updateProfilePicture = async (formData) => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
-      
+
       const response = await api.put('/owner/profile/picture', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      
+
       if (response.data.success) {
         // Update the profile with the new picture URL
         const updatedProfile = {
           ...state.profile,
           profileImage: response.data.profileImage
         };
-        
+
         dispatch({
           type: 'PROFILE_SUCCESS',
           payload: updatedProfile
         });
-        
+
         return updatedProfile;
       }
     } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaUser, FaPhone, FaEnvelope } from 'react-icons/fa';
+import { FaUser, FaPhone, FaEnvelope, FaCheckCircle } from 'react-icons/fa';
 
 export default function PersonalInfoForm({ initialData, onSave, loading }) {
   const [formData, setFormData] = useState({
@@ -35,11 +35,19 @@ export default function PersonalInfoForm({ initialData, onSave, loading }) {
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-md mb-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-        <FaUser className="text-blue-600 mr-2" />
-        Personal Information
-      </h2>
-      
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+          <FaUser className="text-blue-600 mr-2" />
+          Personal Information
+        </h2>
+        {initialData?.personalInfo?.fullName && initialData?.personalInfo?.phoneNumber && (
+          <div className="flex items-center text-green-600">
+            <FaCheckCircle className="mr-1" />
+            <span className="text-sm">Completed</span>
+          </div>
+        )}
+      </div>
+
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Full Name */}
@@ -58,7 +66,7 @@ export default function PersonalInfoForm({ initialData, onSave, loading }) {
               required
             />
           </div>
-          
+
           {/* Phone Number */}
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="phoneNumber">
@@ -82,7 +90,7 @@ export default function PersonalInfoForm({ initialData, onSave, loading }) {
               />
             </div>
           </div>
-          
+
           {/* Alternate Phone */}
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="alternatePhone">
@@ -105,7 +113,7 @@ export default function PersonalInfoForm({ initialData, onSave, loading }) {
               />
             </div>
           </div>
-          
+
           {/* Email */}
           <div className="col-span-2">
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="email">
@@ -128,8 +136,14 @@ export default function PersonalInfoForm({ initialData, onSave, loading }) {
             </div>
           </div>
         </div>
-        
-        <div className="mt-8 flex justify-end">
+
+        <div className="mt-8 flex justify-between items-center">
+          <div className="text-sm text-gray-500">
+            {initialData?.personalInfo?.fullName ?
+              <span className="text-green-600">Your personal information is saved</span> :
+              <span>Please fill in your personal information</span>
+            }
+          </div>
           <button
             type="submit"
             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 flex items-center"
