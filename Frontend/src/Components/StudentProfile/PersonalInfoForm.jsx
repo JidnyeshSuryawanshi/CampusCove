@@ -30,7 +30,15 @@ export default function PersonalInfoForm({ initialData, onSave, loading }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    
+    // Create a copy of the form data for submission
+    const submissionData = {
+      ...formData,
+      // If date is empty string, set to null to avoid invalid date errors
+      dateOfBirth: formData.dateOfBirth ? formData.dateOfBirth : null
+    };
+    
+    onSave(submissionData);
   };
 
   return (

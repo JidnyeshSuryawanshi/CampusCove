@@ -59,6 +59,7 @@ app.use("/api/mess", require("./routes/messRoutes"))
 app.use("/api/gym", require("./routes/gymRoutes"))
 app.use("/api/student", require("./routes/studentRoutes"))
 app.use("/api/owner", require("./routes/ownerRoutes"))
+app.use("/api/users", require("./routes/userRoutes"))
 
 // Error handler
 app.use(errorHandler)

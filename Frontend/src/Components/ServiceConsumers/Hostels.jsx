@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaMapMarkerAlt, FaRupeeSign, FaBed, FaWifi, FaSnowflake, FaTv, FaParking, FaShieldAlt, FaUtensils, FaBroom, FaTint, FaBoxOpen, FaTshirt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaRupeeSign, FaBed, FaWifi, FaSnowflake, FaTv, FaParking, FaShieldAlt, FaUtensils, FaBroom, FaTint, FaBoxOpen, FaTshirt, FaSpinner } from 'react-icons/fa';
 import HostelDetail from './HostelDetail';
 import { fetchHostels } from '../../utils/api';
 
@@ -78,7 +78,7 @@ export default function Hostels() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        <FaSpinner className="animate-spin text-green-600 text-4xl" />
       </div>
     );
   }
@@ -126,13 +126,14 @@ export default function Hostels() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {hostels.map((hostel) => (
-            <div key={hostel._id} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
+            <div key={hostel._id} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white relative z-0">
               <div className="relative h-48 bg-gray-200">
                 {hostel.images && hostel.images.length > 0 ? (
                   <img 
                     src={hostel.images[0].url} 
                     alt={hostel.roomName} 
                     className="w-full h-full object-cover"
+                    style={{ zIndex: 0 }}
                   />
                 ) : (
                   <div className="flex items-center justify-center h-full bg-gray-200">

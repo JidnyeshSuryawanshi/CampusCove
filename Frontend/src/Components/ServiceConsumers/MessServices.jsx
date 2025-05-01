@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaMapMarkerAlt, FaRupeeSign, FaUtensils, FaLeaf, FaDrumstickBite, FaClock } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaRupeeSign, FaUtensils, FaLeaf, FaDrumstickBite, FaClock, FaSpinner } from 'react-icons/fa';
 import MessDetail from './MessDetail';
 import { fetchMessServices } from '../../utils/api';
 
@@ -61,7 +61,7 @@ export default function MessServices() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        <FaSpinner className="animate-spin text-green-600 text-4xl" />
       </div>
     );
   }

@@ -22,8 +22,10 @@ import {
   FaLock,
   FaAppleAlt,
   FaWeight,
-  FaChair
+  FaChair,
+  FaSpinner
 } from 'react-icons/fa';
+import { fetchOwnerDetails } from '../../utils/api';
 
 // CSS classes for animation
 const ANIMATION_CLASSES = "animate-fadeIn";
@@ -39,28 +41,16 @@ export default function GymDetail({ gym, onClose }) {
   
   // Fetch owner details
   useEffect(() => {
-    const fetchOwnerDetails = async () => {
+    const getOwnerDetails = async () => {
       if (!gym.owner) return;
       
       try {
         setLoading(true);
-        // Log the owner ID to debug
+        // Get owner ID whether it's an object or string
         const ownerId = typeof gym.owner === 'object' ? gym.owner._id : gym.owner;
         console.log("Fetching owner with ID:", ownerId);
         
-        const response = await fetch(`http://localhost:5000/api/users/${ownerId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch owner details');
-        }
-        
-        const data = await response.json();
+        const data = await fetchOwnerDetails(ownerId);
         console.log("Owner data received:", data);
         setOwnerDetails(data.data);
       } catch (err) {
@@ -71,7 +61,7 @@ export default function GymDetail({ gym, onClose }) {
       }
     };
     
-    fetchOwnerDetails();
+    getOwnerDetails();
   }, [gym.owner]);
   
   // Function to display equipment icons
@@ -203,7 +193,7 @@ export default function GymDetail({ gym, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[1000] p-4 overflow-y-auto" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       <div className={`bg-white rounded-xl overflow-hidden max-w-5xl w-full max-h-90vh relative ${ANIMATION_CLASSES}`}>
         {/* Close button */}
         <button 
@@ -401,7 +391,7 @@ export default function GymDetail({ gym, onClose }) {
                 
                 {loading ? (
                   <div className="flex justify-center py-4">
-                    <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-green-500"></div>
+                    <FaSpinner className="animate-spin text-green-600 text-xl" />
                   </div>
                 ) : error ? (
                   <p className="text-red-500 text-sm">{error}</p>

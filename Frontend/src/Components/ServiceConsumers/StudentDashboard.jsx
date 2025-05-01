@@ -9,7 +9,9 @@ export default function StudentDashboard() {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [completionSteps, setCompletionSteps] = useState({});
   const [showProfileBanner, setShowProfileBanner] = useState(true);
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
 
   useEffect(() => {
     fetchProfileData();
@@ -23,12 +25,27 @@ export default function StudentDashboard() {
       if (response.data.success) {
         setProfileData(response.data.data);
         
-        // Calculate completion percentage based on profile data
-        const sections = ['fullName', 'phoneNumber', 'institution', 'studentId'];
-        const completedSections = sections.filter(field => Boolean(response.data.data[field]));
-        const percentage = Math.round((completedSections.length / sections.length) * 100);
+        // Fetch the profile completion status from the backend
+        const completionResponse = await api.get('/student/profile/completion-steps');
         
-        setCompletionPercentage(percentage);
+        if (completionResponse.data.success) {
+          setCompletionPercentage(completionResponse.data.completionPercentage);
+          setCompletionSteps(completionResponse.data.completionSteps);
+          
+          // Set profile as complete if percentage is 100% or if backend says it's complete
+          const isComplete = 
+            completionResponse.data.completionPercentage === 100 || 
+            completionResponse.data.isComplete;
+            
+          setIsProfileComplete(isComplete);
+          
+          // Log completion status for debugging
+          console.log('Profile completion status:', {
+            percentage: completionResponse.data.completionPercentage,
+            isComplete: isComplete,
+            steps: completionResponse.data.completionSteps
+          });
+        }
       }
     } catch (error) {
       console.error('Error fetching profile data:', error);
@@ -37,9 +54,6 @@ export default function StudentDashboard() {
       setLoading(false);
     }
   };
-
-  // Check if profile is complete
-  const isProfileComplete = completionPercentage === 100;
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -51,8 +65,8 @@ export default function StudentDashboard() {
           </div>
         )}
         
-        {/* Profile Completion Banner */}
-        {!loading && showProfileBanner && completionPercentage < 100 && (
+        {/* Profile Completion Banner - Only show if not complete and banner is not dismissed */}
+        {!loading && showProfileBanner && !isProfileComplete && completionPercentage < 100 && (
           <div className="bg-green-50 border-l-4 border-green-600 p-4 mb-6 rounded-md shadow-sm">
             <div className="flex items-start justify-between">
               <div className="flex">
@@ -72,7 +86,7 @@ export default function StudentDashboard() {
                     </div>
                   </div>
                   <button 
-                    onClick={() => navigate('/student-profile')}
+                    onClick={() => navigate('/dashboard/profile')}
                     className="mt-3 bg-green-600 text-white px-4 py-1.5 text-sm rounded hover:bg-green-700 inline-flex items-center"
                   >
                     Complete Profile <FaArrowRight className="ml-1" />

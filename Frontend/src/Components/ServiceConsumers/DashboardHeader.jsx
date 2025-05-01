@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaBell, FaCalendarAlt, FaRegClock } from 'react-icons/fa';
+import { FaCalendarAlt, FaRegClock } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { useLocation } from 'react-router-dom';
 
@@ -34,7 +34,7 @@ export default function DashboardHeader() {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0">
+    <header className="bg-white shadow-sm sticky top-0 z-[100]">
       <div className="flex items-center justify-between px-8 py-4">
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold text-green-600">{getPageTitle()}</h1>
@@ -47,10 +47,6 @@ export default function DashboardHeader() {
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <button className="relative p-2 text-gray-400 hover:text-gray-600">
-            <FaBell className="text-xl" />
-            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
-          </button>
           <div className="flex items-center space-x-3">
             <div className="hidden md:block text-right mr-2">
               <p className="text-sm font-medium text-gray-700">Welcome back,</p>

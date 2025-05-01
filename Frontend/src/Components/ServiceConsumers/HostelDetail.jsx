@@ -23,8 +23,10 @@ import {
   FaUser,
   FaEnvelope,
   FaPhone,
-  FaIdCard
+  FaIdCard,
+  FaSpinner
 } from 'react-icons/fa';
+import { fetchOwnerDetails } from '../../utils/api';
 
 export default function HostelDetail({ hostel, onClose }) {
   if (!hostel) return null;
@@ -36,28 +38,16 @@ export default function HostelDetail({ hostel, onClose }) {
   
   // Fetch owner details
   useEffect(() => {
-    const fetchOwnerDetails = async () => {
+    const getOwnerDetails = async () => {
       if (!hostel.owner) return;
       
       try {
         setLoading(true);
-        // Log the owner ID to debug
+        // Get owner ID whether it's an object or string
         const ownerId = typeof hostel.owner === 'object' ? hostel.owner._id : hostel.owner;
         console.log("Fetching owner with ID:", ownerId);
         
-        const response = await fetch(`http://localhost:5000/api/users/${ownerId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch owner details');
-        }
-        
-        const data = await response.json();
+        const data = await fetchOwnerDetails(ownerId);
         console.log("Owner data received:", data);
         setOwnerDetails(data.data);
       } catch (err) {
@@ -68,7 +58,7 @@ export default function HostelDetail({ hostel, onClose }) {
       }
     };
     
-    fetchOwnerDetails();
+    getOwnerDetails();
   }, [hostel.owner]);
   
   // Function to display amenities icons
@@ -171,7 +161,7 @@ export default function HostelDetail({ hostel, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[1000] p-4 overflow-y-auto">
       <div className="bg-white rounded-xl overflow-hidden max-w-5xl w-full max-h-90vh relative animate-fadeIn">
         {/* Close button */}
         <button 
@@ -330,7 +320,7 @@ export default function HostelDetail({ hostel, onClose }) {
                 
                 {loading ? (
                   <div className="flex justify-center py-4">
-                    <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-green-500"></div>
+                    <FaSpinner className="animate-spin text-green-600 text-xl" />
                   </div>
                 ) : error ? (
                   <p className="text-red-500 text-sm">{error}</p>

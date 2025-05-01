@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { FaUserCircle, FaSpinner } from 'react-icons/fa';
+import { FaUserCircle, FaSpinner, FaUser, FaEnvelope, FaClock, FaUserTag } from 'react-icons/fa';
 import ProfileCompletion from './ProfileCompletion';
 import PersonalInfoForm from './PersonalInfoForm';
 import AcademicInfoForm from './AcademicInfoForm';
-import PaymentInfoForm from './PaymentInfoForm';
 import PreferencesForm from './PreferencesForm';
 import DocumentsForm from './DocumentsForm';
 import { toast } from 'react-toastify';
 import api, { getUserDetails } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 
-export default function StudentProfile() {
+export default function Profile() {
+  const { user } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('personal');
+  const [activeTab, setActiveTab] = useState('profile');
   const [completedSections, setCompletedSections] = useState({
-    personal: false,
+    profile: false,
     academic: false,
     preferences: false,
-    payment: false,
     documents: false
   });
+
+  // Determine if user is an owner for theming
+  const isOwner = user?.userType.includes('owner');
+  const themeColor = isOwner ? 'blue' : 'green';
 
   useEffect(() => {
     fetchProfileData();
@@ -43,21 +47,19 @@ export default function StudentProfile() {
         if (profile) {
           // Update completed sections based on correct data structure
           const updatedCompletedSections = {
-            personal: Boolean(
+            profile: Boolean(
               profile.personalInfo && 
               profile.personalInfo.fullName && 
-              profile.personalInfo.phoneNumber
+              profile.personalInfo.phoneNumber && 
+              profile.paymentInfo && 
+              profile.paymentInfo.preferredPaymentMethods && 
+              profile.paymentInfo.preferredPaymentMethods.length > 0
             ),
             academic: Boolean(
               profile.academicInfo && 
               profile.academicInfo.institution && 
               profile.academicInfo.studentId && 
               profile.academicInfo.course
-            ),
-            payment: Boolean(
-              profile.paymentInfo && 
-              profile.paymentInfo.preferredPaymentMethods && 
-              profile.paymentInfo.preferredPaymentMethods.length > 0
             ),
             preferences: Boolean(
               profile.preferences && 
@@ -91,13 +93,13 @@ export default function StudentProfile() {
     }
   };
 
-  const handleSavePersonalInfo = async (data) => {
+  const handleSaveProfileInfo = async (data) => {
     try {
       setSaving(true);
-      const response = await api.put('/student/profile/personal', data);
+      const response = await api.put('/student/profile', data);
       
       if (response.data.success) {
-        toast.success('Personal information updated successfully');
+        toast.success('Profile information updated successfully');
         // Update the profile data with the new values
         setProfileData(prev => ({
           ...prev,
@@ -107,13 +109,17 @@ export default function StudentProfile() {
             phoneNumber: data.phoneNumber,
             dateOfBirth: data.dateOfBirth,
             gender: data.gender
+          },
+          paymentInfo: {
+            ...prev.paymentInfo,
+            preferredPaymentMethods: data.preferredPaymentMethods
           }
         }));
-        setCompletedSections(prev => ({ ...prev, personal: true }));
+        setCompletedSections(prev => ({ ...prev, profile: true }));
       }
     } catch (error) {
-      console.error('Error saving personal info:', error);
-      toast.error(error.response?.data?.message || 'Failed to update personal information');
+      console.error('Error saving profile info:', error);
+      toast.error(error.response?.data?.message || 'Failed to update profile information');
     } finally {
       setSaving(false);
     }
@@ -143,52 +149,6 @@ export default function StudentProfile() {
     } catch (error) {
       console.error('Error saving academic info:', error);
       toast.error(error.response?.data?.message || 'Failed to update academic information');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleSavePaymentInfo = async (data) => {
-    try {
-      setSaving(true);
-      const response = await api.put('/student/profile/payment', data);
-      
-      if (response.data.success) {
-        toast.success('Payment information updated successfully');
-        
-        // Create an updated payment info object
-        const updatedPaymentInfo = {
-          ...profileData?.paymentInfo,
-          preferredPaymentMethods: profileData?.paymentInfo?.preferredPaymentMethods || ['card']
-        };
-        
-        // If card saved, update the savedCards array
-        if (data.saveCard && data.cardNumber && data.cardNumber.length >= 4) {
-          const lastFourDigits = data.cardNumber.replace(/\s/g, '').slice(-4);
-          const cardData = {
-            cardHolderName: data.cardHolderName,
-            lastFourDigits: lastFourDigits,
-            expiryDate: data.expiryDate,
-            network: 'other' // Simple default
-          };
-          
-          updatedPaymentInfo.savedCards = [
-            ...(profileData?.paymentInfo?.savedCards || []),
-            cardData
-          ];
-        }
-        
-        // Update profile data
-        setProfileData(prev => ({
-          ...prev,
-          paymentInfo: updatedPaymentInfo
-        }));
-        
-        setCompletedSections(prev => ({ ...prev, payment: true }));
-      }
-    } catch (error) {
-      console.error('Error saving payment info:', error);
-      toast.error(error.response?.data?.message || 'Failed to update payment information');
     } finally {
       setSaving(false);
     }
@@ -238,21 +198,19 @@ export default function StudentProfile() {
           
           // Update all completion statuses
           const updatedCompletedSections = {
-            personal: Boolean(
+            profile: Boolean(
               profile.personalInfo && 
               profile.personalInfo.fullName && 
-              profile.personalInfo.phoneNumber
+              profile.personalInfo.phoneNumber && 
+              profile.paymentInfo && 
+              profile.paymentInfo.preferredPaymentMethods && 
+              profile.paymentInfo.preferredPaymentMethods.length > 0
             ),
             academic: Boolean(
               profile.academicInfo && 
               profile.academicInfo.institution && 
               profile.academicInfo.studentId && 
               profile.academicInfo.course
-            ),
-            payment: Boolean(
-              profile.paymentInfo && 
-              profile.paymentInfo.preferredPaymentMethods && 
-              profile.paymentInfo.preferredPaymentMethods.length > 0
             ),
             preferences: Boolean(
               profile.preferences && 
@@ -292,7 +250,7 @@ export default function StudentProfile() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <FaSpinner className="animate-spin text-green-600 text-4xl" />
+        <FaSpinner className={`animate-spin text-${themeColor}-600 text-4xl`} />
       </div>
     );
   }
@@ -301,23 +259,63 @@ export default function StudentProfile() {
     <div className="max-w-4xl mx-auto px-4 py-6">
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
         <div className="flex-shrink-0">
-          {profileData?.profileImage ? (
+          {profileData?.personalInfo?.profilePicture?.url ? (
             <img 
-              src={profileData.profileImage} 
+              src={profileData.personalInfo.profilePicture.url} 
               alt="Profile" 
               className="w-24 h-24 rounded-full object-cover border-4 border-green-100"
             />
           ) : (
-            <FaUserCircle className="w-24 h-24 text-gray-400" />
+            <FaUserCircle className={`w-24 h-24 text-${themeColor}-400`} />
           )}
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            {profileData?.fullName || 'Complete Your Profile'}
+          <h1 className={`text-2xl font-bold text-${themeColor}-800`}>
+            {profileData?.personalInfo?.fullName || user?.username || 'Complete Your Profile'}
           </h1>
           <p className="text-gray-600">
-            {profileData?.email || 'Update your information to enhance your experience'}
+            {user?.email || 'Update your information to enhance your experience'}
           </p>
+        </div>
+      </div>
+      
+      {/* Basic Account Information */}
+      <div className="bg-white rounded-lg p-6 shadow-md mb-6">
+        <h2 className={`text-xl font-semibold text-${themeColor}-800 mb-4`}>Account Information</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+            <FaUser className={`text-xl text-${themeColor}-600`} />
+            <div>
+              <p className="text-sm text-gray-500">Username</p>
+              <p className="font-medium">{user?.username}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+            <FaEnvelope className={`text-xl text-${themeColor}-600`} />
+            <div>
+              <p className="text-sm text-gray-500">Email</p>
+              <p className="font-medium">{user?.email}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+            <FaUserTag className={`text-xl text-${themeColor}-600`} />
+            <div>
+              <p className="text-sm text-gray-500">Account Type</p>
+              <p className="font-medium capitalize">{user?.userType}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+            <FaClock className={`text-xl text-${themeColor}-600`} />
+            <div>
+              <p className="text-sm text-gray-500">Member Since</p>
+              <p className="font-medium">
+                {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -332,52 +330,39 @@ export default function StudentProfile() {
             <ul>
               <li>
                 <button
-                  onClick={() => setActiveTab('personal')}
+                  onClick={() => setActiveTab('profile')}
                   className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'personal' ? 'bg-green-50 text-green-700' : 'hover:bg-gray-50'
+                    activeTab === 'profile' ? `bg-${themeColor}-50 text-${themeColor}-700` : 'hover:bg-gray-50'
                   }`}
                 >
                   <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.personal ? 'bg-green-500' : 'bg-gray-300'
+                    completedSections.profile ? `bg-${themeColor}-500` : 'bg-gray-300'
                   }`}></span>
-                  Personal Information
+                  Profile
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => setActiveTab('academic')}
                   className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'academic' ? 'bg-green-50 text-green-700' : 'hover:bg-gray-50'
+                    activeTab === 'academic' ? `bg-${themeColor}-50 text-${themeColor}-700` : 'hover:bg-gray-50'
                   }`}
                 >
                   <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.academic ? 'bg-green-500' : 'bg-gray-300'
+                    completedSections.academic ? `bg-${themeColor}-500` : 'bg-gray-300'
                   }`}></span>
                   Academic Information
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => setActiveTab('payment')}
-                  className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'payment' ? 'bg-green-50 text-green-700' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.payment ? 'bg-green-500' : 'bg-gray-300'
-                  }`}></span>
-                  Payment Methods
-                </button>
-              </li>
-              <li>
-                <button
                   onClick={() => setActiveTab('preferences')}
                   className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'preferences' ? 'bg-green-50 text-green-700' : 'hover:bg-gray-50'
+                    activeTab === 'preferences' ? `bg-${themeColor}-50 text-${themeColor}-700` : 'hover:bg-gray-50'
                   }`}
                 >
                   <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.preferences ? 'bg-green-500' : 'bg-gray-300'
+                    completedSections.preferences ? `bg-${themeColor}-500` : 'bg-gray-300'
                   }`}></span>
                   Preferences
                 </button>
@@ -386,11 +371,11 @@ export default function StudentProfile() {
                 <button
                   onClick={() => setActiveTab('documents')}
                   className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'documents' ? 'bg-green-50 text-green-700' : 'hover:bg-gray-50'
+                    activeTab === 'documents' ? `bg-${themeColor}-50 text-${themeColor}-700` : 'hover:bg-gray-50'
                   }`}
                 >
                   <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.documents ? 'bg-green-500' : 'bg-gray-300'
+                    completedSections.documents ? `bg-${themeColor}-500` : 'bg-gray-300'
                   }`}></span>
                   Documents & Verification
                 </button>
@@ -400,10 +385,10 @@ export default function StudentProfile() {
         </div>
         
         <div className="md:col-span-2">
-          {activeTab === 'personal' && (
+          {activeTab === 'profile' && (
             <PersonalInfoForm 
               initialData={profileData} 
-              onSave={handleSavePersonalInfo}
+              onSave={handleSaveProfileInfo}
               loading={saving}
             />
           )}
@@ -412,14 +397,6 @@ export default function StudentProfile() {
             <AcademicInfoForm 
               initialData={profileData} 
               onSave={handleSaveAcademicInfo}
-              loading={saving}
-            />
-          )}
-          
-          {activeTab === 'payment' && (
-            <PaymentInfoForm 
-              initialData={profileData} 
-              onSave={handleSavePaymentInfo}
               loading={saving}
             />
           )}
@@ -442,4 +419,4 @@ export default function StudentProfile() {
       </div>
     </div>
   );
-} 
+}

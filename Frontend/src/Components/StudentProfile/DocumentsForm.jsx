@@ -1,160 +1,63 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaFileAlt, FaUpload, FaTrash, FaCheckCircle, FaTimesCircle, FaFileImage, FaFilePdf, FaEye, FaExternalLinkAlt, FaTimes, FaSpinner, FaExclamationTriangle } from 'react-icons/fa';
+import { FaFileAlt, FaUpload, FaTrash, FaCheckCircle, FaFileImage, FaFilePdf, FaDownload, FaExclamationTriangle, FaSpinner } from 'react-icons/fa';
 import api from '../../utils/api';
 import { toast } from 'react-toastify';
 
 const DeleteConfirmationModal = ({ document, onClose, onConfirm, isDeleting }) => {
   if (!document) return null;
   
-  const isPDF = document.url?.toLowerCase().endsWith('.pdf');
-  const isImage = document.url ? /\.(jpg|jpeg|png|gif|webp)$/i.test(document.url) : false;
-  
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full overflow-hidden shadow-xl transform transition-all">
-        <div className="bg-red-50 p-4 sm:p-6 text-center">
-          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-            <FaExclamationTriangle className="h-6 w-6 text-red-600" />
-          </div>
-          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">Delete Document</h3>
-          <div className="mt-3 mb-4">
-            <p className="text-sm text-gray-500">
-              Are you sure you want to delete this document? This action cannot be undone.
-            </p>
-          </div>
-          
-          {/* Document preview */}
-          <div className="border rounded-lg p-3 bg-white mb-4 flex items-center">
-            <div className="mr-3 text-xl">
-              {isPDF ? (
-                <FaFilePdf className="text-red-500" />
-              ) : isImage ? (
-                <FaFileImage className="text-green-500" />
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">Delete Document</h3>
+        
+        <div className="mb-6">
+          <p className="text-gray-600">Are you sure you want to delete this document?</p>
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center">
+              {document.url.toLowerCase().endsWith('.pdf') ? (
+                <FaFilePdf className="text-red-500 text-xl mr-3" />
               ) : (
-                <FaFileAlt className="text-blue-500" />
+                <FaFileImage className="text-green-500 text-xl mr-3" />
               )}
+              <div>
+                <p className="font-medium text-gray-800">{document.name}</p>
+                <p className="text-sm text-gray-500 capitalize">{document.type.replace('_', ' ')}</p>
+              </div>
             </div>
-            <div className="text-left overflow-hidden">
-              <h4 className="font-medium text-gray-800 truncate">{document.name}</h4>
-              <p className="text-xs text-gray-500 capitalize">{document.type?.replace('_', ' ')}</p>
-            </div>
-          </div>
-          
-          <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
-              onClick={onClose}
-              disabled={isDeleting}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
-              onClick={onConfirm}
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <>
-                  <FaSpinner className="animate-spin mr-2" />
-                  Deleting...
-                </>
-              ) : (
-                'Delete'
-              )}
-            </button>
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-const DocumentPreviewModal = ({ document, onClose }) => {
-  if (!document) return null;
-  
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  
-  const isPDF = document.url.toLowerCase().endsWith('.pdf');
-  const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(document.url);
-  
-  const handleLoad = () => {
-    setLoading(false);
-  };
-  
-  const handleError = () => {
-    setLoading(false);
-    setError(true);
-  };
-  
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col">
-        <div className="p-4 border-b flex justify-between items-center">
-          <h3 className="text-lg font-medium flex items-center">
-            {isPDF ? <FaFilePdf className="text-red-500 mr-2" /> : <FaFileImage className="text-green-500 mr-2" />}
-            {document.name}
-          </h3>
-          <div className="flex items-center space-x-2">
-            <a 
-              href={document.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-              title="Open in new tab"
-            >
-              <FaExternalLinkAlt />
-            </a>
-            <button 
-              onClick={onClose}
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded"
-              title="Close preview"
-            >
-              <FaTimes />
-            </button>
-          </div>
-        </div>
-        <div className="p-4 flex-1 overflow-auto flex items-center justify-center bg-gray-100">
-          {loading && (
-            <div className="flex flex-col items-center justify-center p-10">
-              <FaSpinner className="animate-spin text-3xl text-green-600 mb-2" />
-              <p className="text-gray-600">Loading document...</p>
-            </div>
-          )}
-          
-          {error && (
-            <div className="flex flex-col items-center justify-center p-10 text-center">
-              <FaTimesCircle className="text-3xl text-red-500 mb-2" />
-              <p className="text-gray-800 font-medium">Unable to preview this document</p>
-              <p className="text-gray-600 mt-1">Please use the "Open in new tab" button to view it</p>
-            </div>
-          )}
-          
-          {isPDF ? (
-            <iframe 
-              src={`${document.url}#toolbar=0`} 
-              title={document.name}
-              className={`w-full h-full min-h-[500px] border-0 ${loading ? 'hidden' : 'block'}`}
-              onLoad={handleLoad}
-              onError={handleError}
-            />
-          ) : isImage ? (
-            <img 
-              src={document.url} 
-              alt={document.name} 
-              className={`max-w-full max-h-[70vh] object-contain ${loading ? 'hidden' : 'block'}`}
-              onLoad={handleLoad}
-              onError={handleError}
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center p-10 text-center">
-              <FaFileAlt className="text-4xl text-green-600 mb-3" />
-              <p className="text-gray-800 font-medium">This document can't be previewed</p>
-              <p className="text-gray-600 mt-1">Please use the "Open in new tab" button to view it</p>
-            </div>
-          )}
+        
+        <div className="flex justify-end space-x-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+            disabled={isDeleting}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center"
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Deleting...
+              </>
+            ) : (
+              <>
+                <FaTrash className="mr-2" />
+                Delete
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
@@ -170,7 +73,6 @@ export default function DocumentsForm({ initialData, onRefresh }) {
   const [documentName, setDocumentName] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [previewDocument, setPreviewDocument] = useState(null);
   const [documentToDelete, setDocumentToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const fileInputRef = useRef(null);
@@ -200,123 +102,97 @@ export default function DocumentsForm({ initialData, onRefresh }) {
     }
   }, [initialData]);
 
-  // Clean up preview URL when component unmounts
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
-
-  const handleFileChange = async (e) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    
+  // Handle file selection
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (!file) return;
     
+    // Check file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+    if (!validTypes.includes(file.type)) {
+      toast.error('Please select a valid file type (JPG, PNG, or PDF)');
+      return;
+    }
+    
+    // Check file size (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
     if (file.size > maxSize) {
-      toast.error('File size should not exceed 5MB');
-      resetFileInput();
+      toast.error('File size exceeds the 5MB limit');
       return;
     }
     
-    // Allowed file types: images and PDF
-    const fileType = file.type;
-    if (!fileType.startsWith('image/') && fileType !== 'application/pdf') {
-      toast.error('Only images and PDFs are allowed');
-      resetFileInput();
-      return;
-    }
-    
-    // Create preview
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl); // Clean up previous preview
-    }
-    
-    const filePreviewUrl = URL.createObjectURL(file);
-    setPreviewUrl(filePreviewUrl);
     setSelectedFile(file);
+    
+    // Create preview URL for images
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewUrl(null);
+    }
+    
+    // Auto-fill document name if not already set
+    if (!documentName) {
+      setDocumentName(file.name.split('.')[0]);
+    }
   };
 
-  const resetFileInput = () => {
+  // Handle drag and drop
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      // Use the existing file validation logic
+      handleFileChange({ target: { files: [file] } });
+    }
+  };
+
+  // Reset the form
+  const resetForm = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    setDocumentName('');
+    setDocumentType('identity');
+    setUploadProgress(0);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-    setSelectedFile(null);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
   };
 
+  // Upload document to the server
   const uploadDocument = async () => {
-    if (!selectedFile) {
-      toast.error('Please select a file first');
-      return;
-    }
+    if (!selectedFile) return;
     
     try {
       setUploading(true);
-      setUploadProgress(0);
       
       const formData = new FormData();
       formData.append('document', selectedFile);
+      formData.append('name', documentName || selectedFile.name);
       formData.append('type', documentType);
       
-      if (documentName.trim()) {
-        formData.append('name', documentName.trim());
-      } else {
-        formData.append('name', selectedFile.name);
-      }
-      
-      // Upload to server
       const response = await api.post('/student/profile/documents', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data'
         },
-        onUploadProgress: progressEvent => {
+        onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setUploadProgress(percentCompleted);
         }
       });
       
       if (response.data.success) {
-        // Show success toast notification
         toast.success('Document uploaded successfully');
-        
-        // Reset form state
-        setDocumentName('');
-        resetFileInput();
-        
-        // If there's a refresh callback, call it to update the parent component
-        if (onRefresh) {
-          onRefresh();
-        } else {
-          // Fetch the updated list of documents directly from the server
-          // This ensures we have the most up-to-date list without requiring a manual refresh
-          await fetchDocuments();
-        }
-      }
-    } catch (error) {
-      console.error('Error uploading document:', error);
-      toast.error(error.response?.data?.message || 'Failed to upload document. Please try again.');
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const deleteDocument = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this document?')) {
-      return;
-    }
-    
-    try {
-      setLoading(true);
-      const response = await api.delete(`/student/profile/documents/${id}`);
-      
-      if (response.data.success) {
-        toast.success('Document deleted successfully');
         
         // Update local state or call refresh function
         if (onRefresh) {
@@ -326,26 +202,30 @@ export default function DocumentsForm({ initialData, onRefresh }) {
           // For consistency with upload behavior, we'll fetch from server
           await fetchDocuments();
         }
+        
+        // Reset form
+        resetForm();
       }
     } catch (error) {
-      console.error('Error deleting document:', error);
-      toast.error(error.response?.data?.message || 'Failed to delete document');
+      console.error('Error uploading document:', error);
+      toast.error(error.response?.data?.message || 'Failed to upload document');
     } finally {
-      setLoading(false);
+      setUploading(false);
     }
   };
 
+  // Handle file icon display
   const getFileIcon = (url) => {
-    if (url) {
-      if (url.endsWith('.pdf')) {
-        return <FaFilePdf className="text-red-500" />;
-      } else {
-        return <FaFileImage className="text-green-500" />;
-      }
+    if (url.toLowerCase().endsWith('.pdf')) {
+      return <FaFilePdf className="text-red-500" />;
+    } else if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
+      return <FaFileImage className="text-green-500" />;
+    } else {
+      return <FaFileAlt className="text-blue-500" />;
     }
-    return <FaFileAlt className="text-gray-500" />;
   };
 
+  // Format date for display
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -355,8 +235,44 @@ export default function DocumentsForm({ initialData, onRefresh }) {
     });
   };
 
-  const handleViewDocument = (document) => {
-    setPreviewDocument(document);
+  // Handle document download
+  const handleDownloadDocument = (doc) => {
+    try {
+      // Create a fetch request to get the file
+      fetch(doc.url)
+        .then(response => response.blob())
+        .then(blob => {
+          // Create a blob URL for the file
+          const blobUrl = window.URL.createObjectURL(blob);
+          
+          // Create a temporary anchor element
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = doc.name || 'document';
+          
+          // Append to body, click, and remove
+          document.body.appendChild(link);
+          link.click();
+          
+          // Clean up
+          setTimeout(() => {
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+          }, 100);
+          
+          toast.success('Download started');
+        })
+        .catch(error => {
+          console.error('Download error:', error);
+          toast.error('Failed to download document. Try opening in a new tab instead.');
+          
+          // Fallback: open in new tab
+          window.open(doc.url, '_blank');
+        });
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Failed to download document');
+    }
   };
 
   const initiateDeleteDocument = (document) => {
@@ -397,13 +313,6 @@ export default function DocumentsForm({ initialData, onRefresh }) {
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-md mb-6">
-      {previewDocument && (
-        <DocumentPreviewModal 
-          document={previewDocument} 
-          onClose={() => setPreviewDocument(null)} 
-        />
-      )}
-      
       {documentToDelete && (
         <DeleteConfirmationModal
           document={documentToDelete}
@@ -454,50 +363,47 @@ export default function DocumentsForm({ initialData, onRefresh }) {
           </div>
         </div>
         
-        {/* File Preview Area */}
-        {previewUrl && (
-          <div className="mt-4 border rounded-lg p-4 flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="mr-3 text-xl">
-                {getFileIcon(selectedFile?.name)}
-              </div>
-              <div>
-                <h4 className="font-medium text-gray-800">{selectedFile?.name}</h4>
-                <p className="text-sm text-gray-500">
-                  {selectedFile?.type} - {(selectedFile?.size / (1024 * 1024)).toFixed(2)} MB
-                </p>
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              {selectedFile?.type.startsWith('image/') && (
-                <a 
-                  href={previewUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 text-green-600 hover:bg-green-50 rounded"
-                >
-                  <FaEye />
-                </a>
-              )}
-              <button 
-                className="p-2 text-red-600 hover:bg-red-50 rounded"
-                onClick={resetFileInput}
-              >
-                <FaTrash />
-              </button>
-            </div>
-          </div>
-        )}
-        
-        <div className="mt-4 flex gap-4">
+        <div 
+          className="mt-4"
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
           <input
             type="file"
             ref={fileInputRef}
             onChange={handleFileChange}
-            accept="image/*,application/pdf"
             className="hidden"
+            accept=".jpg,.jpeg,.png,.pdf"
             disabled={uploading}
           />
+          
+          {previewUrl && (
+            <div className="mb-4 p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-medium">Selected File</h4>
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="text-red-500 hover:text-red-700"
+                  disabled={uploading}
+                >
+                  Remove
+                </button>
+              </div>
+              {previewUrl.startsWith('data:image') ? (
+                <img 
+                  src={previewUrl} 
+                  alt="Preview" 
+                  className="max-h-40 rounded border border-gray-200 mx-auto"
+                />
+              ) : (
+                <div className="flex items-center p-3 bg-gray-50 rounded">
+                  <FaFilePdf className="text-red-500 text-xl mr-2" />
+                  <span>{selectedFile.name}</span>
+                </div>
+              )}
+            </div>
+          )}
           
           {!selectedFile ? (
             <button
@@ -558,7 +464,11 @@ export default function DocumentsForm({ initialData, onRefresh }) {
       <div>
         <h3 className="text-lg font-medium text-gray-800 mb-4">Your Documents</h3>
         
-        {documents.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center items-center py-10">
+            <FaSpinner className="animate-spin text-green-600 text-2xl" />
+          </div>
+        ) : documents.length === 0 ? (
           <p className="text-gray-500 text-center py-6">
             You haven't uploaded any documents yet.
           </p>
@@ -581,36 +491,25 @@ export default function DocumentsForm({ initialData, onRefresh }) {
                 
                 <div className="flex items-center">
                   <div className="mr-4">
-                    {doc.verified ? (
-                      <span className="inline-flex items-center text-green-700 text-sm">
-                        <FaCheckCircle className="mr-1" />
-                        Verified
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center text-yellow-600 text-sm">
-                        <FaTimesCircle className="mr-1" />
-                        Pending
-                      </span>
-                    )}
+                    <span className="inline-flex items-center text-green-600 text-sm">
+                      <FaCheckCircle className="mr-1" />
+                      Uploaded
+                    </span>
                   </div>
                   
                   <div className="flex space-x-2">
                     <button 
-                      onClick={() => handleViewDocument(doc)}
+                      onClick={() => handleDownloadDocument(doc)}
                       className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-                      title="View document"
+                      title="Download document"
                     >
-                      <span className="sr-only">View</span>
-                      <FaEye />
+                      <FaDownload />
                     </button>
-                    
-                    <button
+                    <button 
                       onClick={() => initiateDeleteDocument(doc)}
-                      disabled={loading}
                       className="p-2 text-red-600 hover:bg-red-50 rounded"
                       title="Delete document"
                     >
-                      <span className="sr-only">Delete</span>
                       <FaTrash />
                     </button>
                   </div>
@@ -622,4 +521,4 @@ export default function DocumentsForm({ initialData, onRefresh }) {
       </div>
     </div>
   );
-} 
+}

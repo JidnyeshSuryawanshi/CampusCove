@@ -148,7 +148,13 @@ export const getStudentProfile = async () => {
 
 export const updatePersonalInfo = async (data) => {
   try {
-    const response = await api.put('/student/profile/personal', data);
+    // Ensure date is properly formatted before sending to backend
+    const formattedData = {
+      ...data,
+      dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth).toISOString() : null
+    };
+    
+    const response = await api.put('/student/profile/personal', formattedData);
     return response.data;
   } catch (error) {
     throw error;
@@ -206,5 +212,16 @@ export const deleteDocument = async (documentId) => {
 };
 
 // All owner profile related functions have been removed
+
+// Function to fetch owner details by ID
+export const fetchOwnerDetails = async (ownerId) => {
+  try {
+    const response = await api.get(`/users/${ownerId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching owner details:', error);
+    throw error;
+  }
+};
 
 export default api;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaMapMarkerAlt, FaRupeeSign, FaDumbbell, FaClock, FaMale, FaFemale, FaUsers } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaRupeeSign, FaDumbbell, FaClock, FaMale, FaFemale, FaUsers, FaSpinner } from 'react-icons/fa';
 import GymDetail from './GymDetail';
 import { fetchGyms } from '../../utils/api';
 
@@ -82,7 +82,7 @@ export default function Gym() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        <FaSpinner className="animate-spin text-green-600 text-4xl" />
       </div>
     );
   }

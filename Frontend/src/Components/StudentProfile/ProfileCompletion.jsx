@@ -4,9 +4,8 @@ import { FaCheckCircle, FaRegCircle } from 'react-icons/fa';
 export default function ProfileCompletion({ completedSections }) {
   // Define the sections of the profile
   const sections = [
-    { id: 'personal', name: 'Personal Information' },
+    { id: 'profile', name: 'Personal Information' },
     { id: 'academic', name: 'Academic Information' },
-    { id: 'payment', name: 'Payment Methods' },
     { id: 'preferences', name: 'Preferences' },
     { id: 'documents', name: 'Documents' }
   ];
@@ -77,4 +76,4 @@ export default function ProfileCompletion({ completedSections }) {
       )}
     </div>
   );
-} 
+}
