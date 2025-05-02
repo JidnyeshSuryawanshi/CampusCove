@@ -98,24 +98,7 @@ export default function Gym() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-gray-900">Gym Services</h2>
-        <div className="flex space-x-2">
-          <select className="border rounded-md px-3 py-1 text-sm" defaultValue="">
-            <option value="" disabled>Filter by Price</option>
-            <option value="low">Low to High</option>
-            <option value="high">High to Low</option>
-          </select>
-          <select className="border rounded-md px-3 py-1 text-sm" defaultValue="">
-            <option value="" disabled>Gym Type</option>
-            <option value="weightlifting">Weight Training</option>
-            <option value="cardio">Cardio</option>
-            <option value="yoga">Yoga</option>
-            <option value="crossfit">CrossFit</option>
-            <option value="mixed">Mixed</option>
-          </select>
-        </div>
-      </div>
+   
 
       {gyms.length === 0 ? (
         <div className="bg-yellow-50 border border-yellow-300 text-yellow-800 px-4 py-3 rounded">

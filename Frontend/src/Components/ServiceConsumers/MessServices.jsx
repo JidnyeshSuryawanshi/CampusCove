@@ -77,23 +77,7 @@ export default function MessServices() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-gray-900">Mess Services</h2>
-        <div className="flex space-x-2">
-          <select className="border rounded-md px-3 py-1 text-sm" defaultValue="">
-            <option value="" disabled>Filter by Price</option>
-            <option value="low">Low to High</option>
-            <option value="high">High to Low</option>
-          </select>
-          <select className="border rounded-md px-3 py-1 text-sm" defaultValue="">
-            <option value="" disabled>Meal Type</option>
-            <option value="veg">Vegetarian</option>
-            <option value="nonVeg">Non-Vegetarian</option>
-            <option value="both">Both</option>
-          </select>
-        </div>
-      </div>
-
+    
       {messServices.length === 0 ? (
         <div className="bg-yellow-50 border border-yellow-300 text-yellow-800 px-4 py-3 rounded">
           No mess services available at the moment.
