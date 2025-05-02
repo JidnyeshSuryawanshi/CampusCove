@@ -271,7 +271,7 @@ export default function Profile() {
         </div>
         <div>
           <h1 className={`text-2xl font-bold text-${themeColor}-800`}>
-            {profileData?.personalInfo?.fullName || user?.username || 'Complete Your Profile'}
+            {profileData?.personalInfo?.fullName || user?.username || ''}
           </h1>
           <p className="text-gray-600">
             {user?.email || 'Update your information to enhance your experience'}

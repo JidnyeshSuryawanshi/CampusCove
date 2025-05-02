@@ -65,44 +65,6 @@ export default function StudentDashboard() {
           </div>
         )}
         
-        {/* Profile Completion Banner - Only show if not complete and banner is not dismissed */}
-        {!loading && showProfileBanner && !isProfileComplete && completionPercentage < 100 && (
-          <div className="bg-green-50 border-l-4 border-green-600 p-4 mb-6 rounded-md shadow-sm">
-            <div className="flex items-start justify-between">
-              <div className="flex">
-                <FaUserCircle className="text-green-600 text-xl mt-0.5 mr-3" />
-                <div>
-                  <h3 className="text-green-800 font-medium">Complete Your Profile</h3>
-                  <p className="text-green-700 text-sm mt-1">
-                    Enhance your booking experience by completing your profile information.
-                    Current completion: {completionPercentage}%
-                  </p>
-                  <div className="mt-2">
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-green-600 h-2 rounded-full" 
-                        style={{ width: `${completionPercentage}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => navigate('/dashboard/profile')}
-                    className="mt-3 bg-green-600 text-white px-4 py-1.5 text-sm rounded hover:bg-green-700 inline-flex items-center"
-                  >
-                    Complete Profile <FaArrowRight className="ml-1" />
-                  </button>
-                </div>
-              </div>
-              <button 
-                onClick={() => setShowProfileBanner(false)}
-                className="text-green-800 hover:text-green-900"
-              >
-                &times;
-              </button>
-            </div>
-          </div>
-        )}
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Hostel Card */}
           <div className="bg-white overflow-hidden shadow rounded-lg">
