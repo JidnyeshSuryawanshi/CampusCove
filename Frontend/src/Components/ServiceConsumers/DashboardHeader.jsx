@@ -8,6 +8,9 @@ export default function DashboardHeader() {
   const location = useLocation();
   const isOwner = user?.userType.includes('Owner');
   
+  // Theme color based on user type
+  const themeColor = isOwner ? 'blue-600' : 'green-600';
+  
   // Get current date in a nice format
   const currentDate = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -37,7 +40,7 @@ export default function DashboardHeader() {
     <header className="bg-white shadow-sm sticky top-0 z-[100]">
       <div className="flex items-center justify-between px-8 py-4">
         <div className="flex flex-col">
-          <h1 className="text-2xl font-bold text-green-600">{getPageTitle()}</h1>
+          <h1 className={`text-2xl font-bold text-${themeColor}`}>{getPageTitle()}</h1>
           <div className="flex items-center text-gray-500 text-sm mt-1">
             <FaCalendarAlt className="mr-2" />
             <span>{currentDate}</span>
@@ -53,9 +56,9 @@ export default function DashboardHeader() {
               <p className="text-xs text-gray-500">{isOwner ? 'Service Provider' : 'Student'}</p>
             </div>
             <img
-              src={`https://ui-avatars.com/api/?name=${user?.username || 'User'}&background=22C55E&color=fff`}
+              src={`https://ui-avatars.com/api/?name=${user?.username || 'User'}&background=${isOwner ? '2563EB' : '22C55E'}&color=fff`}
               alt="Profile"
-              className="h-10 w-10 rounded-full border-2 border-green-500"
+              className={`h-10 w-10 rounded-full border-2 border-${themeColor}`}
             />
             <span className="font-medium text-gray-700">{user?.username}</span>
           </div>
