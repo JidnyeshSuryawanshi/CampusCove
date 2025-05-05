@@ -4,6 +4,10 @@ const cors = require("cors")
 const connectDB = require("./config/database")
 const { errorHandler } = require("./utils/errorHandler")
 const cookieParser = require("cookie-parser")
+const { scheduleCleanup } = require('./utils/subscriptionCleanup');
+
+// Schedule subscription cleanup
+scheduleCleanup();
 
 // Load env vars
 dotenv.config()

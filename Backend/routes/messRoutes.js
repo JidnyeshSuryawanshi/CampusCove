@@ -58,6 +58,9 @@ router.route('/:id/images/:imageId')
 router.route('/:id/subscribe')
   .post(protect, authorize('student'), subscribeToMess);
 
+// Revenue routes
+router.get('/owner/subscriptions', protect, authorize('messOwner'), getOwnerSubscriptions);
+
 // Add these new routes
 router.get('/subscriptions/owner', 
   protect, 
