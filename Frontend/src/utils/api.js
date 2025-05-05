@@ -256,4 +256,189 @@ export const fetchOwnerProfileById = async (userId) => {
   }
 };
 
+// Booking related API functions
+export const createBookingRequest = async (bookingData) => {
+  try {
+    const response = await api.post('/bookings', bookingData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating booking:', error);
+    throw error;
+  }
+};
+
+export const getBookings = async (status) => {
+  try {
+    const url = status ? `/bookings?status=${status}` : '/bookings';
+    const response = await api.get(url);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching bookings:', error);
+    throw error;
+  }
+};
+
+export const updateBookingStatus = async (bookingId, status) => {
+  try {
+    const response = await api.put(`/bookings/${bookingId}`, { status });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating booking status:', error);
+    throw error;
+  }
+};
+
+export const cancelBooking = async (bookingId) => {
+  try {
+    const response = await api.put(`/bookings/${bookingId}/cancel`);
+    return response.data;
+  } catch (error) {
+    console.error('Error cancelling booking:', error);
+    throw error;
+  }
+};
+
+export const updatePaymentStatus = async (bookingId, paymentStatus) => {
+  try {
+    const response = await api.put(`/bookings/${bookingId}/payment`, { paymentStatus });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating payment status:', error);
+    throw error;
+  }
+};
+
+// Function to fetch accepted bookings (customers for owners)
+export const getAcceptedBookings = async () => {
+  try {
+    const response = await api.get('/bookings?status=accepted');
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching accepted bookings:', error);
+    throw error;
+  }
+};
+
+// Function to check booking status for a specific service
+export const checkServiceBookingStatus = async (serviceType, serviceId) => {
+  try {
+    const allBookings = await getBookings();
+    
+    // Find the relevant booking for this service
+    const bookings = allBookings.filter(
+      booking => booking.serviceType === serviceType && booking.serviceId === serviceId
+    );
+    
+    if (bookings.length === 0) {
+      return { hasBooking: false };
+    }
+    
+    // Check for the most relevant booking (prioritize accepted over pending)
+    const acceptedBooking = bookings.find(b => b.status === 'accepted');
+    const pendingBooking = bookings.find(b => b.status === 'pending');
+    
+    if (acceptedBooking) {
+      return { 
+        hasBooking: true, 
+        status: 'accepted', 
+        booking: acceptedBooking,
+        isPaid: acceptedBooking.paymentStatus === 'paid'
+      };
+    } else if (pendingBooking) {
+      return { 
+        hasBooking: true, 
+        status: 'pending', 
+        booking: pendingBooking 
+      };
+    }
+    
+    return { hasBooking: false };
+  } catch (error) {
+    console.error('Error checking service booking status:', error);
+    throw error;
+  }
+};
+
+// Function to get revenue statistics
+export const getRevenueStats = async () => {
+  try {
+    // We'll use the accepted bookings with paid status to calculate revenue
+    const bookings = await getAcceptedBookings();
+    
+    // Filter to only paid bookings
+    const paidBookings = bookings.filter(booking => booking.paymentStatus === 'paid');
+    
+    // Calculate total revenue
+    let totalRevenue = 0;
+    const monthlyRevenue = {};
+    const serviceTypeRevenue = {
+      hostel: 0,
+      mess: 0,
+      gym: 0
+    };
+    
+    // Current month and year
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
+    // Initialize monthly data for the last 6 months
+    for (let i = 0; i < 6; i++) {
+      const month = new Date(currentYear, currentMonth - i, 1);
+      const monthYear = `${month.getFullYear()}-${month.getMonth() + 1}`;
+      monthlyRevenue[monthYear] = 0;
+    }
+    
+    // Process each paid booking
+    paidBookings.forEach(booking => {
+      // Get price from serviceDetails
+      const price = booking.serviceDetails?.price || 0;
+      totalRevenue += price;
+      
+      // Add to service type revenue
+      if (booking.serviceType && serviceTypeRevenue[booking.serviceType] !== undefined) {
+        serviceTypeRevenue[booking.serviceType] += price;
+      }
+      
+      // Add to monthly revenue
+      const bookingDate = new Date(booking.updatedAt);
+      const monthYear = `${bookingDate.getFullYear()}-${bookingDate.getMonth() + 1}`;
+      
+      if (monthlyRevenue[monthYear] !== undefined) {
+        monthlyRevenue[monthYear] += price;
+      }
+    });
+    
+    // Format monthly data for charts
+    const monthlyData = Object.entries(monthlyRevenue).map(([key, value]) => {
+      const [year, month] = key.split('-');
+      const date = new Date(parseInt(year), parseInt(month) - 1, 1);
+      const monthName = date.toLocaleString('default', { month: 'short' });
+      
+      return {
+        month: `${monthName} ${year}`,
+        revenue: value
+      };
+    }).reverse();
+    
+    return {
+      totalRevenue,
+      paidBookingsCount: paidBookings.length,
+      monthlyData,
+      serviceTypeRevenue,
+      recentTransactions: paidBookings.slice(0, 5).map(booking => ({
+        id: booking._id,
+        date: booking.updatedAt,
+        amount: booking.serviceDetails?.price || 0,
+        student: booking.student,
+        serviceType: booking.serviceType,
+        serviceName: booking.serviceDetails?.roomName || 'Service'
+      }))
+    };
+  } catch (error) {
+    console.error('Error calculating revenue stats:', error);
+    throw error;
+  }
+};
+
 export default api;

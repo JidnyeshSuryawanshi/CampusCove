@@ -24,19 +24,23 @@ import {
   FaEnvelope,
   FaPhone,
   FaIdCard,
-  FaSpinner
+  FaSpinner,
+  FaCreditCard
 } from 'react-icons/fa';
-import { fetchOwnerDetails } from '../../utils/api';
+import { fetchOwnerDetails, fetchOwnerProfileById } from '../../utils/api';
+import { toast } from 'react-toastify';
 import OwnerProfileModal from './OwnerProfileModal';
+import BookingModal from './BookingModal';
 
-export default function HostelDetail({ hostel, onClose }) {
+export default function HostelDetail({ hostel, onClose, bookingStatus, onBookingSuccess }) {
   if (!hostel) return null;
   
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [ownerDetails, setOwnerDetails] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showOwnerProfile, setShowOwnerProfile] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
   
   // Fetch owner details
   useEffect(() => {
@@ -47,10 +51,8 @@ export default function HostelDetail({ hostel, onClose }) {
         setLoading(true);
         // Get owner ID whether it's an object or string
         const ownerId = typeof hostel.owner === 'object' ? hostel.owner._id : hostel.owner;
-        console.log("Fetching owner with ID:", ownerId);
         
         const data = await fetchOwnerDetails(ownerId);
-        console.log("Owner data received:", data);
         setOwnerDetails(data.data);
       } catch (err) {
         console.error('Error fetching owner details:', err);
@@ -59,9 +61,9 @@ export default function HostelDetail({ hostel, onClose }) {
         setLoading(false);
       }
     };
-    
+
     getOwnerDetails();
-  }, [hostel.owner]);
+  }, [hostel]);
   
   // Function to display amenities icons
   const renderAmenityIcon = (key) => {
@@ -168,6 +170,82 @@ export default function HostelDetail({ hostel, onClose }) {
     return typeof hostel.owner === 'object' ? hostel.owner._id : hostel.owner;
   };
 
+  // Handle booking button click
+  const handleBookNowClick = () => {
+    setShowBookingModal(true);
+  };
+
+  // Handle booking success
+  const handleBookingSuccess = (booking) => {
+    if (onBookingSuccess) {
+      onBookingSuccess(booking);
+    }
+    setShowBookingModal(false);
+  };
+
+  // Handle payment button click
+  const handlePayNow = () => {
+    toast.info('Payment functionality will be implemented in a future update. Your booking is confirmed!');
+  };
+
+  // Get booking button status
+  const getBookingButtonStatus = () => {
+    if (!hostel.availability) {
+      return {
+        text: 'Not Available',
+        disabled: true,
+        className: 'bg-gray-400 cursor-not-allowed',
+        onClick: () => {}
+      };
+    }
+    
+    if (bookingStatus?.hasBooking) {
+      // If booking is accepted, show payment status
+      if (bookingStatus.status === 'accepted') {
+        const isPaid = bookingStatus.booking?.paymentStatus === 'paid';
+        
+        if (isPaid) {
+          return {
+            text: 'Paid',
+            disabled: true,
+            className: 'bg-green-600 cursor-not-allowed',
+            icon: <FaCheckCircle className="mr-2" />,
+            onClick: () => {}
+          };
+        } else {
+          return {
+            text: 'Pay Now',
+            disabled: false,
+            className: 'bg-indigo-600 hover:bg-indigo-700',
+            icon: <FaCreditCard className="mr-2" />,
+            onClick: handlePayNow
+          };
+        }
+      }
+      
+      // If booking is pending, show Pending status
+      if (bookingStatus.status === 'pending') {
+        return {
+          text: 'Booking Pending',
+          disabled: true,
+          className: 'bg-yellow-500 cursor-not-allowed',
+          onClick: () => {}
+        };
+      }
+    }
+    
+    // Default case: Available for booking
+    return {
+      text: 'Book Now',
+      disabled: false,
+      className: 'bg-green-600 hover:bg-green-700',
+      onClick: handleBookNowClick
+    };
+  };
+
+  // Get button status
+  const bookingButton = getBookingButtonStatus();
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[1000] p-4 overflow-y-auto">
       <div className="bg-white rounded-xl overflow-hidden max-w-5xl w-full max-h-90vh relative animate-fadeIn">
@@ -248,6 +326,19 @@ export default function HostelDetail({ hostel, onClose }) {
                     Not Available
                   </div>
                 )}
+
+                {/* Show booking status if applicable */}
+                {bookingStatus?.hasBooking && (
+                  <div className={`${
+                    bookingStatus.status === 'accepted' ? 'bg-green-600' : 
+                    bookingStatus.status === 'pending' ? 'bg-yellow-500' : 
+                    'bg-gray-600'
+                  } text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md`}>
+                    {bookingStatus.status === 'accepted' ? 'Booked' : 
+                     bookingStatus.status === 'pending' ? 'Pending' : 
+                     'Status: ' + bookingStatus.status}
+                  </div>
+                )}
               </div>
             </div>
             
@@ -319,6 +410,61 @@ export default function HostelDetail({ hostel, onClose }) {
                   </div>
                 </div>
               </div>
+              
+              {/* Booking status section - show only if there is a booking */}
+              {bookingStatus?.hasBooking && (
+                <div className={`rounded-lg p-4 border ${
+                  bookingStatus.status === 'accepted' ? 'bg-green-50 border-green-200' : 
+                  bookingStatus.status === 'pending' ? 'bg-yellow-50 border-yellow-200' : 
+                  'bg-gray-50 border-gray-200'
+                }`}>
+                  <h3 className="text-lg font-semibold text-gray-800 flex items-center mb-3">
+                    <FaCalendarAlt className={`mr-2 ${
+                      bookingStatus.status === 'accepted' ? 'text-green-600' : 
+                      bookingStatus.status === 'pending' ? 'text-yellow-600' : 
+                      'text-gray-600'
+                    }`} /> Booking Status
+                  </h3>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                      Status: <span className={`${
+                        bookingStatus.status === 'accepted' ? 'text-green-600' : 
+                        bookingStatus.status === 'pending' ? 'text-yellow-600' : 
+                        'text-gray-600'
+                      } capitalize`}>{bookingStatus.status}</span>
+                    </p>
+                    {bookingStatus.booking?.bookingDetails?.checkInDate && (
+                      <p className="text-sm">
+                        <span className="font-medium">Check-in Date:</span> {formatDate(bookingStatus.booking.bookingDetails.checkInDate)}
+                      </p>
+                    )}
+                    {bookingStatus.booking?.bookingDetails?.duration && (
+                      <p className="text-sm">
+                        <span className="font-medium">Duration:</span> {bookingStatus.booking.bookingDetails.duration}
+                      </p>
+                    )}
+                    {bookingStatus.status === 'accepted' && (
+                      <>
+                        <p className="text-sm font-medium">
+                          Payment Status: <span className={`${
+                            bookingStatus.booking?.paymentStatus === 'paid' ? 'text-green-600' : 'text-yellow-600'
+                          } capitalize`}>{bookingStatus.booking?.paymentStatus || 'unpaid'}</span>
+                        </p>
+                        {bookingStatus.booking?.paymentStatus !== 'paid' && (
+                          <div className="mt-2">
+                            <button
+                              onClick={handlePayNow}
+                              className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm shadow-md"
+                            >
+                              <FaCreditCard className="mr-2" /> Proceed to Payment
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
               
               {/* Owner Information */}
               <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -417,12 +563,11 @@ export default function HostelDetail({ hostel, onClose }) {
                   Contact Owner
                 </button>
                 <button 
-                  className={`px-4 py-2 text-white text-sm font-medium rounded-md transition shadow-md ${
-                    hostel.availability ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'
-                  }`}
-                  disabled={!hostel.availability}
+                  className={`px-4 py-2 text-white text-sm font-medium rounded-md transition shadow-md flex items-center ${bookingButton.className}`}
+                  disabled={bookingButton.disabled}
+                  onClick={bookingButton.onClick}
                 >
-                  {hostel.availability ? 'Book Now' : 'Not Available'}
+                  {bookingButton.icon} {bookingButton.text}
                 </button>
               </div>
             </div>
@@ -434,6 +579,16 @@ export default function HostelDetail({ hostel, onClose }) {
           <OwnerProfileModal 
             ownerId={getOwnerId()} 
             onClose={() => setShowOwnerProfile(false)} 
+          />
+        )}
+        
+        {/* Show Booking Modal when button is clicked */}
+        {showBookingModal && (
+          <BookingModal 
+            service={hostel}
+            serviceType="hostel"
+            onClose={() => setShowBookingModal(false)}
+            onSuccess={handleBookingSuccess}
           />
         )}
       </div>
