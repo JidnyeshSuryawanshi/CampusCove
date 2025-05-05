@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaSpinner, FaCamera, FaInfoCircle, FaIdCard, FaBuilding, FaCog, FaFileAlt } from 'react-icons/fa';
-import ProfileCompletion from './ProfileCompletion';
 import { toast } from 'react-toastify';
 import { useOwnerProfile } from '../../context/OwnerProfileContext';
 import PersonalInfoForm from './PersonalInfoForm';
@@ -20,7 +19,8 @@ export default function OwnerProfile() {
     updateBusinessInfo,
     updatePreferences,
     updateProfilePicture,
-    getCompletionSteps
+    getCompletionSteps,
+    getProfile
   } = useOwnerProfile();
 
   const [saving, setSaving] = useState(false);
@@ -35,8 +35,18 @@ export default function OwnerProfile() {
 
   const fileInputRef = useRef(null);
 
+  // Always refresh data when component mounts
   useEffect(() => {
-    // If we have completion steps from the backend, use those
+    const fetchData = async () => {
+      await getProfile();
+      await getCompletionSteps();
+    };
+    
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    // Prioritize backend data for tracking completion
     if (completionSteps) {
       setCompletedSections(completionSteps);
     }
@@ -69,12 +79,27 @@ export default function OwnerProfile() {
     }
   }, [profileData, completionSteps]);
 
+  // When a section is saved, update the UI and refresh completion data from server
+  const refreshProfileStatus = async () => {
+    try {
+      // Refresh the entire profile from the backend
+      await getProfile();
+      
+      // Get updated completion steps from backend
+      const completionData = await getCompletionSteps();
+      if (completionData) {
+        setCompletedSections(completionData.completionSteps);
+      }
+    } catch (error) {
+      console.error('Error refreshing profile status:', error);
+    }
+  };
+
   const handleSavePersonalInfo = async (data) => {
     try {
       setSaving(true);
       await updatePersonalInfo(data);
-      // Refresh completion steps to update UI
-      await getCompletionSteps();
+      await refreshProfileStatus();
       toast.success('Personal information updated successfully');
       setActiveSection(null);
     } catch (error) {
@@ -89,8 +114,7 @@ export default function OwnerProfile() {
     try {
       setSaving(true);
       await updateBusinessInfo(data);
-      // Refresh completion steps to update UI
-      await getCompletionSteps();
+      await refreshProfileStatus();
       toast.success('Business information updated successfully');
       setActiveSection(null);
     } catch (error) {
@@ -105,8 +129,7 @@ export default function OwnerProfile() {
     try {
       setSaving(true);
       await updatePreferences(data);
-      // Refresh completion steps to update UI
-      await getCompletionSteps();
+      await refreshProfileStatus();
       toast.success('Preferences updated successfully');
       setActiveSection(null);
     } catch (error) {
@@ -141,9 +164,11 @@ export default function OwnerProfile() {
         setUploadingPhoto(true);
 
         const formData = new FormData();
-        formData.append('profileImage', file);
+        formData.append('document', file);
 
         await updateProfilePicture(formData);
+        // Refresh the profile after uploading
+        await getProfile();
         toast.success('Profile picture updated successfully');
       } catch (error) {
         console.error('Error updating profile picture:', error);
@@ -162,34 +187,34 @@ export default function OwnerProfile() {
       case 'personal':
         return (
           <PersonalInfoForm
-            initialData={profileData?.personalInfo || {}}
+            initialData={profileData}
             onSave={handleSavePersonalInfo}
             onCancel={() => setActiveSection(null)}
-            isSaving={saving}
+            loading={saving}
           />
         );
       case 'business':
         return (
           <BusinessInfoForm
-            initialData={profileData?.businessInfo || {}}
+            initialData={profileData}
             onSave={handleSaveBusinessInfo}
             onCancel={() => setActiveSection(null)}
-            isSaving={saving}
+            loading={saving}
           />
         );
       case 'preferences':
         return (
           <PreferencesForm
-            initialData={profileData?.preferences || {}}
+            initialData={profileData}
             onSave={handleSavePreferences}
             onCancel={() => setActiveSection(null)}
-            isSaving={saving}
+            loading={saving}
           />
         );
       case 'documents':
         return (
           <DocumentsForm
-            documents={profileData?.documents || []}
+            initialData={profileData}
             onClose={() => setActiveSection(null)}
           />
         );
@@ -198,6 +223,7 @@ export default function OwnerProfile() {
     }
   };
 
+  // Show loading state if profile data is being fetched
   if (loading && !profileData) {
     return (
       <div className="min-h-screen bg-gray-100">
@@ -210,6 +236,7 @@ export default function OwnerProfile() {
     );
   }
 
+  // Simplified UI that follows the student profile pattern
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -223,9 +250,9 @@ export default function OwnerProfile() {
                   className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-100 cursor-pointer"
                   onClick={handleProfilePictureClick}
                 >
-                  {profileData?.profileImage ? (
+                  {profileData?.personalInfo?.profileImage?.url ? (
                     <img
-                      src={profileData.profileImage}
+                      src={profileData.personalInfo.profileImage.url}
                       alt="Profile"
                       className="w-full h-full object-cover"
                     />
@@ -266,14 +293,6 @@ export default function OwnerProfile() {
                 <p className="text-gray-500">
                   {profileData?.businessInfo?.businessName || "Manage your business information"}
                 </p>
-                
-                {/* Profile completion progress */}
-                <div className="mt-4">
-                  <ProfileCompletion 
-                    percentage={completionPercentage} 
-                    completedSections={completedSections}
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -296,7 +315,7 @@ export default function OwnerProfile() {
               <p className="text-sm text-gray-500">Manage your personal and business information</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               {/* Personal Info Card */}
               <div className="bg-white overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">

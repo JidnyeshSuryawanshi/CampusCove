@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FaBuilding, FaCalendarAlt, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaBuilding, FaCalendarAlt, FaMapMarkerAlt, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 
-export default function BusinessInfoForm({ initialData, onSave, loading }) {
+export default function BusinessInfoForm({ initialData, onSave, loading, onCancel }) {
   const [formData, setFormData] = useState({
     businessName: '',
     businessType: '',
@@ -35,15 +35,38 @@ export default function BusinessInfoForm({ initialData, onSave, loading }) {
     onSave(formData);
   };
 
+  // Check if required fields are filled to determine completion status
+  const isBusinessInfoComplete = 
+    initialData?.businessInfo?.businessName && 
+    initialData?.businessInfo?.businessType &&
+    initialData?.businessInfo?.businessAddress;
+
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-md mb-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-        <FaBuilding className="text-blue-600 mr-2" />
-        Business Information
-      </h2>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <button 
+            onClick={onCancel}
+            className="mr-4 p-2 text-gray-500 hover:text-blue-600 transition-colors duration-200"
+            title="Go back"
+          >
+            <FaArrowLeft />
+          </button>
+          <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+            <FaBuilding className="text-blue-600 mr-2" />
+            Business Information
+          </h2>
+        </div>
+        {isBusinessInfoComplete && (
+          <div className="flex items-center text-green-600">
+            <FaCheckCircle className="mr-1" />
+            <span className="text-sm">Completed</span>
+          </div>
+        )}
+      </div>
       
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -148,24 +171,39 @@ export default function BusinessInfoForm({ initialData, onSave, loading }) {
           </div>
         </div>
         
-        <div className="mt-8 flex justify-end">
-          <button
-            type="submit"
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 flex items-center"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Saving...
-              </>
-            ) : (
-              'Save Information'
-            )}
-          </button>
+        <div className="mt-8 flex justify-between items-center">
+          <div className="text-sm text-gray-500">
+            {isBusinessInfoComplete ?
+              <span className="text-green-600">Your business information is saved</span> :
+              <span>Please fill in your business information</span>
+            }
+          </div>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-300"
+            >
+              Back
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 flex items-center"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Saving...
+                </>
+              ) : (
+                'Save Information'
+              )}
+            </button>
+          </div>
         </div>
       </form>
     </div>

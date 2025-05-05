@@ -23,9 +23,11 @@ import {
   FaAppleAlt,
   FaWeight,
   FaChair,
-  FaSpinner
+  FaSpinner,
+  FaUserFriends
 } from 'react-icons/fa';
 import { fetchOwnerDetails } from '../../utils/api';
+import OwnerProfileModal from './OwnerProfileModal';
 
 // CSS classes for animation
 const ANIMATION_CLASSES = "animate-fadeIn";
@@ -38,6 +40,7 @@ export default function GymDetail({ gym, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [showOwnerProfile, setShowOwnerProfile] = useState(false);
   
   // Fetch owner details
   useEffect(() => {
@@ -190,6 +193,12 @@ export default function GymDetail({ gym, onClose }) {
   const getOwnerEmail = () => {
     if (!ownerDetails || !ownerDetails.email) return null;
     return typeof ownerDetails.email === 'string' ? ownerDetails.email : null;
+  };
+
+  // Function to get owner ID safely
+  const getOwnerId = () => {
+    if (!gym.owner) return null;
+    return typeof gym.owner === 'object' ? gym.owner._id : gym.owner;
   };
 
   return (
@@ -384,7 +393,7 @@ export default function GymDetail({ gym, onClose }) {
               </div>
               
               {/* Owner Information */}
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-4">
                 <h3 className="text-lg font-semibold text-gray-800 flex items-center mb-3">
                   <FaUser className="mr-2 text-green-600" /> Owner Information
                 </h3>
@@ -396,23 +405,29 @@ export default function GymDetail({ gym, onClose }) {
                 ) : error ? (
                   <p className="text-red-500 text-sm">{error}</p>
                 ) : ownerDetails ? (
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-3">
                     <div className="flex items-start">
                       <FaUser className="text-gray-500 mr-2 mt-1" />
                       <div>
                         <p className="text-gray-500">Name</p>
-                        <p className="font-medium text-gray-700">{getOwnerName()}</p>
+                        <p className="font-medium text-gray-700">{ownerDetails.name || ownerDetails.username || 'Not specified'}</p>
                       </div>
                     </div>
-                    {getOwnerEmail() && (
+                    {ownerDetails.email && (
                       <div className="flex items-start">
                         <FaEnvelope className="text-gray-500 mr-2 mt-1" />
                         <div>
                           <p className="text-gray-500">Email</p>
-                          <p className="font-medium text-gray-700">{getOwnerEmail()}</p>
+                          <p className="font-medium text-gray-700">{ownerDetails.email}</p>
                         </div>
                       </div>
                     )}
+                    <button
+                      onClick={() => setShowOwnerProfile(true)}
+                      className="mt-2 w-full bg-green-100 text-green-800 rounded-md py-2 flex items-center justify-center hover:bg-green-200 transition-colors"
+                    >
+                      <FaIdCard className="mr-2" /> View Owner Profile
+                    </button>
                   </div>
                 ) : (
                   <div className="text-sm text-gray-700">
@@ -522,6 +537,14 @@ export default function GymDetail({ gym, onClose }) {
           </div>
         </div>
       </div>
+      
+      {/* Show Owner Profile Modal when button is clicked */}
+      {showOwnerProfile && (
+        <OwnerProfileModal 
+          ownerId={getOwnerId()} 
+          onClose={() => setShowOwnerProfile(false)} 
+        />
+      )}
     </div>
   );
 } 

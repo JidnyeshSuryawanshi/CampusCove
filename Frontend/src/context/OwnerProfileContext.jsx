@@ -17,7 +17,9 @@ const profileReducer = (state, action) => {
         profile: action.payload,
         loading: false,
         error: null,
-        isProfileComplete: action.payload !== null
+        isProfileComplete: action.payload !== null && action.payload.isProfileComplete !== undefined 
+          ? action.payload.isProfileComplete 
+          : state.isProfileComplete
       };
     case 'PROFILE_ERROR':
       return { ...state, error: action.payload, loading: false };
@@ -56,11 +58,11 @@ export const OwnerProfileProvider = ({ children }) => {
   const [state, dispatch] = useReducer(profileReducer, initialState);
   const { user, isAuthenticated } = useAuth();
 
+  // Load profile data on mount and when auth state changes
   useEffect(() => {
     // If user is authenticated and is an owner, fetch their profile
     if (isAuthenticated && user && user.userType && user.userType.includes('Owner')) {
       getProfile();
-      getCompletionSteps();
     } else {
       dispatch({ type: 'CLEAR_PROFILE' });
     }
@@ -68,7 +70,7 @@ export const OwnerProfileProvider = ({ children }) => {
 
   // This effect updates the completion steps whenever the profile changes
   useEffect(() => {
-    if (state.profile) {
+    if (state.profile && !state.completionSteps) {
       getCompletionSteps();
     }
   }, [state.profile]);
@@ -80,11 +82,51 @@ export const OwnerProfileProvider = ({ children }) => {
 
       const response = await api.get('/owner/profile');
 
-      if (response.data.success && response.data.profile) {
+      if (response.data.success) {
+        // Ensure we have complete profile data with default values for empty sections
+        let profileData = response.data.profile;
+        
+        if (profileData) {
+          // Ensure all sections exist with default values
+          profileData = {
+            ...profileData,
+            personalInfo: profileData.personalInfo || {},
+            businessInfo: profileData.businessInfo || {},
+            preferences: {
+              bookingPreferences: {
+                autoAcceptBookings: false,
+                minimumStayDuration: '1',
+                advanceBookingDays: '7',
+                instantPaymentRequired: false,
+                ...(profileData.preferences?.bookingPreferences || {})
+              },
+              notificationSettings: {
+                emailNotifications: true,
+                smsNotifications: false,
+                bookingAlerts: true,
+                paymentAlerts: true,
+                marketingUpdates: false,
+                ...(profileData.preferences?.notificationSettings || {})
+              },
+              displaySettings: {
+                showContactInfo: true,
+                showPricing: true,
+                featuredListing: false,
+                ...(profileData.preferences?.displaySettings || {})
+              },
+              ...(profileData.preferences || {})
+            },
+            documents: profileData.documents || []
+          };
+        }
+
         dispatch({
           type: 'PROFILE_SUCCESS',
-          payload: response.data.profile
+          payload: profileData
         });
+        
+        // Get completion steps right after profile load
+        getCompletionSteps();
       } else {
         dispatch({
           type: 'PROFILE_ERROR',
@@ -104,9 +146,6 @@ export const OwnerProfileProvider = ({ children }) => {
   // Get profile completion steps
   const getCompletionSteps = async () => {
     try {
-      // Don't set loading state to avoid UI flicker when just updating completion steps
-      // dispatch({ type: 'PROFILE_REQUEST' });
-
       const response = await api.get('/owner/profile/completion-steps');
 
       if (response.data.success) {
@@ -126,11 +165,6 @@ export const OwnerProfileProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Error fetching completion steps:', error);
-      // Don't dispatch error to avoid UI disruption
-      // dispatch({
-      //   type: 'PROFILE_ERROR',
-      //   payload: error.response?.data?.message || 'Failed to fetch completion steps'
-      // });
       return null;
     }
   };
@@ -143,24 +177,13 @@ export const OwnerProfileProvider = ({ children }) => {
       const response = await api.put('/owner/profile/personal', data);
 
       if (response.data.success) {
-        // Update the profile data with the new values
-        const updatedProfile = {
-          ...state.profile,
-          personalInfo: {
-            ...state.profile?.personalInfo,
-            ...data
-          }
-        };
-
-        dispatch({
-          type: 'PROFILE_SUCCESS',
-          payload: updatedProfile
-        });
-
-        // Refresh completion steps
-        getCompletionSteps();
-
-        return updatedProfile;
+        // Get the full updated profile instead of patching it
+        await getProfile();
+        
+        // Also refresh completion steps to ensure UI reflects current state
+        await getCompletionSteps();
+        
+        return response.data.data;
       }
     } catch (error) {
       console.error('Error updating personal info:', error);
@@ -180,24 +203,13 @@ export const OwnerProfileProvider = ({ children }) => {
       const response = await api.put('/owner/profile/business', data);
 
       if (response.data.success) {
-        // Update the profile data with the new values
-        const updatedProfile = {
-          ...state.profile,
-          businessInfo: {
-            ...state.profile?.businessInfo,
-            ...data
-          }
-        };
-
-        dispatch({
-          type: 'PROFILE_SUCCESS',
-          payload: updatedProfile
-        });
-
-        // Refresh completion steps
-        getCompletionSteps();
-
-        return updatedProfile;
+        // Get the full updated profile instead of patching it
+        await getProfile();
+        
+        // Also refresh completion steps to ensure UI reflects current state
+        await getCompletionSteps();
+        
+        return response.data.data;
       }
     } catch (error) {
       console.error('Error updating business info:', error);
@@ -217,24 +229,13 @@ export const OwnerProfileProvider = ({ children }) => {
       const response = await api.put('/owner/profile/payment', data);
 
       if (response.data.success) {
-        // Update the profile data with the new values
-        const updatedProfile = {
-          ...state.profile,
-          paymentSettings: {
-            ...state.profile?.paymentSettings,
-            ...data
-          }
-        };
-
-        dispatch({
-          type: 'PROFILE_SUCCESS',
-          payload: updatedProfile
-        });
-
-        // Refresh completion steps
-        getCompletionSteps();
-
-        return updatedProfile;
+        // Get the full updated profile instead of patching it
+        await getProfile();
+        
+        // Also refresh completion steps to ensure UI reflects current state
+        await getCompletionSteps();
+        
+        return response.data.data;
       }
     } catch (error) {
       console.error('Error updating payment settings:', error);
@@ -251,27 +252,44 @@ export const OwnerProfileProvider = ({ children }) => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
 
-      const response = await api.put('/owner/profile/preferences', data);
+      // Ensure preferences has default values before sending to backend
+      const preferences = {
+        bookingPreferences: {
+          autoAcceptBookings: false,
+          minimumStayDuration: '1',
+          advanceBookingDays: '7',
+          instantPaymentRequired: false,
+          ...(state.profile?.preferences?.bookingPreferences || {}),
+          ...(data.bookingPreferences || {})
+        },
+        notificationSettings: {
+          emailNotifications: true,
+          smsNotifications: false,
+          bookingAlerts: true,
+          paymentAlerts: true,
+          marketingUpdates: false,
+          ...(state.profile?.preferences?.notificationSettings || {}),
+          ...(data.notificationSettings || {})
+        },
+        displaySettings: {
+          showContactInfo: true,
+          showPricing: true,
+          featuredListing: false,
+          ...(state.profile?.preferences?.displaySettings || {}),
+          ...(data.displaySettings || {})
+        }
+      };
+
+      const response = await api.put('/owner/profile/preferences', preferences);
 
       if (response.data.success) {
-        // Update the profile data with the new values
-        const updatedProfile = {
-          ...state.profile,
-          preferences: {
-            ...state.profile?.preferences,
-            ...data
-          }
-        };
-
-        dispatch({
-          type: 'PROFILE_SUCCESS',
-          payload: updatedProfile
-        });
-
-        // Refresh completion steps
-        getCompletionSteps();
-
-        return updatedProfile;
+        // Get the full updated profile instead of patching it
+        await getProfile();
+        
+        // Also refresh completion steps to ensure UI reflects current state
+        await getCompletionSteps();
+        
+        return response.data.data;
       }
     } catch (error) {
       console.error('Error updating preferences:', error);
@@ -295,31 +313,12 @@ export const OwnerProfileProvider = ({ children }) => {
       });
 
       if (response.data.success) {
-        // Update the profile with the new data from the response
-        if (response.data.profile) {
-          dispatch({
-            type: 'PROFILE_SUCCESS',
-            payload: response.data.profile
-          });
-        } else {
-          // If no profile in response, refresh the profile
-          getProfile();
-        }
-
-        // Update completion steps if available in response
-        if (response.data.completionStatus) {
-          dispatch({
-            type: 'COMPLETION_STEPS_SUCCESS',
-            payload: {
-              completionSteps: response.data.completionStatus.completionSteps,
-              completionPercentage: response.data.completionStatus.completionPercentage
-            }
-          });
-        } else {
-          // Otherwise refresh completion steps
-          getCompletionSteps();
-        }
-
+        // After document upload, refresh the entire profile
+        await getProfile();
+        
+        // Also refresh completion steps to ensure UI reflects current state
+        await getCompletionSteps();
+        
         return response.data;
       }
     } catch (error) {
@@ -340,31 +339,12 @@ export const OwnerProfileProvider = ({ children }) => {
       const response = await api.delete(`/owner/profile/documents/${documentId}`);
 
       if (response.data.success) {
-        // Update the profile with the new data from the response
-        if (response.data.profile) {
-          dispatch({
-            type: 'PROFILE_SUCCESS',
-            payload: response.data.profile
-          });
-        } else {
-          // If no profile in response, refresh the profile
-          getProfile();
-        }
-
-        // Update completion steps if available in response
-        if (response.data.completionStatus) {
-          dispatch({
-            type: 'COMPLETION_STEPS_SUCCESS',
-            payload: {
-              completionSteps: response.data.completionStatus.completionSteps,
-              completionPercentage: response.data.completionStatus.completionPercentage
-            }
-          });
-        } else {
-          // Otherwise refresh completion steps
-          getCompletionSteps();
-        }
-
+        // After document deletion, refresh the entire profile
+        await getProfile();
+        
+        // Also refresh completion steps to ensure UI reflects current state
+        await getCompletionSteps();
+        
         return response.data;
       }
     } catch (error) {
@@ -382,25 +362,17 @@ export const OwnerProfileProvider = ({ children }) => {
     try {
       dispatch({ type: 'PROFILE_REQUEST' });
 
-      const response = await api.put('/owner/profile/picture', formData, {
+      const response = await api.post('/owner/profile/profileImage', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
       if (response.data.success) {
-        // Update the profile with the new picture URL
-        const updatedProfile = {
-          ...state.profile,
-          profileImage: response.data.profileImage
-        };
-
-        dispatch({
-          type: 'PROFILE_SUCCESS',
-          payload: updatedProfile
-        });
-
-        return updatedProfile;
+        // After profile picture update, refresh the entire profile
+        await getProfile();
+        
+        return response.data;
       }
     } catch (error) {
       console.error('Error updating profile picture:', error);
