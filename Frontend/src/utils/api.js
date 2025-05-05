@@ -224,4 +224,25 @@ export const fetchOwnerDetails = async (ownerId) => {
   }
 };
 
+export const subscribeToMess = async (messId) => {
+  try {
+    console.log('Sending subscription request for mess:', messId);
+    const response = await api.post(`/mess/${messId}/subscribe`);
+    console.log('Subscription response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getStudentSubscriptions = async () => {
+  try {
+    const response = await api.get('/mess/subscriptions/student');
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default api;

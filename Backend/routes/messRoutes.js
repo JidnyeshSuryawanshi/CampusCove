@@ -8,7 +8,11 @@ const {
   deleteMess, 
   getOwnerMess,
   deleteMessImage,
-  getMessServicesForStudents
+  getMessServicesForStudents,
+  subscribeToMess,
+  getOwnerSubscriptions,
+  updateSubscriptionStatus,
+  getStudentSubscriptions
 } = require('../Controllers/messController');
 const { protect, authorize } = require('../middleware/auth');
 const upload = require('../middleware/upload');
@@ -50,5 +54,27 @@ router.route('/:id')
 
 router.route('/:id/images/:imageId')
   .delete(protect, authorize('messOwner'), deleteMessImage);
+
+router.route('/:id/subscribe')
+  .post(protect, authorize('student'), subscribeToMess);
+
+// Add these new routes
+router.get('/subscriptions/owner', 
+  protect, 
+  authorize('messOwner'), 
+  getOwnerSubscriptions
+);
+
+router.patch('/subscriptions/:id', 
+  protect, 
+  authorize('messOwner'), 
+  updateSubscriptionStatus
+);
+
+router.get('/subscriptions/student',
+  protect,
+  authorize('student'),
+  getStudentSubscriptions
+);
 
 module.exports = router;

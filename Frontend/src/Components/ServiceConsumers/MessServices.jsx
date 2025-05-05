@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaRupeeSign, FaUtensils, FaLeaf, FaDrumstickBite, FaClock, FaSpinner } from 'react-icons/fa';
 import MessDetail from './MessDetail';
-import { fetchMessServices } from '../../utils/api';
+import { fetchMessServices, subscribeToMess, getStudentSubscriptions } from '../../utils/api';
 
 export default function MessServices() {
   const [messServices, setMessServices] = useState([]);
@@ -9,23 +9,37 @@ export default function MessServices() {
   const [error, setError] = useState(null);
   const [selectedMess, setSelectedMess] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [subscribingId, setSubscribingId] = useState(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState({});
 
   useEffect(() => {
-    const getMessServices = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await fetchMessServices();
-        setMessServices(data);
+        const [messData, subscriptionsData] = await Promise.all([
+          fetchMessServices(),
+          getStudentSubscriptions()
+        ]);
+        
+        setMessServices(messData);
+        
+        // Create a map of mess ID to subscription status
+        const statusMap = {};
+        subscriptionsData.forEach(sub => {
+          statusMap[sub.mess] = sub.status;
+        });
+        setSubscriptionStatus(statusMap);
+        
         setError(null);
       } catch (err) {
-        console.error('Error fetching mess services:', err);
+        console.error('Error fetching data:', err);
         setError('Failed to load mess services. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    getMessServices();
+    fetchData();
   }, []);
 
   // Function to get meal type icon
@@ -56,6 +70,96 @@ export default function MessServices() {
   // Handle closing the detail modal
   const handleCloseDetail = () => {
     setShowDetailModal(false);
+  };
+
+  const handleSubscribe = async (messId) => {
+    try {
+      setSubscribingId(messId);
+      await subscribeToMess(messId);
+      alert('Subscription request sent successfully!');
+    } catch (error) {
+      console.error('Subscription error:', error);
+      alert('Failed to send subscription request. Please try again.');
+    } finally {
+      setSubscribingId(null);
+    }
+  };
+
+  // Update getSubscriptionContent to receive mess parameter
+  const getSubscriptionContent = (mess, messId) => {
+    const status = subscriptionStatus[messId];
+    
+    if (subscribingId === messId) {
+      return (
+        <>
+          <FaSpinner className="animate-spin mr-2" />
+          Sending...
+        </>
+      );
+    }
+
+    switch(status) {
+      case 'accepted':
+        return (
+          <div className="flex flex-col gap-2 w-full">
+            <span className="text-green-600 font-medium">
+              Subscribed!
+            </span>
+            <button 
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                alert('Payment functionality coming soon!');
+              }}
+            >
+              Pay Now (₹{mess.monthlyPrice})
+            </button>
+          </div>
+        );
+      case 'rejected':
+        return (
+          <span className="text-red-600 font-medium">
+            Denied!
+          </span>
+        );
+      case 'pending':
+        return (
+          <span className="text-yellow-600 font-medium">
+            Pending
+          </span>
+        );
+      default:
+        return mess.availability ? 'Subscribe' : 'Not Available';
+    }
+  };
+
+  const getSubscriptionButton = (mess) => {
+    const status = subscriptionStatus[mess._id];
+    const isSubscribed = status === 'accepted';
+    const isPending = status === 'pending';
+    const isDenied = status === 'rejected';
+
+    return (
+      <div className={`flex flex-col ${isSubscribed ? 'w-full' : ''}`}>
+        <button 
+          className={`px-3 py-1 rounded flex items-center justify-center ${
+            isSubscribed 
+              ? 'bg-green-100 text-green-600 cursor-default w-full' 
+              : isPending
+                ? 'bg-yellow-100 text-yellow-600 cursor-default'
+                : isDenied
+                  ? 'bg-red-100 text-red-600 cursor-default'
+                  : mess.availability
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-gray-400 text-white cursor-not-allowed'
+          }`}
+          disabled={!mess.availability || isSubscribed || isPending || isDenied || subscribingId === mess._id}
+          onClick={() => handleSubscribe(mess._id)}
+        >
+          {getSubscriptionContent(mess, mess._id)}
+        </button>
+      </div>
+    );
   };
 
   if (loading) {
@@ -149,16 +253,7 @@ export default function MessServices() {
                   >
                     View Details
                   </button>
-                  <button 
-                    className={`px-3 py-1 rounded ${
-                      mess.availability 
-                        ? 'bg-green-600 text-white hover:bg-green-700' 
-                        : 'bg-gray-400 text-white cursor-not-allowed'
-                    }`}
-                    disabled={!mess.availability}
-                  >
-                    {mess.availability ? 'Subscribe' : 'Not Available'}
-                  </button>
+                  {getSubscriptionButton(mess)}
                 </div>
               </div>
             </div>

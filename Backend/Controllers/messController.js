@@ -1,4 +1,5 @@
 const Mess = require('../Models/mess');
+const MessSubscription = require('../Models/messSubscription');
 const fs = require('fs');
 const path = require('path');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../utils/cloudinary');
@@ -478,6 +479,160 @@ exports.getMessServicesForStudents = async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Server error. Could not fetch mess services.'
+    });
+  }
+};
+
+// @desc    Subscribe to a mess
+// @route   POST /api/mess/:id/subscribe
+// @access  Private (student)
+exports.subscribeToMess = async (req, res) => {
+  try {
+    const messId = req.params.id;
+    const studentId = req.user.id;
+
+    console.log('Debug - Input values:', {
+      messId,
+      studentId,
+      userObject: req.user
+    });
+
+    // Verify mess exists
+    const mess = await Mess.findById(messId);
+    if (!mess) {
+      console.log('Mess not found:', messId);
+      return res.status(404).json({
+        success: false,
+        error: 'Mess not found'
+      });
+    }
+
+    // Create subscription with explicit fields
+    const subscriptionData = {
+      student: studentId,
+      mess: messId,
+      status: 'pending',
+      subscriptionDate: new Date()
+    };
+
+    console.log('Creating subscription with data:', subscriptionData);
+
+    const subscription = await MessSubscription.create(subscriptionData);
+
+    console.log('Subscription saved to database:', subscription);
+
+    res.status(201).json({
+      success: true,
+      data: subscription
+    });
+
+  } catch (error) {
+    console.error('Detailed subscription error:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    
+    res.status(500).json({
+      success: false,
+      error: 'Could not process subscription request'
+    });
+  }
+};
+
+// @desc    Get all subscriptions for mess owner
+// @route   GET /api/mess/owner/subscriptions
+// @access  Private (owner only)
+exports.getOwnerSubscriptions = async (req, res) => {
+  try {
+    // Find all messes owned by this user
+    const ownerMesses = await Mess.find({ owner: req.user.id });
+    const messIds = ownerMesses.map(mess => mess._id);
+
+    // Find all subscriptions for these messes
+    const subscriptions = await MessSubscription.find({
+      mess: { $in: messIds }
+    })
+    .populate('student', 'username email')
+    .populate('mess', 'messName')
+    .sort('-subscriptionDate');
+
+    res.status(200).json({
+      success: true,
+      data: subscriptions
+    });
+
+  } catch (error) {
+    console.error('Get owner subscriptions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Could not fetch subscription requests'
+    });
+  }
+};
+
+// @desc    Update subscription status
+// @route   PUT /api/mess/subscriptions/:id
+// @access  Private (owner only)
+exports.updateSubscriptionStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const subscription = await MessSubscription.findById(id)
+      .populate('mess', 'owner');
+
+    // Check if subscription exists
+    if (!subscription) {
+      return res.status(404).json({
+        success: false,
+        error: 'Subscription not found'
+      });
+    }
+
+    // Verify the mess owner
+    if (subscription.mess.owner.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        error: 'Not authorized to update this subscription'
+      });
+    }
+
+    subscription.status = status;
+    await subscription.save();
+
+    res.status(200).json({
+      success: true,
+      data: subscription
+    });
+
+  } catch (error) {
+    console.error('Update subscription status error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Could not update subscription status'
+    });
+  }
+};
+
+// @desc    Get all subscriptions for a student
+// @route   GET /api/mess/student/subscriptions
+// @access  Private (student)
+exports.getStudentSubscriptions = async (req, res) => {
+  try {
+    const subscriptions = await MessSubscription.find({ 
+      student: req.user.id 
+    }).select('mess status');
+
+    res.status(200).json({
+      success: true,
+      data: subscriptions
+    });
+  } catch (error) {
+    console.error('Get student subscriptions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Could not fetch subscriptions'
     });
   }
 };
