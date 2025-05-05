@@ -11,13 +11,17 @@ const {
   uploadDocument,
   deleteDocument,
   uploadProfileImage,
-  uploadDocumentMiddleware
+  uploadDocumentMiddleware,
+  getOwnerProfileById
 } = require('../controllers/ownerProfileController');
 
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
 
-// All routes are protected and require owner role
+// Public routes (no authentication required)
+router.get('/profile/:userId', getOwnerProfileById);
+
+// All routes below this are protected and require owner role
 router.use(protect);
 router.use(authorize('hostelOwner', 'messOwner', 'gymOwner'));
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaSpinner, FaCamera, FaInfoCircle, FaIdCard, FaBuilding, FaCog, FaFileAlt, FaCheck } from 'react-icons/fa';
-import ProfileCompletion from './ProfileCompletion';
+import { FaUserCircle, FaSpinner, FaCamera, FaInfoCircle, FaIdCard, FaBuilding, FaCog, FaFileAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useOwnerProfile } from '../../context/OwnerProfileContext';
 import PersonalInfoForm from './PersonalInfoForm';
@@ -237,19 +236,6 @@ export default function OwnerProfile() {
     );
   }
 
-  // Convert completion data for the UI display
-  const calculateSectionStatuses = () => {
-    const sections = [
-      { id: 'personal', name: 'Personal Information', completed: completedSections?.personal || false },
-      { id: 'business', name: 'Business Information', completed: completedSections?.business || false },
-      { id: 'preferences', name: 'Preferences', completed: completedSections?.preferences || false },
-      { id: 'documents', name: 'Documents', completed: completedSections?.documents || false }
-    ];
-    return sections;
-  };
-
-  const sectionStatuses = calculateSectionStatuses();
-
   // Simplified UI that follows the student profile pattern
   return (
     <div className="min-h-screen bg-gray-100">
@@ -309,56 +295,6 @@ export default function OwnerProfile() {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Profile Completion Status */}
-        <div className="bg-white shadow rounded-lg mb-6">
-          <div className="p-6">
-            <div className="mb-4 flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-gray-900">Profile Completion</h2>
-              <div className="text-lg font-bold text-blue-600">{completionPercentage || 0}%</div>
-            </div>
-            
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
-              <div 
-                className="bg-blue-600 h-2.5 rounded-full transition-all duration-500 ease-in-out" 
-                style={{ width: `${completionPercentage || 0}%` }}
-              ></div>
-            </div>
-            
-            <div className="flex justify-between text-xs text-gray-500 mb-4">
-              <span>Not Started</span>
-              <span>In Progress</span>
-              <span>Complete</span>
-            </div>
-            
-            <div className="space-y-3">
-              {sectionStatuses.map((section) => (
-                <div key={section.id} className="flex items-center">
-                  {section.completed ? (
-                    <FaCheck className="text-blue-600 mr-2" />
-                  ) : (
-                    <div className="w-4 h-4 border-2 border-gray-300 rounded-full mr-2"></div>
-                  )}
-                  <span className={section.completed ? 'text-gray-800' : 'text-gray-500'}>
-                    {section.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-            
-            {completionPercentage < 100 && (
-              <div className="mt-4 p-3 bg-blue-50 rounded-md text-sm text-blue-700">
-                Complete your profile to improve visibility and gain customer trust.
-              </div>
-            )}
-            
-            {completionPercentage === 100 && (
-              <div className="mt-4 p-3 bg-green-50 rounded-md text-sm text-green-700">
-                Great job! Your profile is complete and ready for customers.
-              </div>
-            )}
           </div>
         </div>
 

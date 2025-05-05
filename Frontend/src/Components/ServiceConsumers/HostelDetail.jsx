@@ -27,6 +27,7 @@ import {
   FaSpinner
 } from 'react-icons/fa';
 import { fetchOwnerDetails } from '../../utils/api';
+import OwnerProfileModal from './OwnerProfileModal';
 
 export default function HostelDetail({ hostel, onClose }) {
   if (!hostel) return null;
@@ -35,6 +36,7 @@ export default function HostelDetail({ hostel, onClose }) {
   const [ownerDetails, setOwnerDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showOwnerProfile, setShowOwnerProfile] = useState(false);
   
   // Fetch owner details
   useEffect(() => {
@@ -158,6 +160,12 @@ export default function HostelDetail({ hostel, onClose }) {
   const getOwnerPhone = () => {
     if (!ownerDetails || !ownerDetails.phone) return null;
     return typeof ownerDetails.phone === 'string' ? ownerDetails.phone : null;
+  };
+
+  // Function to get owner ID safely
+  const getOwnerId = () => {
+    if (!hostel.owner) return null;
+    return typeof hostel.owner === 'object' ? hostel.owner._id : hostel.owner;
   };
 
   return (
@@ -325,7 +333,7 @@ export default function HostelDetail({ hostel, onClose }) {
                 ) : error ? (
                   <p className="text-red-500 text-sm">{error}</p>
                 ) : ownerDetails ? (
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-3">
                     <div className="flex items-start">
                       <FaUser className="text-gray-500 mr-2 mt-1" />
                       <div>
@@ -342,15 +350,12 @@ export default function HostelDetail({ hostel, onClose }) {
                         </div>
                       </div>
                     )}
-                    {getOwnerPhone() && (
-                      <div className="flex items-start">
-                        <FaPhone className="text-gray-500 mr-2 mt-1" />
-                        <div>
-                          <p className="text-gray-500">Phone</p>
-                          <p className="font-medium text-gray-700">{getOwnerPhone()}</p>
-                        </div>
-                      </div>
-                    )}
+                    <button
+                      onClick={() => setShowOwnerProfile(true)}
+                      className="mt-2 w-full bg-green-100 text-green-800 rounded-md py-2 flex items-center justify-center hover:bg-green-200 transition-colors"
+                    >
+                      <FaIdCard className="mr-2" /> View Owner Profile
+                    </button>
                   </div>
                 ) : (
                   <div className="text-sm text-gray-700">
@@ -423,6 +428,14 @@ export default function HostelDetail({ hostel, onClose }) {
             </div>
           </div>
         </div>
+        
+        {/* Show Owner Profile Modal when button is clicked */}
+        {showOwnerProfile && (
+          <OwnerProfileModal 
+            ownerId={getOwnerId()} 
+            onClose={() => setShowOwnerProfile(false)} 
+          />
+        )}
       </div>
     </div>
   );

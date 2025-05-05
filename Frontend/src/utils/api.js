@@ -224,4 +224,15 @@ export const fetchOwnerDetails = async (ownerId) => {
   }
 };
 
+// Function to fetch owner profile by user ID
+export const fetchOwnerProfileById = async (userId) => {
+  try {
+    const response = await api.get(`/owner/profile/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching owner profile:', error);
+    throw error;
+  }
+};
+
 export default api;

@@ -674,3 +674,47 @@ const updateProfileCompletion = async (userId) => {
     console.error('Error updating profile completion status:', error);
   }
 };
+
+// @desc    Get owner profile by user ID (for students to view)
+// @route   GET /api/owner/profile/:userId
+// @access  Public
+exports.getOwnerProfileById = asyncHandler(async (req, res, next) => {
+  try {
+    // Find profile using the provided user id with basic user info
+    const profile = await OwnerProfile.findOne({ user: req.params.userId })
+      .populate('user', 'name email')
+      .lean();
+
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: 'Owner profile not found'
+      });
+    }
+
+    // Return only necessary information for public viewing
+    const publicProfile = {
+      user: profile.user,
+      personalInfo: {
+        fullName: profile.personalInfo?.fullName || '',
+        phoneNumber: profile.personalInfo?.phoneNumber || '',
+        alternatePhone: profile.personalInfo?.alternatePhone || '',
+        profileImage: profile.personalInfo?.profileImage || null
+      },
+      businessInfo: {
+        businessName: profile.businessInfo?.businessName || '',
+        businessType: profile.businessInfo?.businessType || '',
+        businessAddress: profile.businessInfo?.businessAddress || '',
+        establishmentYear: profile.businessInfo?.establishmentYear || ''
+      },
+      isProfileComplete: profile.isProfileComplete || false
+    };
+
+    res.status(200).json({
+      success: true,
+      profile: publicProfile
+    });
+  } catch (error) {
+    next(error);
+  }
+});

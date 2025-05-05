@@ -22,9 +22,11 @@ import {
   FaArrowRight,
   FaIdCard,
   FaUsers,
-  FaSpinner
+  FaSpinner,
+  FaUserFriends
 } from 'react-icons/fa';
 import { fetchOwnerDetails } from '../../utils/api';
+import OwnerProfileModal from './OwnerProfileModal';
 
 // CSS classes for animation
 const ANIMATION_CLASSES = "animate-fadeIn";
@@ -37,6 +39,7 @@ export default function MessDetail({ mess, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeDay, setActiveDay] = useState('monday');
+  const [showOwnerProfile, setShowOwnerProfile] = useState(false);
   
   // Fetch owner details
   useEffect(() => {
@@ -165,12 +168,18 @@ export default function MessDetail({ mess, onClose }) {
   // Safe getters for owner details
   const getOwnerName = () => {
     if (!ownerDetails) return 'Not specified';
-    return ownerDetails.username || 'Not specified';
+    return ownerDetails.name || ownerDetails.username || 'Not specified';
   };
   
   const getOwnerEmail = () => {
     if (!ownerDetails || !ownerDetails.email) return null;
     return typeof ownerDetails.email === 'string' ? ownerDetails.email : null;
+  };
+
+  // Function to get owner ID safely
+  const getOwnerId = () => {
+    if (!mess.owner) return null;
+    return typeof mess.owner === 'object' ? mess.owner._id : mess.owner;
   };
 
   return (
@@ -350,7 +359,7 @@ export default function MessDetail({ mess, onClose }) {
                 ) : error ? (
                   <p className="text-red-500 text-sm">{error}</p>
                 ) : ownerDetails ? (
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-3">
                     <div className="flex items-start">
                       <FaUser className="text-gray-500 mr-2 mt-1" />
                       <div>
@@ -367,6 +376,12 @@ export default function MessDetail({ mess, onClose }) {
                         </div>
                       </div>
                     )}
+                    <button
+                      onClick={() => setShowOwnerProfile(true)}
+                      className="mt-2 w-full bg-green-100 text-green-800 rounded-md py-2 flex items-center justify-center hover:bg-green-200 transition-colors"
+                    >
+                      <FaIdCard className="mr-2" /> View Owner Profile
+                    </button>
                   </div>
                 ) : (
                   <div className="text-sm text-gray-700">
@@ -517,6 +532,14 @@ export default function MessDetail({ mess, onClose }) {
           </div>
         </div>
       </div>
+      
+      {/* Show Owner Profile Modal when button is clicked */}
+      {showOwnerProfile && (
+        <OwnerProfileModal 
+          ownerId={getOwnerId()} 
+          onClose={() => setShowOwnerProfile(false)} 
+        />
+      )}
     </div>
   );
 } 
