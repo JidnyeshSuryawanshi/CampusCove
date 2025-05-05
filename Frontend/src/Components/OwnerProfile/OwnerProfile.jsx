@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaUserCircle, FaSpinner, FaCamera, FaInfoCircle } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { FaUserCircle, FaSpinner, FaCamera, FaInfoCircle, FaIdCard, FaBuilding, FaCog, FaFileAlt } from 'react-icons/fa';
 import ProfileCompletion from './ProfileCompletion';
-import PersonalInfoForm from './PersonalInfoForm';
-import BusinessInfoForm from './BusinessInfoForm';
-import PaymentSettingsForm from './PaymentSettingsForm';
-import PreferencesForm from './PreferencesForm';
-import DocumentsForm from './DocumentsForm';
 import { toast } from 'react-toastify';
 import { useOwnerProfile } from '../../context/OwnerProfileContext';
+import PersonalInfoForm from './PersonalInfoForm';
+import BusinessInfoForm from './BusinessInfoForm';
+import PreferencesForm from './PreferencesForm';
+import DocumentsForm from './DocumentsForm';
 
 export default function OwnerProfile() {
+  const navigate = useNavigate();
   const {
     profile: profileData,
     loading,
@@ -17,7 +18,6 @@ export default function OwnerProfile() {
     completionPercentage,
     updatePersonalInfo,
     updateBusinessInfo,
-    updatePaymentSettings,
     updatePreferences,
     updateProfilePicture,
     getCompletionSteps
@@ -25,11 +25,10 @@ export default function OwnerProfile() {
 
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const [activeTab, setActiveTab] = useState('personal');
+  const [activeSection, setActiveSection] = useState(null);
   const [completedSections, setCompletedSections] = useState({
     personal: false,
     business: false,
-    payment: false,
     preferences: false,
     documents: false
   });
@@ -55,10 +54,6 @@ export default function OwnerProfile() {
           profileData.businessInfo.businessName &&
           profileData.businessInfo.businessType
         ),
-        payment: Boolean(
-          profileData.paymentSettings &&
-          profileData.paymentSettings.accountNumber
-        ),
         preferences: Boolean(
           profileData.preferences &&
           (profileData.preferences.bookingPreferences !== undefined ||
@@ -77,11 +72,11 @@ export default function OwnerProfile() {
   const handleSavePersonalInfo = async (data) => {
     try {
       setSaving(true);
-      setActiveTab('personal'); // Ensure we're on the right tab
       await updatePersonalInfo(data);
       // Refresh completion steps to update UI
       await getCompletionSteps();
       toast.success('Personal information updated successfully');
+      setActiveSection(null);
     } catch (error) {
       console.error('Error saving personal info:', error);
       toast.error(error.response?.data?.message || 'Failed to update personal information');
@@ -93,11 +88,11 @@ export default function OwnerProfile() {
   const handleSaveBusinessInfo = async (data) => {
     try {
       setSaving(true);
-      setActiveTab('business'); // Ensure we're on the right tab
       await updateBusinessInfo(data);
       // Refresh completion steps to update UI
       await getCompletionSteps();
       toast.success('Business information updated successfully');
+      setActiveSection(null);
     } catch (error) {
       console.error('Error saving business info:', error);
       toast.error(error.response?.data?.message || 'Failed to update business information');
@@ -106,30 +101,14 @@ export default function OwnerProfile() {
     }
   };
 
-  const handleSavePaymentSettings = async (data) => {
-    try {
-      setSaving(true);
-      setActiveTab('payment'); // Ensure we're on the right tab
-      await updatePaymentSettings(data);
-      // Refresh completion steps to update UI
-      await getCompletionSteps();
-      toast.success('Payment settings updated successfully');
-    } catch (error) {
-      console.error('Error saving payment settings:', error);
-      toast.error(error.response?.data?.message || 'Failed to update payment settings');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const handleSavePreferences = async (data) => {
     try {
       setSaving(true);
-      setActiveTab('preferences'); // Ensure we're on the right tab
       await updatePreferences(data);
       // Refresh completion steps to update UI
       await getCompletionSteps();
       toast.success('Preferences updated successfully');
+      setActiveSection(null);
     } catch (error) {
       console.error('Error saving preferences:', error);
       toast.error(error.response?.data?.message || 'Failed to update preferences');
@@ -175,212 +154,271 @@ export default function OwnerProfile() {
     }
   };
 
+  // Render form based on active section
+  const renderActiveForm = () => {
+    if (!activeSection) return null;
+
+    switch (activeSection) {
+      case 'personal':
+        return (
+          <PersonalInfoForm
+            initialData={profileData?.personalInfo || {}}
+            onSave={handleSavePersonalInfo}
+            onCancel={() => setActiveSection(null)}
+            isSaving={saving}
+          />
+        );
+      case 'business':
+        return (
+          <BusinessInfoForm
+            initialData={profileData?.businessInfo || {}}
+            onSave={handleSaveBusinessInfo}
+            onCancel={() => setActiveSection(null)}
+            isSaving={saving}
+          />
+        );
+      case 'preferences':
+        return (
+          <PreferencesForm
+            initialData={profileData?.preferences || {}}
+            onSave={handleSavePreferences}
+            onCancel={() => setActiveSection(null)}
+            isSaving={saving}
+          />
+        );
+      case 'documents':
+        return (
+          <DocumentsForm
+            documents={profileData?.documents || []}
+            onClose={() => setActiveSection(null)}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   if (loading && !profileData) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="flex justify-center items-center h-64">
-          <div className="text-center">
-            <FaSpinner className="animate-spin text-blue-600 text-4xl mx-auto mb-4" />
-            <p className="text-gray-600">Loading your profile data...</p>
+      <div className="min-h-screen bg-gray-100">
+        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center h-64">
+            <FaSpinner className="animate-spin text-blue-600 text-4xl" />
           </div>
         </div>
       </div>
     );
   }
 
-  // Debug function to show profile data status
-  const renderDebugInfo = () => {
-    if (!profileData) return null;
-
-    return (
-      <div className="mb-4 p-3 bg-gray-100 rounded-md text-xs">
-        <div className="flex items-start">
-          <FaInfoCircle className="text-blue-500 mt-0.5 mr-2" />
-          <div>
-            <p className="font-semibold">Profile Data Status:</p>
-            <p>Personal Info: {profileData.personalInfo ? 'Loaded' : 'Not loaded'}</p>
-            <p>Business Info: {profileData.businessInfo ? 'Loaded' : 'Not loaded'}</p>
-            <p>Completion: {completionPercentage}%</p>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
-      {/* Uncomment for debugging */}
-      {/* {renderDebugInfo()} */}
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {/* Profile header with completion percentage */}
+        <div className="bg-white shadow rounded-lg mb-6 overflow-hidden">
+          <div className="p-6">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              {/* Profile Picture */}
+              <div className="relative flex-shrink-0">
+                <div
+                  className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-100 cursor-pointer"
+                  onClick={handleProfilePictureClick}
+                >
+                  {profileData?.profileImage ? (
+                    <img
+                      src={profileData.profileImage}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <FaUserCircle className="text-gray-400 w-full h-full" />
+                    </div>
+                  )}
 
-      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
-        <div className="flex-shrink-0 relative">
-          <div
-            className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-100 cursor-pointer relative"
-            onClick={handleProfilePictureClick}
-          >
-            {profileData?.profileImage ? (
-              <img
-                src={profileData.profileImage}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <FaUserCircle className="w-full h-full text-gray-400" />
-            )}
+                  {/* Overlay for hover effect */}
+                  <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-full">
+                    <FaCamera className="text-white text-xl" />
+                  </div>
 
-            {/* Overlay for hover effect */}
-            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-              <FaCamera className="text-white text-xl" />
-            </div>
+                  {/* Loading spinner */}
+                  {uploadingPhoto && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full">
+                      <FaSpinner className="text-white text-xl animate-spin" />
+                    </div>
+                  )}
+                </div>
 
-            {/* Loading spinner */}
-            {uploadingPhoto && (
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <FaSpinner className="text-white text-xl animate-spin" />
+                {/* Hidden file input */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleProfilePictureChange}
+                />
               </div>
-            )}
-          </div>
 
-          {/* Hidden file input */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            accept="image/*"
-            onChange={handleProfilePictureChange}
-          />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            {profileData?.personalInfo?.fullName || 'Complete Your Business Profile'}
-          </h1>
-          <p className="text-gray-600">
-            {profileData?.businessInfo?.businessName || 'Update your information to enhance your service listing'}
-          </p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-1">
-          <ProfileCompletion
-            completedSections={completedSections}
-            completionPercentage={completionPercentage}
-          />
-
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="font-medium text-gray-800">Profile Sections</h3>
+              {/* Profile info and completion status */}
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {profileData?.personalInfo?.fullName || "Your Profile"}
+                </h2>
+                <p className="text-gray-500">
+                  {profileData?.businessInfo?.businessName || "Manage your business information"}
+                </p>
+                
+                {/* Profile completion progress */}
+                <div className="mt-4">
+                  <ProfileCompletion 
+                    percentage={completionPercentage} 
+                    completedSections={completedSections}
+                  />
+                </div>
+              </div>
             </div>
-            <ul>
-              <li>
-                <button
-                  onClick={() => setActiveTab('personal')}
-                  className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'personal' ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.personal ? 'bg-blue-500' : 'bg-gray-300'
-                  }`}></span>
-                  Personal Information
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab('business')}
-                  className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'business' ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.business ? 'bg-blue-500' : 'bg-gray-300'
-                  }`}></span>
-                  Business Information
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab('payment')}
-                  className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'payment' ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.payment ? 'bg-blue-500' : 'bg-gray-300'
-                  }`}></span>
-                  Payment Settings
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab('preferences')}
-                  className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'preferences' ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.preferences ? 'bg-blue-500' : 'bg-gray-300'
-                  }`}></span>
-                  Preferences
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setActiveTab('documents')}
-                  className={`w-full text-left px-4 py-3 flex items-center ${
-                    activeTab === 'documents' ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <span className={`w-2 h-2 rounded-full mr-3 ${
-                    completedSections.documents ? 'bg-blue-500' : 'bg-gray-300'
-                  }`}></span>
-                  Documents & Verification
-                </button>
-              </li>
-            </ul>
           </div>
         </div>
 
-        <div className="md:col-span-2">
-          {activeTab === 'personal' && (
-            <PersonalInfoForm
-              initialData={profileData}
-              onSave={handleSavePersonalInfo}
-              loading={saving}
-            />
-          )}
+        {/* If an active form is being shown */}
+        {activeSection && (
+          <div className="bg-white shadow rounded-lg mb-6 overflow-hidden">
+            <div className="p-6">
+              {renderActiveForm()}
+            </div>
+          </div>
+        )}
 
-          {activeTab === 'business' && (
-            <BusinessInfoForm
-              initialData={profileData}
-              onSave={handleSaveBusinessInfo}
-              loading={saving}
-            />
-          )}
+        {/* Profile sections as cards */}
+        {!activeSection && (
+          <>
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Profile</h2>
+              <p className="text-sm text-gray-500">Manage your personal and business information</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Personal Info Card */}
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="px-4 py-5 sm:p-6">
+                  <div className="flex items-center">
+                    <FaIdCard className="text-3xl text-blue-500" />
+                    <h3 className="ml-3 text-lg font-medium text-gray-900">Personal Information</h3>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-500">Your personal contact details</p>
+                    <div className="mt-1">
+                      {completedSections.personal ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Completed
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          Incomplete
+                        </span>
+                      )}
+                    </div>
+                    <button 
+                      onClick={() => setActiveSection('personal')}
+                      className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+                    >
+                      {completedSections.personal ? 'Update Information' : 'Complete Section'}
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-          {activeTab === 'payment' && (
-            <PaymentSettingsForm
-              initialData={profileData}
-              onSave={handleSavePaymentSettings}
-              loading={saving}
-            />
-          )}
+              {/* Business Info Card */}
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="px-4 py-5 sm:p-6">
+                  <div className="flex items-center">
+                    <FaBuilding className="text-3xl text-blue-500" />
+                    <h3 className="ml-3 text-lg font-medium text-gray-900">Business Information</h3>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-500">Details about your business</p>
+                    <div className="mt-1">
+                      {completedSections.business ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Completed
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          Incomplete
+                        </span>
+                      )}
+                    </div>
+                    <button 
+                      onClick={() => setActiveSection('business')}
+                      className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+                    >
+                      {completedSections.business ? 'Update Information' : 'Complete Section'}
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-          {activeTab === 'preferences' && (
-            <PreferencesForm
-              initialData={profileData}
-              onSave={handleSavePreferences}
-              loading={saving}
-            />
-          )}
+              {/* Preferences Card */}
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="px-4 py-5 sm:p-6">
+                  <div className="flex items-center">
+                    <FaCog className="text-3xl text-blue-500" />
+                    <h3 className="ml-3 text-lg font-medium text-gray-900">Preferences</h3>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-500">Notification and booking preferences</p>
+                    <div className="mt-1">
+                      {completedSections.preferences ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Completed
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          Incomplete
+                        </span>
+                      )}
+                    </div>
+                    <button 
+                      onClick={() => setActiveSection('preferences')}
+                      className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+                    >
+                      {completedSections.preferences ? 'Update Preferences' : 'Set Preferences'}
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-          {activeTab === 'documents' && (
-            <DocumentsForm
-              initialData={profileData}
-              onRefresh={() => {}} // The context will handle refreshing the profile
-            />
-          )}
-        </div>
+              {/* Documents Card */}
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="px-4 py-5 sm:p-6">
+                  <div className="flex items-center">
+                    <FaFileAlt className="text-3xl text-blue-500" />
+                    <h3 className="ml-3 text-lg font-medium text-gray-900">Documents</h3>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-500">Upload business documents and verification</p>
+                    <div className="mt-1">
+                      {completedSections.documents ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Completed
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          Incomplete
+                        </span>
+                      )}
+                    </div>
+                    <button 
+                      onClick={() => setActiveSection('documents')}
+                      className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+                    >
+                      {completedSections.documents ? 'Manage Documents' : 'Upload Documents'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

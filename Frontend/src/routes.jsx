@@ -129,10 +129,6 @@ export const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <Profile />
-      },
-      {
-        path: "complete-profile",
         element: <OwnerProfile />
       },
       {

@@ -6,7 +6,6 @@ export default function ProfileCompletion({ completedSections, completionPercent
   const sections = [
     { id: 'personal', name: 'Personal Information' },
     { id: 'business', name: 'Business Information' },
-    { id: 'payment', name: 'Payment Settings' },
     { id: 'preferences', name: 'Preferences' },
     { id: 'documents', name: 'Documents' }
   ];

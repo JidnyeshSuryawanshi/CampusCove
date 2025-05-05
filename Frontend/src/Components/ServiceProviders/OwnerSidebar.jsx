@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FaHome, FaUsers, FaMoneyBillWave, FaClipboardList, FaCog, FaUser, FaSignOutAlt, FaTimes, FaIdCard } from 'react-icons/fa';
+import { FaHome, FaUsers, FaMoneyBillWave, FaClipboardList, FaCog, FaUser, FaSignOutAlt, FaTimes } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 
 export default function OwnerSidebar() {
@@ -14,8 +14,7 @@ export default function OwnerSidebar() {
     { to: "/owner-dashboard/revenew", icon: FaMoneyBillWave, label: "Revenue" },
     { to: "/owner-dashboard/bookings", icon: FaClipboardList, label: "Bookings" },
     { to: "/owner-dashboard/services", icon: FaCog, label: "Services" },
-    { to: "/owner-dashboard/profile", icon: FaUser, label: "Basic Profile" },
-    { to: "/owner-dashboard/complete-profile", icon: FaIdCard, label: "Complete Profile" },
+    { to: "/owner-dashboard/profile", icon: FaUser, label: "Profile" },
   ];
 
   const handleLogout = () => {
@@ -60,34 +59,42 @@ export default function OwnerSidebar() {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg">
-      <div className="p-5 border-b">
-        <h2 className="text-2xl font-bold text-blue-600">CampusCove</h2>
-        <p className="text-gray-500">Business Portal</p>
-      </div>
-      <nav className="mt-8">
-        {navLinks.map((link) => (
-          <NavLink
-            key={link.to}
-            to={link.to}
-            end={link.to === "/owner-dashboard"}
-            className={({ isActive }) =>
-              `flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 ${
-                isActive ? 'bg-blue-50 text-blue-600' : ''
-              }`
-            }
+    <>
+      <aside className="w-64 bg-white shadow-md fixed h-full">
+        <div className="p-6">
+          <h2 className="text-2xl font-bold text-blue-600 mb-6">CampusCove</h2>
+          <nav className="space-y-2">
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.to === "/owner-dashboard"}
+                className={({ isActive }) =>
+                  `flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                    isActive
+                      ? "bg-blue-100 text-blue-700"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`
+                }
+              >
+                <link.icon className="h-5 w-5" />
+                <span>{link.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+        <div className="absolute bottom-0 w-full p-6">
+          <button
+            onClick={() => setShowLogoutModal(true)}
+            className="flex items-center space-x-3 text-red-600 hover:text-red-700 transition-colors w-full px-4 py-3 rounded-lg hover:bg-gray-100"
           >
-            <link.icon className="mr-3" /> {link.label}
-          </NavLink>
-        ))}
-        <button
-          onClick={() => setShowLogoutModal(true)}
-          className="flex items-center px-6 py-3 text-red-600 hover:bg-red-50 w-full mt-auto"
-        >
-          <FaSignOutAlt className="mr-3" /> Logout
-        </button>
-      </nav>
+            <FaSignOutAlt className="h-5 w-5" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
       <LogoutConfirmationModal />
-    </div>
+    </>
   );
 }
