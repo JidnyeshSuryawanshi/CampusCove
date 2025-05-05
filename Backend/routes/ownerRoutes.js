@@ -7,11 +7,11 @@ const {
   getProfileCompletionSteps,
   updatePersonalInfo,
   updateBusinessInfo,
-  updatePaymentSettings,
   updatePreferences,
   uploadDocument,
   deleteDocument,
-  uploadProfilePicture
+  uploadProfileImage,
+  uploadDocumentMiddleware
 } = require('../controllers/ownerProfileController');
 
 const router = express.Router();
@@ -36,14 +36,13 @@ router.get('/profile/completion-steps', getProfileCompletionSteps);
 // Section-specific update routes
 router.put('/profile/personal', updatePersonalInfo);
 router.put('/profile/business', updateBusinessInfo);
-router.put('/profile/payment', updatePaymentSettings);
 router.put('/profile/preferences', updatePreferences);
 
 // Document routes
-router.post('/profile/documents', uploadDocument);
+router.post('/profile/documents', uploadDocumentMiddleware, uploadDocument);
 router.delete('/profile/documents/:id', deleteDocument);
 
-// Profile picture route
-router.put('/profile/picture', uploadProfilePicture);
+// Profile image route
+router.post('/profile/profileImage', uploadDocumentMiddleware, uploadProfileImage);
 
 module.exports = router;

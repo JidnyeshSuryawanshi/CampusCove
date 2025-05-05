@@ -46,7 +46,8 @@ export default function ProfileCompletion({ completedSections, completionPercent
       {/* Sections list */}
       <div className="space-y-3">
         {sections.map((section) => {
-          const isCompleted = completedSections && completedSections[section.id];
+          // Default to false if completedSections is null or section status is undefined
+          const isCompleted = completedSections ? Boolean(completedSections[section.id]) : false;
 
           return (
             <div key={section.id} className="flex items-center">

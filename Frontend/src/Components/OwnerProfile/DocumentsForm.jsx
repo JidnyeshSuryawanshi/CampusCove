@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FaFileAlt, FaUpload, FaTrashAlt, FaSpinner, FaCheck, FaExclamationTriangle } from 'react-icons/fa';
+import { FaFileAlt, FaUpload, FaTrashAlt, FaSpinner, FaCheck, FaExclamationTriangle, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useOwnerProfile } from '../../context/OwnerProfileContext';
 
-export default function DocumentsForm({ initialData }) {
-  const { uploadDocument, deleteDocument } = useOwnerProfile();
+export default function DocumentsForm({ initialData, onClose }) {
+  const { uploadDocument, deleteDocument, getProfile, getCompletionSteps } = useOwnerProfile();
   const [documents, setDocuments] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -51,18 +51,17 @@ export default function DocumentsForm({ initialData }) {
         });
       }, 300);
       
-      const result = await uploadDocument(formData);
+      await uploadDocument(formData);
       
       clearInterval(progressInterval);
       setUploadProgress(100);
       
-      if (result.success) {
-        toast.success('Document uploaded successfully');
-        setSelectedFile(null);
-        // The documents will be updated via the context
-      } else {
-        toast.error(result.message || 'Failed to upload document');
-      }
+      toast.success('Document uploaded successfully');
+      setSelectedFile(null);
+
+      // Refresh profile data to ensure UI is up to date
+      await getProfile();
+      await getCompletionSteps();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Error uploading document');
       console.error('Upload error:', error);
@@ -76,7 +75,12 @@ export default function DocumentsForm({ initialData }) {
     try {
       await deleteDocument(documentId);
       toast.success('Document deleted successfully');
-      // Remove the document from the local state to update UI immediately
+      
+      // After successful deletion, refresh the profile data
+      await getProfile();
+      await getCompletionSteps();
+      
+      // Remove document from local state for immediate UI update
       setDocuments(prevDocuments => prevDocuments.filter(doc => doc._id !== documentId));
     } catch (error) {
       console.error('Error deleting document:', error);
@@ -90,7 +94,7 @@ export default function DocumentsForm({ initialData }) {
       identityProof: 'Identity Proof',
       addressProof: 'Address Proof',
       taxDocument: 'Tax Document',
-      propertyDocument: 'Property Document',
+      propertyDocument: 'Property Ownership/Lease',
       other: 'Other Document'
     };
     
@@ -106,8 +110,8 @@ export default function DocumentsForm({ initialData }) {
       );
     } else if (status === 'pending') {
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-          <FaExclamationTriangle className="mr-1" /> Pending
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          <FaCheck className="mr-1" /> Uploaded
         </span>
       );
     } else {
@@ -119,12 +123,32 @@ export default function DocumentsForm({ initialData }) {
     }
   };
 
+  // Check if at least one document is uploaded for completion status
+  const isDocumentSectionComplete = documents && documents.length > 0;
+
   return (
     <div className="bg-white rounded-lg p-6 shadow-md mb-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-        <FaFileAlt className="text-blue-600 mr-2" />
-        Documents & Verification
-      </h2>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <button 
+            onClick={onClose}
+            className="mr-4 p-2 text-gray-500 hover:text-blue-600 transition-colors duration-200"
+            title="Go back"
+          >
+            <FaArrowLeft />
+          </button>
+          <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+            <FaFileAlt className="text-blue-600 mr-2" />
+            Documents & Verification
+          </h2>
+        </div>
+        {isDocumentSectionComplete && (
+          <div className="flex items-center text-green-600">
+            <FaCheckCircle className="mr-1" />
+            <span className="text-sm">Completed</span>
+          </div>
+        )}
+      </div>
       
       <div className="mb-6 p-4 bg-blue-50 rounded-md">
         <p className="text-sm text-blue-700">
@@ -187,7 +211,13 @@ export default function DocumentsForm({ initialData }) {
           </div>
         )}
         
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-between items-center">
+          <div className="text-sm text-gray-500">
+            {isDocumentSectionComplete ? 
+              <span className="text-green-600">You have uploaded documents</span> : 
+              <span>Please upload at least one document</span>
+            }
+          </div>
           <button
             type="submit"
             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 flex items-center"
@@ -251,18 +281,26 @@ export default function DocumentsForm({ initialData }) {
                 >
                   View
                 </a>
-                <button
+                <button 
                   onClick={() => handleDeleteDocument(doc._id)}
                   className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors duration-300 text-sm flex items-center"
                 >
-                  <FaTrashAlt className="mr-1" />
-                  Delete
+                  <FaTrashAlt className="mr-1" /> Delete
                 </button>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      <div className="flex justify-end mt-6">
+        <button
+          onClick={onClose}
+          className="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-300"
+        >
+          Back to Profile
+        </button>
+      </div>
     </div>
   );
 }

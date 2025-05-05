@@ -9,17 +9,11 @@ const ownerProfileSchema = new mongoose.Schema({
   },
   personalInfo: {
     fullName: {
-      type: String,
-      required: [true, 'Please provide your full name']
+      type: String
     },
     phoneNumber: {
       type: String,
-      required: [true, 'Please provide a contact number'],
       match: [/^(\+\d{1,3}[- ]?)?\d{10}$/, 'Please provide a valid phone number']
-    },
-    email: {
-      type: String,
-      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address']
     },
     alternatePhone: {
       type: String,
@@ -32,12 +26,10 @@ const ownerProfileSchema = new mongoose.Schema({
   },
   businessInfo: {
     businessName: {
-      type: String,
-      required: [true, 'Please provide your business name']
+      type: String
     },
     businessType: {
       type: String,
-      required: [true, 'Please provide your business type'],
       enum: {
         values: ['hostel', 'mess', 'gym', 'other'],
         message: 'Please select a valid business type'
@@ -47,31 +39,9 @@ const ownerProfileSchema = new mongoose.Schema({
       type: String
     },
     businessAddress: {
-      type: String,
-      required: [true, 'Please provide your business address']
+      type: String
     },
     establishmentYear: {
-      type: String
-    }
-  },
-  paymentSettings: {
-    accountHolderName: {
-      type: String,
-      required: [true, 'Please provide the account holder name']
-    },
-    accountNumber: {
-      type: String,
-      required: [true, 'Please provide the account number']
-    },
-    ifscCode: {
-      type: String,
-      required: [true, 'Please provide the IFSC code']
-    },
-    bankName: {
-      type: String,
-      required: [true, 'Please provide the bank name']
-    },
-    upiId: {
       type: String
     }
   },
@@ -134,20 +104,16 @@ const ownerProfileSchema = new mongoose.Schema({
   documents: [{
     documentType: {
       type: String,
-      enum: ['businessLicense', 'identityProof', 'addressProof', 'taxDocument', 'propertyDocument', 'other'],
-      required: true
+      enum: ['businessLicense', 'identityProof', 'addressProof', 'taxDocument', 'propertyDocument', 'other']
     },
     name: {
-      type: String,
-      required: true
+      type: String
     },
     documentUrl: {
-      type: String,
-      required: true
+      type: String
     },
     cloudinaryId: {
-      type: String,
-      required: true
+      type: String
     },
     uploadDate: {
       type: Date,

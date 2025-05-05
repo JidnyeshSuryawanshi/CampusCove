@@ -37,7 +37,6 @@ exports.getOwnerProfile = asyncHandler(async (req, res, next) => {
       ...profile,
       personalInfo: profile.personalInfo || {},
       businessInfo: profile.businessInfo || {},
-      paymentSettings: profile.paymentSettings || {},
       preferences: profile.preferences || {
         bookingPreferences: {},
         notificationSettings: {}
@@ -122,7 +121,6 @@ exports.getUserDetails = asyncHandler(async (req, res, next) => {
       ...profile,
       personalInfo: profile.personalInfo || {},
       businessInfo: profile.businessInfo || {},
-      paymentSettings: profile.paymentSettings || {},
       preferences: profile.preferences || {
         bookingPreferences: {},
         notificationSettings: {}
@@ -156,7 +154,6 @@ exports.getProfileCompletionSteps = asyncHandler(async (req, res, next) => {
         completionSteps: {
           personal: false,
           business: false,
-          payment: false,
           preferences: false,
           documents: false
         },
@@ -176,13 +173,6 @@ exports.getProfileCompletionSteps = asyncHandler(async (req, res, next) => {
         profile.businessInfo.businessName && 
         profile.businessInfo.businessType &&
         profile.businessInfo.businessAddress
-      ),
-      payment: Boolean(
-        profile.paymentSettings && 
-        profile.paymentSettings.accountHolderName &&
-        profile.paymentSettings.accountNumber &&
-        profile.paymentSettings.ifscCode &&
-        profile.paymentSettings.bankName
       ),
       preferences: Boolean(
         profile.preferences && 
@@ -205,6 +195,7 @@ exports.getProfileCompletionSteps = asyncHandler(async (req, res, next) => {
       { user: req.user.id },
       { 
         isProfileComplete: completionPercentage === 100,
+        completionPercentage: completionPercentage,
         updatedAt: Date.now() 
       }
     );
@@ -216,6 +207,403 @@ exports.getProfileCompletionSteps = asyncHandler(async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+});
+
+// @desc    Update personal information
+// @route   PUT /api/owner/profile/personal
+// @access  Private (Owner)
+exports.updatePersonalInfo = asyncHandler(async (req, res, next) => {
+  try {
+    // Find profile or create if it doesn't exist
+    let profile = await OwnerProfile.findOne({ user: req.user.id });
+
+    if (!profile) {
+      profile = await OwnerProfile.create({
+        user: req.user.id,
+        personalInfo: req.body,
+        isProfileComplete: false
+      });
+
+      return res.status(201).json({
+        success: true,
+        data: profile,
+        message: 'Personal information created successfully'
+      });
+    }
+
+    // Update personal info
+    profile = await OwnerProfile.findOneAndUpdate(
+      { user: req.user.id },
+      { 
+        personalInfo: req.body,
+        updatedAt: Date.now() 
+      },
+      { new: true, runValidators: false }
+    );
+
+    // Update completion status
+    await updateProfileCompletion(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      data: profile,
+      message: 'Personal information updated successfully'
+    });
+  } catch (error) {
+    console.error('Error in updatePersonalInfo:', error);
+    return next(new ErrorResponse(error.message || 'Error updating personal information', 500));
+  }
+});
+
+// @desc    Update business information
+// @route   PUT /api/owner/profile/business
+// @access  Private (Owner)
+exports.updateBusinessInfo = asyncHandler(async (req, res, next) => {
+  try {
+    // Find profile or create if it doesn't exist
+    let profile = await OwnerProfile.findOne({ user: req.user.id });
+
+    if (!profile) {
+      profile = await OwnerProfile.create({
+        user: req.user.id,
+        businessInfo: req.body,
+        isProfileComplete: false
+      });
+
+      return res.status(201).json({
+        success: true,
+        data: profile,
+        message: 'Business information created successfully'
+      });
+    }
+
+    // Update business info
+    profile = await OwnerProfile.findOneAndUpdate(
+      { user: req.user.id },
+      { 
+        businessInfo: req.body,
+        updatedAt: Date.now() 
+      },
+      { new: true, runValidators: false }
+    );
+
+    // Update completion status
+    await updateProfileCompletion(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      data: profile,
+      message: 'Business information updated successfully'
+    });
+  } catch (error) {
+    console.error('Error in updateBusinessInfo:', error);
+    return next(new ErrorResponse(error.message || 'Error updating business information', 500));
+  }
+});
+
+// @desc    Update preferences
+// @route   PUT /api/owner/profile/preferences
+// @access  Private (Owner)
+exports.updatePreferences = asyncHandler(async (req, res, next) => {
+  try {
+    // Find profile or create if it doesn't exist
+    let profile = await OwnerProfile.findOne({ user: req.user.id });
+
+    if (!profile) {
+      profile = await OwnerProfile.create({
+        user: req.user.id,
+        preferences: req.body,
+        isProfileComplete: false
+      });
+
+      return res.status(201).json({
+        success: true,
+        data: profile,
+        message: 'Preferences created successfully'
+      });
+    }
+
+    // Update preferences
+    profile = await OwnerProfile.findOneAndUpdate(
+      { user: req.user.id },
+      { 
+        preferences: req.body,
+        updatedAt: Date.now() 
+      },
+      { new: true, runValidators: false }
+    );
+
+    // Update completion status
+    await updateProfileCompletion(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      data: profile,
+      message: 'Preferences updated successfully'
+    });
+  } catch (error) {
+    console.error('Error in updatePreferences:', error);
+    return next(new ErrorResponse(error.message || 'Error updating preferences', 500));
+  }
+});
+
+// Setup multer for file uploads
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    const uploadsDir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+    cb(null, uploadsDir);
+  },
+  filename: function(req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  // Accept images and PDFs only
+  if (file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf') {
+    cb(null, true);
+  } else {
+    cb(new Error('Unsupported file format. Please upload an image or PDF.'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: fileFilter
+});
+
+// Use multer middleware
+exports.uploadDocumentMiddleware = upload.single('document');
+
+// @desc    Upload document
+// @route   POST /api/owner/profile/documents
+// @access  Private (Owner)
+exports.uploadDocument = asyncHandler(async (req, res, next) => {
+  try {
+    // Ensure uploads directory exists
+    const uploadsDir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
+    // Check if file was uploaded
+    if (!req.file) {
+      return next(new ErrorResponse('Please upload a file', 400));
+    }
+
+    // Add logging to debug the upload process
+    console.log(`File received: ${req.file.originalname}, size: ${req.file.size}, path: ${req.file.path}`);
+
+    // Upload to cloudinary
+    let result;
+    try {
+      result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'owner_documents',
+        resource_type: 'auto'
+      });
+      console.log('Successfully uploaded to Cloudinary:', result.secure_url);
+    } catch (cloudinaryError) {
+      console.error('Cloudinary upload error:', cloudinaryError);
+      return next(new ErrorResponse('Error uploading to cloud storage', 500));
+    }
+
+    // Remove file from local storage
+    try {
+      fs.unlinkSync(req.file.path);
+    } catch (unlinkError) {
+      console.error('Error removing temporary file:', unlinkError);
+      // Continue execution even if temp file deletion fails
+    }
+
+    // Prepare document data
+    const documentData = {
+      documentType: req.body.documentType || 'other',
+      name: req.body.documentName || req.file.originalname,
+      documentUrl: result.secure_url,
+      cloudinaryId: result.public_id,
+      uploadDate: Date.now(),
+      verificationStatus: 'pending'
+    };
+
+    // Find profile
+    let profile = await OwnerProfile.findOne({ user: req.user.id });
+
+    if (!profile) {
+      // Create a new profile if it doesn't exist
+      profile = await OwnerProfile.create({
+        user: req.user.id,
+        documents: [documentData],
+        isProfileComplete: false
+      });
+
+      return res.status(201).json({
+        success: true,
+        data: documentData,
+        message: 'Document uploaded successfully'
+      });
+    }
+
+    // Add document to profile
+    profile = await OwnerProfile.findOneAndUpdate(
+      { user: req.user.id },
+      { 
+        $push: { documents: documentData },
+        updatedAt: Date.now() 
+      },
+      { new: true }
+    );
+
+    // Update completion status
+    await updateProfileCompletion(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      data: documentData,
+      message: 'Document uploaded successfully'
+    });
+  } catch (error) {
+    console.error('Error in uploadDocument:', error);
+    return next(new ErrorResponse(error.message || 'Error uploading document', 500));
+  }
+});
+
+// @desc    Delete document
+// @route   DELETE /api/owner/profile/documents/:documentId
+// @access  Private (Owner)
+exports.deleteDocument = asyncHandler(async (req, res, next) => {
+  try {
+    // Find profile
+    const profile = await OwnerProfile.findOne({ user: req.user.id });
+
+    if (!profile) {
+      return next(new ErrorResponse('Profile not found', 404));
+    }
+
+    // Find document in array
+    const documentIndex = profile.documents.findIndex(
+      doc => doc._id.toString() === req.params.id
+    );
+
+    if (documentIndex === -1) {
+      return next(new ErrorResponse('Document not found', 404));
+    }
+
+    // Get cloudinary ID to delete from cloud storage
+    const cloudinaryId = profile.documents[documentIndex].cloudinaryId;
+
+    // Delete from cloudinary if ID exists
+    if (cloudinaryId) {
+      try {
+        await cloudinary.uploader.destroy(cloudinaryId);
+      } catch (cloudinaryError) {
+        console.error('Cloudinary delete error:', cloudinaryError);
+        // Continue execution even if cloudinary deletion fails
+      }
+    }
+
+    // Remove document from array
+    profile.documents.splice(documentIndex, 1);
+    await profile.save();
+
+    // Update completion status
+    await updateProfileCompletion(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Document deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error in deleteDocument:', error);
+    return next(new ErrorResponse(error.message || 'Error deleting document', 500));
+  }
+});
+
+// @desc    Upload profile image
+// @route   POST /api/owner/profile/profileImage
+// @access  Private (Owner)
+exports.uploadProfileImage = asyncHandler(async (req, res, next) => {
+  try {
+    // Check if file was uploaded
+    if (!req.file) {
+      return next(new ErrorResponse('Please upload an image', 400));
+    }
+
+    // Upload to cloudinary
+    let result;
+    try {
+      result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'owner_profile_images',
+        resource_type: 'image'
+      });
+    } catch (cloudinaryError) {
+      console.error('Cloudinary upload error:', cloudinaryError);
+      return next(new ErrorResponse('Error uploading to cloud storage', 500));
+    }
+
+    // Remove file from local storage
+    try {
+      fs.unlinkSync(req.file.path);
+    } catch (unlinkError) {
+      console.error('Error removing temporary file:', unlinkError);
+    }
+
+    // Find profile or create if it doesn't exist
+    let profile = await OwnerProfile.findOne({ user: req.user.id });
+
+    if (!profile) {
+      profile = await OwnerProfile.create({
+        user: req.user.id,
+        personalInfo: {
+          profileImage: {
+            public_id: result.public_id,
+            url: result.secure_url
+          }
+        },
+        isProfileComplete: false
+      });
+
+      return res.status(201).json({
+        success: true,
+        profileImage: result.secure_url,
+        message: 'Profile image uploaded successfully'
+      });
+    }
+
+    // If profile already has an image, delete the old one from cloudinary
+    if (profile.personalInfo && profile.personalInfo.profileImage && profile.personalInfo.profileImage.public_id) {
+      try {
+        await cloudinary.uploader.destroy(profile.personalInfo.profileImage.public_id);
+      } catch (error) {
+        console.error('Error deleting old profile image:', error);
+      }
+    }
+
+    // Update profile with new image
+    profile = await OwnerProfile.findOneAndUpdate(
+      { user: req.user.id },
+      { 
+        'personalInfo.profileImage': {
+          public_id: result.public_id,
+          url: result.secure_url
+        },
+        updatedAt: Date.now() 
+      },
+      { new: true, upsert: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      profileImage: result.secure_url,
+      message: 'Profile image updated successfully'
+    });
+  } catch (error) {
+    console.error('Error in uploadProfileImage:', error);
+    return next(new ErrorResponse(error.message || 'Error updating profile image', 500));
   }
 });
 
@@ -240,14 +628,6 @@ const updateProfileCompletion = async (userId) => {
       profile.businessInfo.businessAddress
     );
 
-    const isPaymentComplete = Boolean(
-      profile.paymentSettings && 
-      profile.paymentSettings.accountHolderName && 
-      profile.paymentSettings.accountNumber && 
-      profile.paymentSettings.ifscCode && 
-      profile.paymentSettings.bankName
-    );
-
     const isPreferencesComplete = Boolean(
       profile.preferences && 
       (profile.preferences.bookingPreferences || 
@@ -260,597 +640,37 @@ const updateProfileCompletion = async (userId) => {
     );
 
     // Calculate completion percentage
-    const completionSteps = {
-      personal: isPersonalComplete,
-      business: isBusinessComplete,
-      payment: isPaymentComplete,
-      preferences: isPreferencesComplete,
-      documents: isDocumentsComplete
-    };
+    const totalSections = 4; // personal, business, preferences, documents
+    const completedSections = 
+      (isPersonalComplete ? 1 : 0) + 
+      (isBusinessComplete ? 1 : 0) + 
+      (isPreferencesComplete ? 1 : 0) + 
+      (isDocumentsComplete ? 1 : 0);
     
-    const completedSteps = Object.values(completionSteps).filter(Boolean).length;
-    const totalSteps = Object.keys(completionSteps).length;
-    const completionPercentage = Math.round((completedSteps / totalSteps) * 100);
+    const completionPercentage = Math.round((completedSections / totalSections) * 100);
+    const isComplete = completionPercentage === 100;
 
-    // Consider profile complete if essential sections are filled
-    const isProfileComplete = completionPercentage === 100;
-
-    // Update profile completion status
+    // Update profile with completion status
     await OwnerProfile.findOneAndUpdate(
       { user: userId },
       { 
-        isProfileComplete,
-        completionPercentage,
+        isProfileComplete: isComplete,
+        completionPercentage: completionPercentage,
         updatedAt: Date.now() 
       }
     );
 
     return {
-      isProfileComplete,
+      isComplete,
       completionPercentage,
-      completionSteps
+      completionSteps: {
+        personal: isPersonalComplete,
+        business: isBusinessComplete,
+        preferences: isPreferencesComplete,
+        documents: isDocumentsComplete
+      }
     };
   } catch (error) {
     console.error('Error updating profile completion status:', error);
-    return {
-      isProfileComplete: false,
-      completionPercentage: 0,
-      completionSteps: {
-        personal: false,
-        business: false,
-        payment: false,
-        preferences: false,
-        documents: false
-      }
-    };
   }
 };
-
-// @desc    Update personal information
-// @route   PUT /api/owner/profile/personal
-// @access  Private (Owner)
-exports.updatePersonalInfo = asyncHandler(async (req, res, next) => {
-  try {
-    // Find profile
-    let profile = await OwnerProfile.findOne({ user: req.user.id });
-
-    if (!profile) {
-      // Create new profile if it doesn't exist
-      profile = new OwnerProfile({
-        user: req.user.id,
-        personalInfo: req.body,
-        isProfileComplete: false
-      });
-      
-      // Save with validation disabled for other fields
-      await profile.save({ validateModifiedOnly: true });
-    } else {
-      // Update only the personal info section without triggering validation on other fields
-      profile.personalInfo = req.body;
-      profile.updatedAt = Date.now();
-      
-      // Save with validation only for modified fields
-      await profile.save({ validateModifiedOnly: true });
-    }
-
-    // Update profile completion status
-    const completionStatus = await updateProfileCompletion(req.user.id);
-
-    // Get the updated profile
-    profile = await OwnerProfile.findOne({ user: req.user.id }).lean();
-
-    // Ensure all sections exist in the response even if they're empty
-    const completeProfile = {
-      ...profile,
-      personalInfo: profile.personalInfo || {},
-      businessInfo: profile.businessInfo || {},
-      paymentSettings: profile.paymentSettings || {},
-      preferences: profile.preferences || {
-        bookingPreferences: {},
-        notificationSettings: {}
-      },
-      documents: profile.documents || []
-    };
-
-    res.status(200).json({
-      success: true,
-      profile: completeProfile,
-      completionStatus
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// @desc    Update business information
-// @route   PUT /api/owner/profile/business
-// @access  Private (Owner)
-exports.updateBusinessInfo = asyncHandler(async (req, res, next) => {
-  try {
-    // Find profile
-    let profile = await OwnerProfile.findOne({ user: req.user.id });
-
-    if (!profile) {
-      // Create new profile if it doesn't exist
-      profile = new OwnerProfile({
-        user: req.user.id,
-        businessInfo: req.body,
-        isProfileComplete: false
-      });
-      
-      // Save with validation disabled for other fields
-      await profile.save({ validateModifiedOnly: true });
-    } else {
-      // Update only the business info section without triggering validation on other fields
-      profile.businessInfo = req.body;
-      profile.updatedAt = Date.now();
-      
-      // Save with validation only for modified fields
-      await profile.save({ validateModifiedOnly: true });
-    }
-
-    // Update profile completion status
-    const completionStatus = await updateProfileCompletion(req.user.id);
-
-    // Get the updated profile
-    profile = await OwnerProfile.findOne({ user: req.user.id }).lean();
-
-    // Ensure all sections exist in the response even if they're empty
-    const completeProfile = {
-      ...profile,
-      personalInfo: profile.personalInfo || {},
-      businessInfo: profile.businessInfo || {},
-      paymentSettings: profile.paymentSettings || {},
-      preferences: profile.preferences || {
-        bookingPreferences: {},
-        notificationSettings: {}
-      },
-      documents: profile.documents || []
-    };
-
-    res.status(200).json({
-      success: true,
-      profile: completeProfile,
-      completionStatus
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// @desc    Update payment settings
-// @route   PUT /api/owner/profile/payment
-// @access  Private (Owner)
-exports.updatePaymentSettings = asyncHandler(async (req, res, next) => {
-  try {
-    // Find profile
-    let profile = await OwnerProfile.findOne({ user: req.user.id });
-
-    if (!profile) {
-      // Create new profile if it doesn't exist
-      profile = new OwnerProfile({
-        user: req.user.id,
-        paymentSettings: req.body,
-        isProfileComplete: false
-      });
-      
-      // Save with validation disabled for other fields
-      await profile.save({ validateModifiedOnly: true });
-    } else {
-      // Update only the payment settings section without triggering validation on other fields
-      profile.paymentSettings = req.body;
-      profile.updatedAt = Date.now();
-      
-      // Save with validation only for modified fields
-      await profile.save({ validateModifiedOnly: true });
-    }
-
-    // Update profile completion status
-    const completionStatus = await updateProfileCompletion(req.user.id);
-
-    // Get the updated profile
-    profile = await OwnerProfile.findOne({ user: req.user.id }).lean();
-
-    // Ensure all sections exist in the response even if they're empty
-    const completeProfile = {
-      ...profile,
-      personalInfo: profile.personalInfo || {},
-      businessInfo: profile.businessInfo || {},
-      paymentSettings: profile.paymentSettings || {},
-      preferences: profile.preferences || {
-        bookingPreferences: {},
-        notificationSettings: {}
-      },
-      documents: profile.documents || []
-    };
-
-    res.status(200).json({
-      success: true,
-      profile: completeProfile,
-      completionStatus
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// @desc    Update preferences
-// @route   PUT /api/owner/profile/preferences
-// @access  Private (Owner)
-exports.updatePreferences = asyncHandler(async (req, res, next) => {
-  try {
-    // Find profile
-    let profile = await OwnerProfile.findOne({ user: req.user.id });
-
-    if (!profile) {
-      // Create new profile if it doesn't exist
-      profile = new OwnerProfile({
-        user: req.user.id,
-        preferences: req.body,
-        isProfileComplete: false
-      });
-      
-      // Save with validation disabled for other fields
-      await profile.save({ validateModifiedOnly: true });
-    } else {
-      // Update only the preferences section without triggering validation on other fields
-      profile.preferences = req.body;
-      profile.updatedAt = Date.now();
-      
-      // Save with validation only for modified fields
-      await profile.save({ validateModifiedOnly: true });
-    }
-
-    // Update profile completion status
-    const completionStatus = await updateProfileCompletion(req.user.id);
-
-    // Get the updated profile
-    profile = await OwnerProfile.findOne({ user: req.user.id }).lean();
-
-    // Ensure all sections exist in the response even if they're empty
-    const completeProfile = {
-      ...profile,
-      personalInfo: profile.personalInfo || {},
-      businessInfo: profile.businessInfo || {},
-      paymentSettings: profile.paymentSettings || {},
-      preferences: profile.preferences || {
-        bookingPreferences: {},
-        notificationSettings: {}
-      },
-      documents: profile.documents || []
-    };
-
-    res.status(200).json({
-      success: true,
-      profile: completeProfile,
-      completionStatus
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Configure multer for document uploads
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    const uploadsDir = path.join(__dirname, '../uploads');
-    // Create directory if it doesn't exist
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-    cb(null, uploadsDir);
-  },
-  filename: function(req, file, cb) {
-    // Create a unique filename
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    cb(null, 'document-' + uniqueSuffix + ext);
-  }
-});
-
-const fileFilter = (req, file, cb) => {
-  // Accept images and PDFs only
-  if (file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf') {
-    cb(null, true);
-  } else {
-    cb(new Error('Unsupported file format. Please upload an image or PDF.'), false);
-  }
-};
-
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  fileFilter: fileFilter
-}).single('document');
-
-// @desc    Upload document
-// @route   POST /api/owner/profile/documents
-// @access  Private (Owner)
-exports.uploadDocument = asyncHandler(async (req, res, next) => {
-  try {
-    // Process file upload using the already configured multer instance
-    upload(req, res, async function(err) {
-      if (err) {
-        return res.status(400).json({
-          success: false,
-          message: err.message
-        });
-      }
-
-      if (!req.file) {
-        return res.status(400).json({
-          success: false,
-          message: 'Please upload a file'
-        });
-      }
-
-      try {
-        // Upload to cloudinary
-        const result = await cloudinary.uploader.upload(req.file.path, {
-          folder: 'owner_documents',
-          resource_type: 'auto'
-        });
-
-        // Remove file from server
-        fs.unlinkSync(req.file.path);
-
-        // Get document details from request
-        const { documentType, documentName } = req.body;
-
-        // Find profile
-        let profile = await OwnerProfile.findOne({ user: req.user.id });
-
-        if (!profile) {
-          // Create new profile if it doesn't exist
-          profile = new OwnerProfile({
-            user: req.user.id,
-            documents: [{
-              documentType,
-              documentName,
-              documentUrl: result.secure_url,
-              public_id: result.public_id,
-              uploadDate: Date.now()
-            }],
-            isProfileComplete: false
-          });
-          
-          await profile.save();
-        } else {
-          // Add document to existing profile
-          profile.documents = profile.documents || [];
-          profile.documents.push({
-            documentType,
-            documentName,
-            documentUrl: result.secure_url,
-            public_id: result.public_id,
-            uploadDate: Date.now()
-          });
-          
-          profile.updatedAt = Date.now();
-          await profile.save();
-        }
-
-        // Update profile completion status
-        const completionStatus = await updateProfileCompletion(req.user.id);
-
-        // Get the updated profile
-        profile = await OwnerProfile.findOne({ user: req.user.id }).lean();
-
-        // Ensure all sections exist in the response even if they're empty
-        const completeProfile = {
-          ...profile,
-          personalInfo: profile.personalInfo || {},
-          businessInfo: profile.businessInfo || {},
-          paymentSettings: profile.paymentSettings || {},
-          preferences: profile.preferences || {
-            bookingPreferences: {},
-            notificationSettings: {}
-          },
-          documents: profile.documents || []
-        };
-
-        res.status(200).json({
-          success: true,
-          document: {
-            documentType,
-            documentName,
-            documentUrl: result.secure_url,
-            public_id: result.public_id,
-            uploadDate: Date.now()
-          },
-          profile: completeProfile,
-          completionStatus
-        });
-      } catch (error) {
-        // If there's an error, remove the uploaded file
-        if (req.file) {
-          fs.unlinkSync(req.file.path);
-        }
-        
-        console.error('Error uploading document:', error);
-        return res.status(500).json({
-          success: false,
-          message: 'Error uploading document'
-        });
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// @desc    Delete document
-// @route   DELETE /api/owner/profile/documents/:id
-// @access  Private (Owner)
-exports.deleteDocument = asyncHandler(async (req, res, next) => {
-  try {
-    // Find profile
-    let profile = await OwnerProfile.findOne({ user: req.user.id });
-
-    if (!profile) {
-      return res.status(404).json({
-        success: false,
-        message: 'Profile not found'
-      });
-    }
-
-    // Find document by ID
-    const document = profile.documents.id(req.params.id);
-
-    if (!document) {
-      return res.status(404).json({
-        success: false,
-        message: 'Document not found'
-      });
-    }
-
-    // Delete from Cloudinary if public_id exists
-    if (document.public_id) {
-      await cloudinary.uploader.destroy(document.public_id);
-    }
-
-    // Remove document from profile
-    profile.documents.pull(req.params.id);
-    profile.updatedAt = Date.now();
-    await profile.save();
-
-    // Update profile completion status
-    const completionStatus = await updateProfileCompletion(req.user.id);
-
-    // Get the updated profile
-    profile = await OwnerProfile.findOne({ user: req.user.id }).lean();
-
-    // Ensure all sections exist in the response even if they're empty
-    const completeProfile = {
-      ...profile,
-      personalInfo: profile.personalInfo || {},
-      businessInfo: profile.businessInfo || {},
-      paymentSettings: profile.paymentSettings || {},
-      preferences: profile.preferences || {
-        bookingPreferences: {},
-        notificationSettings: {}
-      },
-      documents: profile.documents || []
-    };
-
-    res.status(200).json({
-      success: true,
-      profile: completeProfile,
-      completionStatus
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// @desc    Upload profile picture
-// @route   PUT /api/owner/profile/picture
-// @access  Private (Owner)
-exports.uploadProfilePicture = asyncHandler(async (req, res, next) => {
-  try {
-    // Configure multer for profile picture upload
-    const profilePictureUpload = multer({
-      storage: multer.diskStorage({
-        destination: function(req, file, cb) {
-          const uploadsDir = path.join(__dirname, '../uploads');
-          if (!fs.existsSync(uploadsDir)) {
-            fs.mkdirSync(uploadsDir, { recursive: true });
-          }
-          cb(null, uploadsDir);
-        },
-        filename: function(req, file, cb) {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-          const ext = path.extname(file.originalname);
-          cb(null, 'profile-' + uniqueSuffix + ext);
-        }
-      }),
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-      fileFilter: (req, file, cb) => {
-        // Accept images only
-        if (file.mimetype.startsWith('image/')) {
-          cb(null, true);
-        } else {
-          cb(new Error('Please upload an image file'), false);
-        }
-      }
-    }).single('profileImage');
-
-    profilePictureUpload(req, res, async function(err) {
-      if (err) {
-        return res.status(400).json({
-          success: false,
-          message: err.message
-        });
-      }
-
-      // If no file was uploaded
-      if (!req.file) {
-        return res.status(400).json({
-          success: false,
-          message: 'Please upload an image'
-        });
-      }
-
-      try {
-        // Find profile
-        let profile = await OwnerProfile.findOne({ user: req.user.id });
-
-        // If profile exists and has a profile image, delete the old one from Cloudinary
-        if (profile && profile.personalInfo.profileImage && profile.personalInfo.profileImage.public_id) {
-          await cloudinary.uploader.destroy(profile.personalInfo.profileImage.public_id);
-        }
-
-        // Upload new image to Cloudinary
-        const result = await cloudinary.uploader.upload(req.file.path, {
-          folder: 'owner_profiles',
-          width: 500,
-          height: 500,
-          crop: 'fill',
-          gravity: 'face'
-        });
-
-        // Remove file from local storage
-        fs.unlinkSync(req.file.path);
-
-        // Update or create profile with new image
-        if (!profile) {
-          profile = await OwnerProfile.create({
-            user: req.user.id,
-            personalInfo: {
-              profileImage: {
-                public_id: result.public_id,
-                url: result.secure_url
-              }
-            },
-            isProfileComplete: false
-          });
-        } else {
-          profile = await OwnerProfile.findOneAndUpdate(
-            { user: req.user.id },
-            { 
-              'personalInfo.profileImage': {
-                public_id: result.public_id,
-                url: result.secure_url
-              },
-              updatedAt: Date.now()
-            },
-            { new: true }
-          );
-        }
-
-        res.status(200).json({
-          success: true,
-          profileImage: result.secure_url
-        });
-      } catch (error) {
-        // Remove file from local storage if Cloudinary upload fails
-        if (req.file && fs.existsSync(req.file.path)) {
-          fs.unlinkSync(req.file.path);
-        }
-        throw error;
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-});
