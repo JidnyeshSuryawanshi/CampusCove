@@ -545,20 +545,23 @@ exports.subscribeToMess = async (req, res) => {
 // @access  Private (owner only)
 exports.getOwnerSubscriptions = async (req, res) => {
   try {
-    // Run cleanup before fetching subscriptions
-    await MessSubscription.cleanupExpiredSubscriptions();
+    // Find all messes owned by this user
+    const ownerMesses = await Mess.find({ owner: req.user.id });
+    const messIds = ownerMesses.map(mess => mess._id);
 
+    // Find all subscriptions for these messes
     const subscriptions = await MessSubscription.find({
-      mess: { $in: await Mess.find({ owner: req.user.id }).select('_id') }
+      mess: { $in: messIds }
     })
-    .populate('student', 'username email createdAt')
-    .populate('mess', 'messName monthlyPrice messType availability address')
+    .populate('student', 'username email')
+    .populate('mess', 'messName')
     .sort('-subscriptionDate');
 
     res.status(200).json({
       success: true,
       data: subscriptions
     });
+
   } catch (error) {
     console.error('Get owner subscriptions error:', error);
     res.status(500).json({
